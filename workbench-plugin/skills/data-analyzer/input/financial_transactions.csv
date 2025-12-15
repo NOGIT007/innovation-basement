@@ -1,0 +1,21 @@
+transaction_id,date,account,category,amount,description,status
+TXN001,2024-01-15,CHK-1001,Revenue,15000.00,Client Payment - ABC Corp,cleared
+TXN002,2024-01-16,CHK-1001,Expense,-2500.00,Office Rent January,cleared
+TXN003,2024-01-17,CHK-1001,Expense,-1200.00,Software Licenses,cleared
+TXN004,2024-01-18,SAV-2001,Revenue,8500.00,Consulting Services,cleared
+TXN005,2024-01-20,CHK-1001,Expense,-3400.00,Payroll Week 3,cleared
+TXN006,2024-01-22,CHK-1001,Revenue,12000.00,Product Sales,cleared
+TXN007,2024-01-23,CHK-1001,Expense,-850.00,Marketing Campaign,pending
+TXN008,2024-01-25,SAV-2001,Transfer,5000.00,Transfer from Checking,cleared
+TXN009,2024-01-25,CHK-1001,Transfer,-5000.00,Transfer to Savings,cleared
+TXN010,2024-01-26,CHK-1001,Expense,-450.00,Office Supplies,cleared
+TXN011,2024-01-28,CHK-1001,Revenue,9500.00,Service Contract Payment,cleared
+TXN012,2024-01-29,CHK-1001,Expense,-1800.00,Insurance Premium,cleared
+TXN013,2024-01-30,CHK-1001,Expense,-2200.00,IT Services,cleared
+TXN014,2024-02-01,CHK-1001,Revenue,18500.00,Project Milestone Payment,cleared
+TXN015,2024-02-02,CHK-1001,Expense,-2500.00,Office Rent February,cleared
+TXN016,2024-02-05,CHK-1001,Expense,-3400.00,Payroll Week 6,cleared
+TXN017,2024-02-08,SAV-2001,Revenue,11200.00,Investment Return,cleared
+TXN018,2024-02-10,CHK-1001,Revenue,6800.00,Consulting Fee,cleared
+TXN019,2024-02-12,CHK-1001,Expense,-1500.00,Travel Expenses,cleared
+TXN020,2024-02-15,CHK-1001,Revenue,14000.00,Annual Subscription,cleared

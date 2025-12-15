@@ -1,0 +1,22 @@
+{
+  "name": "innovation-basement",
+  "owner": {
+    "name": "Kennet Kusk"
+  },
+  "metadata": {
+    "description": "Innovation Basement plugin collection - workbench for research/docs and coding workflow tools",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "workbench-plugin",
+      "source": "./workbench-plugin",
+      "description": "Daily assistant toolbox for research, document generation, and analysis. Skills first, agents for research."
+    },
+    {
+      "name": "coding-plugin",
+      "source": "./coding-plugin",
+      "description": "Structured coding workflow with phased development, GitHub issues, context hygiene, and error logging."
+    }
+  ]
+}

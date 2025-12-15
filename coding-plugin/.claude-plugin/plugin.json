@@ -1,0 +1,17 @@
+{
+  "name": "coding-plugin",
+  "version": "1.0.0",
+  "description": "Structured coding workflow with phased development, GitHub issues, context hygiene, and error logging. Enforces Research -> Plan -> Implement methodology.",
+  "author": {
+    "name": "Kennet Kusk"
+  },
+  "license": "MIT",
+  "keywords": [
+    "coding",
+    "workflow",
+    "github",
+    "phased-development",
+    "context-hygiene",
+    "error-logging"
+  ]
+}

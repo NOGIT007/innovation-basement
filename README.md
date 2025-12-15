@@ -32,16 +32,36 @@ Structured coding workflow with phased development.
 
 ## Installation
 
+### Step 1: Clone the marketplace locally
+
 ```bash
-# Add the marketplace
-/plugin marketplace add NOGIT007/innovation-basement
+# In your terminal (not Claude Code)
+mkdir -p ~/.claude/plugins/marketplaces
+cd ~/.claude/plugins/marketplaces
+git clone https://github.com/NOGIT007/innovation-basement.git
+```
 
-# Install workbench plugin (research, documents)
-/plugin install workbench-plugin@innovation-basement
+### Step 2: Add marketplace in Claude Code
 
-# Install coding plugin (phased development)
+In Claude Code chat, type:
+```
+/plugin marketplace add ~/.claude/plugins/marketplaces/innovation-basement
+```
+
+### Step 3: Install plugins
+
+```
 /plugin install coding-plugin@innovation-basement
 ```
+
+Choose your scope:
+- **User scope**: Available in all your projects
+- **Project scope**: Shared with collaborators (via git)
+- **Local scope**: This repo only, not shared
+
+### Step 4: Restart Claude Code
+
+Restart to load the plugin, then verify with `/plugin` → Installed tab.
 
 ## Requirements
 

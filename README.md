@@ -46,6 +46,7 @@ Structured coding workflow with phased development.
 ## Requirements
 
 ### workbench-plugin
+- GitHub CLI (`gh`) + Git
 - MCP Jina server (for web research)
 - Gemini CLI (optional)
 - Pandoc, LibreOffice (for document conversion)

@@ -1,7 +1,7 @@
 {
   "name": "coding-plugin",
-  "version": "1.0.0",
-  "description": "Structured coding workflow with phased development, GitHub issues, context hygiene, and error logging. Enforces Research -> Plan -> Implement methodology.",
+  "version": "1.1.0",
+  "description": "Structured coding workflow with phased development, GitHub issues, context hygiene, and error logging. Enforces Research -> Plan -> Implement methodology. Includes vibe-coding (simplicity-first) and frontend-design (avoid AI aesthetic clichés) rules.",
   "author": {
     "name": "Kennet Kusk"
   },
@@ -12,6 +12,8 @@
     "github",
     "phased-development",
     "context-hygiene",
-    "error-logging"
+    "error-logging",
+    "ui-design",
+    "frontend"
   ]
 }

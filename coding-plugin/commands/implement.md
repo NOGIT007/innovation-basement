@@ -1,37 +1,66 @@
 ---
-description: Start the Implementation phase. Follows approved plan exactly.
+allowed-tools: Bash(gh issue view:*), Bash(gh issue edit:*), Bash(git:*), Read, Grep, Glob, Edit, Write, Task
+description: Start implementation from a GitHub issue URL
+argument-hint: #<issue-number> or <issue-url>
 ---
 
-Start IMPLEMENT phase for: $ARGUMENTS
+# Implement from GitHub Issue
 
-## Phase Protocol
+Issue: $ARGUMENTS
 
-1. **Create GitHub Issue**
-   Run: `gh issue create --title "[Implement] $ARGUMENTS" --label "phase:implement" --body "Implementation phase for: $ARGUMENTS"`
+## Step 1: Fetch Issue
 
-2. **Prerequisites**
-   - Plan phase MUST be complete
-   - Plan MUST be explicitly approved by user
+```bash
+gh issue view <number> --json title,body,state
+```
 
-3. **Implementation Rules**
-   - Follow the approved plan EXACTLY
-   - If plan needs changes, STOP and discuss
-   - Commit after each logical unit of work
-   - Use branch: `feature/{issue-number}-{short-desc}`
+Parse the issue body to extract:
+- **Goal**: What we're building
+- **Phases**: Implementation phases with checkboxes
+- **Current phase**: First unchecked phase
 
-4. **Git Discipline**
-   - Create feature branch
-   - Commit message format: `[Implement] Step N: {description}`
-   - Keep commits atomic and focused
+## Step 2: Identify Current Phase
 
-5. **Quality Checks**
-   - Run tests after each step
-   - Check for lint errors
-   - Verify functionality works
+Look for the first phase with unchecked `- [ ]` tasks.
 
-6. **Phase Completion**
-   - All plan steps complete
-   - Tests passing
-   - Documentation updated
-   - User explicitly approves
-   - Merge/close GitHub issue
+If all phases complete → congratulate and close issue.
+
+## Step 3: Execute Current Phase
+
+For the current phase:
+
+1. **Read the tasks** - Understand what needs to be done
+2. **Identify files** - Check the `Files:` line for affected files
+3. **Implement** - Complete each task in order
+4. **Test** - Verify changes work
+5. **Commit** - Use descriptive commit message
+
+### Git Discipline
+
+- Branch: `feature/<issue-number>-<short-desc>` (if not already on it)
+- Commits: Small, atomic, descriptive
+- Format: `✨ <description>` for features, `🐛 <description>` for fixes
+
+## Step 4: Update Issue
+
+After completing phase tasks:
+
+```bash
+gh issue edit <number> --body "updated body with [x] checkboxes"
+```
+
+Mark completed tasks with `[x]`.
+
+## Step 5: Report Progress
+
+Tell user:
+- What was completed
+- What's next (next phase or done)
+- Any blockers encountered
+
+## Rules
+
+- **Follow the plan** - Don't deviate from the issue phases
+- **One phase at a time** - Complete current phase before moving on
+- **Update checkboxes** - Keep issue in sync with progress
+- **Ask if unclear** - Don't guess, ask the user

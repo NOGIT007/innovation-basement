@@ -1,6 +1,6 @@
 {
   "name": "coding-plugin",
-  "version": "2.0.0",
+  "version": "2.2.0",
   "description": "Simple phased coding workflow: plan-issue → implement → handover. GitHub issues track progress across sessions.",
   "author": {
     "name": "Kennet Kusk"

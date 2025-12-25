@@ -23,7 +23,11 @@ Parse the issue body to extract:
 
 Look for the first phase with unchecked `- [ ]` tasks.
 
-If all phases complete → congratulate and close issue.
+If all phases complete:
+1. Congratulate user on completion
+2. **Ask:** "All phases complete. Close issue #<number>?"
+3. Wait for explicit "yes" before running `gh issue close`
+4. **Never auto-close** - user approval required
 
 ## Step 3: Execute Current Phase
 

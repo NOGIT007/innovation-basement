@@ -15,7 +15,18 @@ Check current project repo (issue will be created here):
 git remote -v
 ```
 
-## Phase 1: Research (LSP-style)
+## Step 0.5: Check for Existing Plan in Session
+
+If a plan already exists in the **current conversation context** (e.g., from plan mode):
+1. **Use the existing plan** - Skip Phase 1 (Research) and Phase 2 (Plan)
+2. **Go directly to Phase 3** - Show plan summary and confirm issue creation
+3. State: "Using existing plan from this session."
+
+Detection: Look for plan content already discussed/drafted in the conversation.
+
+If no existing plan in session → proceed with full research workflow.
+
+## Phase 1: Research (LSP-style) — Skip if plan exists in session
 
 Research the **current project** codebase:
 

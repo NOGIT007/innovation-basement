@@ -17,25 +17,30 @@ Daily assistant toolbox for research, document generation, and analysis.
 - Theme Factory with 10 professional themes
 - Data Analyzer, Canvas Design, Internal Comms
 
-### coding-plugin
+### coding-plugin v2.5
 
 Structured coding workflow with phased development.
 
 **Philosophy:** Research -> Plan -> Implement (no code until plan approved).
 
 **Features:**
+- Architecture auto-update via git hook
+- Data flow tracing with file:line references
+- Quality checklist (edge cases, security, backward compat)
 - GitHub issue creation for each phase
-- Context hygiene warnings (60%/80% thresholds)
-- Bug fix tracking (warns after 3+ failed attempts)
-- Auto error logging to lessons-learned.md
-- Chat Nuke for fresh starts
+- Context hygiene warnings
+
+**Commands:**
+- `/code:plan-issue <feature>` - Research and create GitHub issue
+- `/code:implement #<number>` - Execute phases from issue
+- `/code:handover` - Generate session handover
+- `/code:update-architecture` - Regenerate architecture.md
 
 ## Installation
 
 ### Step 1: Clone the marketplace locally
 
 ```bash
-# In your terminal (not Claude Code)
 mkdir -p ~/.claude/plugins/marketplaces
 cd ~/.claude/plugins/marketplaces
 git clone https://github.com/NOGIT007/innovation-basement.git
@@ -43,7 +48,6 @@ git clone https://github.com/NOGIT007/innovation-basement.git
 
 ### Step 2: Add marketplace in Claude Code
 
-In Claude Code chat, type:
 ```
 /plugin marketplace add ~/.claude/plugins/marketplaces/innovation-basement
 ```
@@ -63,6 +67,25 @@ Choose your scope:
 
 Restart to load the plugin, then verify with `/plugin` → Installed tab.
 
+## Architecture Hook (Any Project)
+
+Install the architecture auto-update hook in any project:
+
+```bash
+# From your project root
+mkdir -p scripts rules
+
+# Copy the scripts
+curl -o scripts/update-architecture.sh https://raw.githubusercontent.com/NOGIT007/innovation-basement/main/coding-plugin/scripts/update-architecture.sh
+curl -o scripts/post-commit https://raw.githubusercontent.com/NOGIT007/innovation-basement/main/coding-plugin/scripts/post-commit
+
+# Make executable and install hook
+chmod +x scripts/update-architecture.sh scripts/post-commit
+cp scripts/post-commit .git/hooks/
+```
+
+After each commit, `rules/architecture.md` regenerates automatically.
+
 ## Requirements
 
 ### workbench-plugin
@@ -74,7 +97,6 @@ Restart to load the plugin, then verify with `/plugin` → Installed tab.
 ### coding-plugin
 - GitHub CLI (`gh`)
 - Git
-- jq
 
 ## License
 

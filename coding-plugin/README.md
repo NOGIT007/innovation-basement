@@ -83,11 +83,22 @@ cp scripts/post-commit .git/hooks/ && chmod +x .git/hooks/post-commit
 # From your project root
 mkdir -p scripts rules
 
-# Copy from your local marketplace clone
-cp ~/.claude/plugins/marketplaces/innovation-basement/coding-plugin/scripts/update-architecture.sh scripts/
-cp ~/.claude/plugins/marketplaces/innovation-basement/coding-plugin/scripts/post-commit scripts/
+# Create update-architecture.sh
+cat > scripts/update-architecture.sh << 'EOF'
+#!/bin/bash
+ARCH="rules/architecture.md"
+[ -f "$ARCH" ] && [ $(($(date +%s) - $(stat -f %m "$ARCH"))) -lt 3600 ] && exit 0
+echo "🏗️ Updating architecture..."
+claude -p "/code:update-architecture" --allowed-tools "Read,Glob,Write,Bash(ls:*)" &
+EOF
 
-# Make executable and install hook
+# Create post-commit hook
+cat > scripts/post-commit << 'EOF'
+#!/bin/bash
+./scripts/update-architecture.sh 2>/dev/null || true
+EOF
+
+# Make executable and install
 chmod +x scripts/update-architecture.sh scripts/post-commit
 cp scripts/post-commit .git/hooks/
 ```

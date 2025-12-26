@@ -69,11 +69,27 @@ Generates concise handover text for next session.
 
 ## Architecture Auto-Update
 
-After each commit, `rules/architecture.md` regenerates via git hook:
+After each commit, `rules/architecture.md` regenerates via git hook.
+
+### Install in This Project
 
 ```bash
-# Install hook
 cp scripts/post-commit .git/hooks/ && chmod +x .git/hooks/post-commit
+```
+
+### Install in Any Project
+
+```bash
+# From your project root
+mkdir -p scripts rules
+
+# Copy the scripts
+curl -o scripts/update-architecture.sh https://raw.githubusercontent.com/NOGIT007/innovation-basement/main/coding-plugin/scripts/update-architecture.sh
+curl -o scripts/post-commit https://raw.githubusercontent.com/NOGIT007/innovation-basement/main/coding-plugin/scripts/post-commit
+
+# Make executable and install hook
+chmod +x scripts/update-architecture.sh scripts/post-commit
+cp scripts/post-commit .git/hooks/
 ```
 
 Shows 🏗️ emoji when updating. Rate-limited to once per hour.

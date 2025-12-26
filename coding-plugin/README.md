@@ -83,9 +83,9 @@ cp scripts/post-commit .git/hooks/ && chmod +x .git/hooks/post-commit
 # From your project root
 mkdir -p scripts rules
 
-# Copy the scripts
-curl -o scripts/update-architecture.sh https://raw.githubusercontent.com/NOGIT007/innovation-basement/main/coding-plugin/scripts/update-architecture.sh
-curl -o scripts/post-commit https://raw.githubusercontent.com/NOGIT007/innovation-basement/main/coding-plugin/scripts/post-commit
+# Copy from your local marketplace clone
+cp ~/.claude/plugins/marketplaces/innovation-basement/coding-plugin/scripts/update-architecture.sh scripts/
+cp ~/.claude/plugins/marketplaces/innovation-basement/coding-plugin/scripts/post-commit scripts/
 
 # Make executable and install hook
 chmod +x scripts/update-architecture.sh scripts/post-commit

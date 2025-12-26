@@ -1,7 +1,7 @@
 {
   "name": "coding-plugin",
-  "version": "2.3.0",
-  "description": "Simple phased coding workflow: plan-issue → implement → handover. GitHub issues track progress across sessions.",
+  "version": "2.5.0",
+  "description": "Phased coding workflow with architecture auto-update, data flow tracing, and quality checklists. plan-issue → implement → handover.",
   "author": {
     "name": "Kennet Kusk"
   },

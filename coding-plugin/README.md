@@ -1,6 +1,13 @@
-# coding-plugin
+# coding-plugin v2.5
 
 Simple, phased coding workflow for Claude Code. Part of the innovation-basement marketplace.
+
+## What's New in v2.5
+
+- **Architecture auto-update** - `rules/architecture.md` regenerates after commits
+- **Streamlined rules** - Simplified user rules with Ground Rules enforcement
+- **Data flow tracing** - Plan issues now require file:line references
+- **Quality checklist** - Edge cases, security, backward compat built into planning
 
 ## Installation
 
@@ -24,6 +31,7 @@ Simple, phased coding workflow for Claude Code. Part of the innovation-basement 
 | `/code:plan-issue <feature>` | Research codebase, plan phases, create GitHub issue |
 | `/code:implement #<number>` | Implement from GitHub issue, work through phases |
 | `/code:handover` | Generate handover for next session |
+| `/code:update-architecture` | Regenerate architecture.md |
 
 ## Usage
 
@@ -34,9 +42,10 @@ Simple, phased coding workflow for Claude Code. Part of the innovation-basement 
 ```
 
 Creates GitHub issue with:
-- Goal
-- Implementation phases
-- Checkboxes for each task
+- Summary (what and why)
+- Data flow (Entry → Transform → Exit with file:line)
+- Changes table (File:Line | Current | New)
+- Verification steps
 
 ### 2. Implement
 
@@ -45,13 +54,12 @@ Creates GitHub issue with:
 ```
 
 - Reads issue phases
-- Works through unchecked tasks
+- Verifies plan still applies (Task Explore)
+- Implements at file:line
 - Updates checkboxes on completion
 - Commits changes
 
 ### 3. Session Handover
-
-When ending a session:
 
 ```bash
 /code:handover
@@ -59,23 +67,25 @@ When ending a session:
 
 Generates concise handover text for next session.
 
-### 4. Continue Next Session
+## Architecture Auto-Update
 
-Start new session, paste handover, then:
+After each commit, `rules/architecture.md` regenerates via git hook:
 
 ```bash
-/code:implement #123
+# Install hook
+cp scripts/post-commit .git/hooks/ && chmod +x .git/hooks/post-commit
 ```
 
-Picks up where you left off (reads checkboxes).
+Shows 🏗️ emoji when updating. Rate-limited to once per hour.
 
 ## Rules
 
-The plugin includes coding rules:
-
-- **vibe-coding**: Simplicity-first philosophy (always active)
-- **frontend-design**: Avoid generic AI aesthetics (UI work)
-- **coding-workflow**: Phase discipline
+| Rule | Purpose |
+|------|---------|
+| [architecture](rules/architecture.md) | Auto-generated codebase structure |
+| [vibe-coding](rules/vibe-coding.md) | Simplicity-first philosophy |
+| [frontend-design](rules/frontend-design.md) | Avoid generic AI aesthetics |
+| [coding-workflow](rules/coding-workflow.md) | Phase discipline |
 
 ## Requirements
 

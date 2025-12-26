@@ -1,0 +1,3 @@
+#!/bin/bash
+# Install: cp scripts/post-commit .git/hooks/ && chmod +x .git/hooks/post-commit
+./scripts/update-architecture.sh 2>/dev/null || true

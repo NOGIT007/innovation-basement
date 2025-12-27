@@ -38,6 +38,15 @@ If exists:
 - Note mistakes to avoid
 - Include relevant lessons in issue context
 
+## Step 0.7: Check Lessons Age
+
+If LESSONS.md older than 30 days:
+```bash
+stat -f "%Sm" LESSONS.md 2>/dev/null
+```
+
+Suggest: "LESSONS.md is stale. Run `/code:lessons` to refresh."
+
 ## Phase 1: Research (LSP-Precise) — Skip if plan exists in session
 
 Research the **current project** codebase with LSP precision:

@@ -1,11 +1,18 @@
 ---
 allowed-tools: Bash(gh issue list:*), Bash(gh issue view:*), Bash(git status:*), Bash(git branch:*), Bash(git log:*), Bash(git diff:*), Read, Write, Glob, Grep
-description: Save session state to .handover.md for resume
+description: Save session state to handover.md for resume
 ---
 
 # Session Handover
 
-Save current work state to `.handover.md` for seamless session resume.
+Save current work state to `handover.md` for seamless session resume.
+
+## Arguments
+
+`/handover [description]`
+
+- **No args**: Auto-detect from conversation context
+- **With description**: Use as Status summary (e.g., `/handover fixing auth bug in login flow`)
 
 ## Step 1: Gather Context
 
@@ -19,13 +26,15 @@ gh issue list --limit 5 --state open
 
 ## Step 2: Capture Session Context
 
-From current conversation, extract:
+If description argument provided → Use as Status summary.
+
+Otherwise, from current conversation, extract:
 - What was being worked on
 - Key decisions made
 - Files modified with specifics
 - Blockers or open questions
 
-## Step 3: Write .handover.md
+## Step 3: Write handover.md
 
 **ALWAYS overwrite** the file at project root:
 
@@ -60,14 +69,14 @@ From current conversation, extract:
 ## Step 4: Confirm
 
 ```bash
-cat .handover.md
+cat handover.md
 ```
 
 State: "Handover saved. Resume with `/resume`"
 
 ## Gitignore Check
 
-Ensure `.handover.md` is gitignored:
+Ensure `handover.md` is gitignored:
 ```bash
-grep -q "^\.handover\.md$" .gitignore || echo ".handover.md" >> .gitignore
+grep -q "^handover\.md$" .gitignore || echo "handover.md" >> .gitignore
 ```

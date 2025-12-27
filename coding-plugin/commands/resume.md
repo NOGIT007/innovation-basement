@@ -1,16 +1,16 @@
 ---
 allowed-tools: Bash(gh issue view:*), Bash(git status:*), Bash(git branch:*), Bash(git log:*), Read, Glob, Grep, Task, Edit, Write
-description: Resume work from .handover.md
+description: Resume work from handover.md
 ---
 
 # Resume Session
 
-Load `.handover.md` and continue work from where it left off.
+Load `handover.md` and continue work from where it left off.
 
 ## Step 1: Load Handover
 
 ```bash
-cat .handover.md 2>/dev/null || echo "No handover file found"
+cat handover.md 2>/dev/null || echo "No handover file found"
 ```
 
 If no file exists → Ask user what to work on.
@@ -48,7 +48,7 @@ Work through "Resume Instructions" sequentially:
 ## Step 6: Update or Clear Handover
 
 When work complete:
-- If more work remains → Update `.handover.md` with new state
-- If task done → Delete file: `rm .handover.md`
+- If more work remains → Update `handover.md` with new state
+- If task done → Delete file: `rm handover.md`
 
 State progress: "Resuming from handover. Starting: <first instruction>"

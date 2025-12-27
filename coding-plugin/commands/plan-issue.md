@@ -15,14 +15,66 @@ Check current project repo (issue will be created here):
 git remote -v
 ```
 
-## Step 0.5: Check for Existing Plan in Session
+## Step 0.5: Capture Existing Plan from Session
 
 If a plan already exists in the **current conversation context** (e.g., from plan mode):
-1. **Use the existing plan** - Skip Phase 1 (Research) and Phase 2 (Plan)
-2. **Go directly to Phase 3** - Show plan summary and confirm issue creation
-3. State: "Using existing plan from this session."
 
-Detection: Look for plan content already discussed/drafted in the conversation.
+### Detection Criteria
+Look for ANY of these in conversation:
+- File paths with line numbers (`src/file.ts:42`)
+- Function/type references (`functionName()`, `interface X`)
+- Implementation phases or steps
+- Plan mode output or architecture decisions
+
+### Extraction Process (CRITICAL)
+When plan exists, **extract and preserve ALL details**:
+
+1. **Code References** - Capture every `file:line` mention
+   ```
+   Example: src/api/handler.ts:42 → processData()
+   ```
+
+2. **Type Information** - Preserve interface/type details
+   ```
+   Example: interface UserData at types/user.ts:15
+   ```
+
+3. **Code Snippets** - Include relevant code blocks from plan
+   ```typescript
+   // Example snippet that was discussed
+   function existingPattern() { ... }
+   ```
+
+4. **Dependencies** - Note all file relationships discovered
+
+5. **Risks/Edge Cases** - Carry forward any warnings
+
+### Output Format for Issue
+Transform plan into structured issue content:
+
+```markdown
+## Research Summary (from plan mode)
+
+### Files Analyzed
+| File | Lines | Purpose |
+|------|-------|---------|
+| `src/file.ts` | 42-58 | Entry point for feature |
+| `types/index.ts` | 15 | Type definitions |
+
+### Key Code References
+- `processData()` at `src/handler.ts:42` - needs modification
+- `UserData` interface at `types/user.ts:15` - extend with new field
+
+### Discovered Patterns
+\`\`\`typescript
+// Pattern found at src/utils.ts:23
+export function existingPattern() {
+  // Follow this style
+}
+\`\`\`
+```
+
+State: "Using existing plan from this session. Preserving X file references."
 
 If no existing plan in session → proceed with full research workflow.
 
@@ -95,33 +147,76 @@ Issue format:
 - Avoid: [relevant lesson if applicable]
 - Pattern: [relevant pattern if applicable]
 
+## Research Summary
+
+### Files Analyzed
+| File | Lines | Purpose |
+|------|-------|---------|
+| `src/file.ts` | 42-58 | [what this file does] |
+| `types/index.ts` | 15-30 | [type definitions] |
+
+### Key Code References
+- `functionName()` at `src/handler.ts:42` - [what needs to change]
+- `InterfaceName` at `types/user.ts:15` - [how to extend]
+
+### Existing Patterns to Follow
+```typescript
+// Found at src/utils.ts:23-30
+// Copy this pattern for consistency
+export function existingPattern(input: Type): ReturnType {
+  // implementation details
+}
+```
+
 ## Data Flow
-Entry: `file.ts:line` → Transform: `file.ts:line` → Exit: `file.ts:line`
+```
+Entry: `file.ts:line` (functionName)
+  → Transform: `file.ts:line` (processData)
+  → Exit: `file.ts:line` (returnHandler)
+```
 
 ## Implementation Phases
 
 ### Phase 1: [name]
 **Files:**
-- `file1.ts:42` - Modify `functionName()` to add X
-- `file2.ts:15-20` - Update interface `TypeName`
+| File | Lines | Change |
+|------|-------|--------|
+| `file1.ts` | 42 | Modify `functionName()` to add X |
+| `file2.ts` | 15-20 | Update interface `TypeName` |
+
+**Code Changes:**
+```typescript
+// file1.ts:42 - Before
+export function functionName() { ... }
+
+// file1.ts:42 - After
+export function functionName(newParam: Type) { ... }
+```
 
 **Tasks:**
-- [ ] [Task with exact file:line reference]
-- [ ] [Task with type/function specifics]
+- [ ] Modify `functionName()` at `file1.ts:42` to accept new parameter
+- [ ] Add `newField: Type` to `TypeName` at `file2.ts:15`
+- [ ] Update imports at `file3.ts:5`
 
 **Verification:**
-- [ ] Type check passes
-- [ ] Existing tests pass
+- [ ] `bun run typecheck` passes
+- [ ] `bun run test` passes
 
 ### Phase 2: [name]
 **Files:**
-- `file3.ts:10` - Add new function
+| File | Lines | Change |
+|------|-------|--------|
+| `file3.ts` | 10 | Add new function |
 
 **Tasks:**
-- [ ] [Task with specifics]
+- [ ] Create `newFunction()` following pattern at `utils.ts:23`
 
 **Verification:**
-- [ ] [How to verify this phase]
+- [ ] [Specific test or check]
+
+## Risks & Edge Cases
+- [ ] Risk: [description] - Mitigation: [approach]
+- [ ] Edge case: [description] at `file.ts:line`
 
 ---
 

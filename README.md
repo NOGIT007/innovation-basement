@@ -17,24 +17,24 @@ Daily assistant toolbox for research, document generation, and analysis.
 - Theme Factory with 10 professional themes
 - Data Analyzer, Canvas Design, Internal Comms
 
-### coding-plugin v2.5
+### coding-plugin v2.6
 
 Structured coding workflow with phased development.
 
 **Philosophy:** Research -> Plan -> Implement (no code until plan approved).
 
 **Features:**
-- On-demand architecture documentation
-- Data flow tracing with file:line references
+- LSP-precise planning with file:line references
+- Lessons learning from commits (`/code:lessons`)
 - Quality checklist (edge cases, security, backward compat)
 - GitHub issue creation for each phase
 - Context hygiene warnings
 
 **Commands:**
-- `/code:plan-issue <feature>` - Research and create GitHub issue
+- `/code:plan-issue <feature>` - Research with LSP, create GitHub issue
 - `/code:implement #<number>` - Execute phases from issue
 - `/code:handover` - Generate session handover
-- `/code:update-architecture` - Regenerate architecture.md
+- `/code:lessons [N]` - Analyze commits, update LESSONS.md
 
 ## Installation
 

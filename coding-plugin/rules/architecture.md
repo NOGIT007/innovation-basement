@@ -6,9 +6,9 @@ generated: 2025-12-26
 ## Structure
 
 coding-plugin/
-├── commands/          # /code:plan-issue, implement, handover
+├── commands/          # /code:plan-issue, implement, handover, lessons
 ├── rules/             # vibe-coding, frontend-design, coding-workflow
-├── scripts/           # log-error, check-context, update-architecture
+├── scripts/           # log-error, check-context
 ├── hooks/hooks.json   # PostToolUse, Stop hooks
 └── templates/         # lessons-learned.md
 

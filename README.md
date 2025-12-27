@@ -24,7 +24,7 @@ Structured coding workflow with phased development.
 **Philosophy:** Research -> Plan -> Implement (no code until plan approved).
 
 **Features:**
-- Architecture auto-update via git hook
+- On-demand architecture documentation
 - Data flow tracing with file:line references
 - Quality checklist (edge cases, security, backward compat)
 - GitHub issue creation for each phase
@@ -66,36 +66,6 @@ Choose your scope:
 ### Step 4: Restart Claude Code
 
 Restart to load the plugin, then verify with `/plugin` → Installed tab.
-
-## Architecture Hook (Any Project)
-
-Install the architecture auto-update hook in any project:
-
-```bash
-# From your project root
-mkdir -p scripts rules
-
-# Create update-architecture.sh
-cat > scripts/update-architecture.sh << 'EOF'
-#!/bin/bash
-ARCH="rules/architecture.md"
-[ -f "$ARCH" ] && [ $(($(date +%s) - $(stat -f %m "$ARCH"))) -lt 3600 ] && exit 0
-echo "🏗️ Updating architecture..."
-claude -p "/code:update-architecture" --allowed-tools "Read,Glob,Write,Bash(ls:*)" &
-EOF
-
-# Create post-commit hook
-cat > scripts/post-commit << 'EOF'
-#!/bin/bash
-./scripts/update-architecture.sh 2>/dev/null || true
-EOF
-
-# Make executable and install
-chmod +x scripts/update-architecture.sh scripts/post-commit
-cp scripts/post-commit .git/hooks/
-```
-
-After each commit, `rules/architecture.md` regenerates automatically.
 
 ## Requirements
 

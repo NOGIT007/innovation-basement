@@ -1,6 +1,6 @@
 ---
-allowed-tools: Bash(gh issue create:*), Bash(gh issue list:*), Bash(git log:*), Bash(git branch:*), Bash(git remote:*), Read, Grep, Glob, Task, AskUserQuestion
-description: Research codebase, plan feature with phases, create GitHub issue
+allowed-tools: Bash(gh issue create:*), Bash(gh issue list:*), Bash(git log:*), Bash(git branch:*), Bash(git remote:*), Read, Grep, Glob, Task, AskUserQuestion, mcp__typescript-lsp__*
+description: Research codebase with LSP precision, plan feature with phases, create GitHub issue
 argument-hint: [feature-description]
 ---
 
@@ -26,21 +26,35 @@ Detection: Look for plan content already discussed/drafted in the conversation.
 
 If no existing plan in session → proceed with full research workflow.
 
-## Phase 1: Research (LSP-style) — Skip if plan exists in session
+## Step 0.6: Read Project Lessons
 
-Research the **current project** codebase:
+Check for LESSONS.md in project root:
+```bash
+cat LESSONS.md 2>/dev/null
+```
 
-1. **Find related code** - Grep for patterns and implementations
-2. **Understand architecture** - Read key files
-3. **Identify affected files** - Glob for files to change
-4. **Trace dependencies** - Follow imports
-5. **Find patterns** - Look for similar implementations
+If exists:
+- Note patterns to follow
+- Note mistakes to avoid
+- Include relevant lessons in issue context
 
-Document:
-- Affected files
-- Patterns to follow
-- Dependencies
-- Risks
+## Phase 1: Research (LSP-Precise) — Skip if plan exists in session
+
+Research the **current project** codebase with LSP precision:
+
+1. **Find entry points** - Grep for feature patterns
+2. **LSP: Go to definition** - Use typescript-lsp to trace exact types/functions
+3. **LSP: Find references** - Locate all usages of affected code
+4. **Trace data flow** - Document: Entry → Transform → Exit with file:line
+5. **Check types** - Use LSP to understand interfaces/types involved
+6. **Find patterns** - Look for similar implementations to follow
+
+Document with **file:line precision**:
+- Exact locations: `src/api/handler.ts:42`
+- Function signatures: `processData(input: InputType): OutputType`
+- Type definitions: `interface UserData` at `types/user.ts:15`
+- Dependencies and imports
+- Risks and edge cases
 
 ## Phase 2: Plan
 
@@ -68,20 +82,41 @@ Issue format:
 ## Goal
 [1-2 sentences]
 
+## Context (from LESSONS.md)
+- Avoid: [relevant lesson if applicable]
+- Pattern: [relevant pattern if applicable]
+
+## Data Flow
+Entry: `file.ts:line` → Transform: `file.ts:line` → Exit: `file.ts:line`
+
 ## Implementation Phases
 
 ### Phase 1: [name]
-- [ ] Task 1
-- [ ] Task 2
-- [ ] Files: `file1.ts`, `file2.ts`
+**Files:**
+- `file1.ts:42` - Modify `functionName()` to add X
+- `file2.ts:15-20` - Update interface `TypeName`
+
+**Tasks:**
+- [ ] [Task with exact file:line reference]
+- [ ] [Task with type/function specifics]
+
+**Verification:**
+- [ ] Type check passes
+- [ ] Existing tests pass
 
 ### Phase 2: [name]
-- [ ] Task 1
-- [ ] Files: `file3.ts`
+**Files:**
+- `file3.ts:10` - Add new function
+
+**Tasks:**
+- [ ] [Task with specifics]
+
+**Verification:**
+- [ ] [How to verify this phase]
 
 ---
 
-Created with `/plan-issue`
+Created with `/plan-issue` (LSP-precise)
 ```
 
 Output issue URL for `/code/implement #<number>`.

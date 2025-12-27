@@ -1,7 +1,7 @@
 ---
 name: coding-workflow
-description: Simple phased workflow - plan-issue, implement, handover
-version: "2.6"
+description: Simple phased workflow - plan-issue, implement, handover, resume
+version: "2.7"
 ---
 
 # Coding Workflow Rules
@@ -9,7 +9,7 @@ version: "2.6"
 ## Workflow
 
 ```
-/code:plan-issue → /code:implement → /code:handover
+/code:plan-issue → /code:implement → /code:handover → /code:resume
 ```
 
 ## Plan Issue
@@ -43,10 +43,22 @@ Changed since plan? → ❗ flag and ask.
 
 ## Handover
 
-`/code:handover` generates:
+`/code:handover` saves session state to `.handover.md`:
 - Current issue and phase
-- Branch and status
-- Next steps
+- Key files table (file:line + status)
+- Context and decisions
+- Resume instructions
+
+File is gitignored and overwritten each time.
+
+## Resume
+
+`/code:resume` continues from `.handover.md`:
+1. Loads handover file
+2. Verifies git state matches
+3. Reads key files
+4. Executes resume instructions
+5. Clears file when done
 
 ## Git Discipline
 

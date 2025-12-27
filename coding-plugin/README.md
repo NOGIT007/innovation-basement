@@ -1,8 +1,14 @@
-# coding-plugin v2.6
+# coding-plugin v2.7
 
 Simple, phased coding workflow for Claude Code. Part of the innovation-basement marketplace.
 
-## What's New in v2.6
+## What's New in v2.7
+
+- **Handover/Resume workflow** - `/code:handover` saves to `.handover.md`, `/code:resume` continues
+- **Enhanced plan-issue** - Detailed code references, file tables, before/after snippets
+- **Session persistence** - No copy/paste needed between sessions
+
+## v2.6 Features
 
 - **LSP-precise planning** - Uses typescript-lsp for exact file:line references
 - **Lessons learning** - `/code:lessons` analyzes commits, maintains LESSONS.md
@@ -19,9 +25,9 @@ Simple, phased coding workflow for Claude Code. Part of the innovation-basement 
 ## Workflow
 
 ```
-/code:plan-issue → /code:implement → /code:handover
-     ↓                   ↓                ↓
-  GitHub Issue    Work phases      Next session
+/code:plan-issue → /code:implement → /code:handover → /code:resume
+     ↓                   ↓                ↓               ↓
+  GitHub Issue    Work phases      .handover.md    Continue work
 ```
 
 ### Commands
@@ -30,7 +36,8 @@ Simple, phased coding workflow for Claude Code. Part of the innovation-basement 
 |---------|-------------|
 | `/code:plan-issue <feature>` | Research with LSP, plan phases, create GitHub issue |
 | `/code:implement #<number>` | Implement from GitHub issue, work through phases |
-| `/code:handover` | Generate handover for next session |
+| `/code:handover` | Save session state to `.handover.md` |
+| `/code:resume` | Continue from `.handover.md` |
 | `/code:lessons [N]` | Analyze last N commits, update LESSONS.md |
 
 ## Usage
@@ -65,7 +72,18 @@ Creates GitHub issue with:
 /code:handover
 ```
 
-Generates concise handover text for next session.
+Saves session state to `.handover.md`:
+- Issue and branch context
+- Key files with status
+- Resume instructions
+
+### 4. Resume Work
+
+```bash
+/code:resume
+```
+
+Loads `.handover.md` and continues exactly where you left off. File is deleted when task completes.
 
 ## Rules
 

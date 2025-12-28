@@ -1,10 +1,10 @@
-# coding-plugin v2.7
+# coding-plugin v2.8.1
 
 Simple, phased coding workflow for Claude Code. Part of the innovation-basement marketplace.
 
-## What's New in v2.7
+## What's New in v2.8
 
-- **Handover/Resume workflow** - `/code:handover` saves to `.handover.md`, `/code:resume` continues
+- **Handover/Resume workflow** - `/code:handover [description]` saves to `handover.md`, `/code:resume` continues
 - **Enhanced plan-issue** - Detailed code references, file tables, before/after snippets
 - **Session persistence** - No copy/paste needed between sessions
 

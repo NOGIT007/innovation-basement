@@ -1,7 +1,7 @@
 ---
 name: coding-workflow
 description: Simple phased workflow - plan-issue, implement, handover, resume
-version: "2.7"
+version: "2.8.1"
 ---
 
 # Coding Workflow Rules

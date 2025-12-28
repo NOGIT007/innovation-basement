@@ -15,3 +15,10 @@ Bump version on every push:
 - Major (X.0.0): Breaking changes
 
 Include version in commit message: `✨ v2.8.0: feature description`
+
+**Source of truth:** `coding-plugin/.claude-plugin/plugin.json`
+
+Update ALL version locations:
+1. `coding-plugin/.claude-plugin/plugin.json` ← Claude Code reads this
+2. `coding-plugin/README.md` (title)
+3. `coding-plugin/rules/coding-workflow.md` (frontmatter)

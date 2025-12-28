@@ -1,6 +1,6 @@
 {
   "name": "coding-plugin",
-  "version": "2.7.0",
+  "version": "2.8.2",
   "description": "Phased coding workflow with LSP-precise planning and session handover. plan-issue → implement → handover → resume.",
   "author": {
     "name": "Kennet Kusk"

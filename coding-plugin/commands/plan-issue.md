@@ -130,7 +130,69 @@ Document with **file:line precision**:
 - Dependencies and imports
 - Risks and edge cases
 
-## Phase 2: Plan
+## Phase 1.5: Content Specification
+
+Before planning, you MUST have **exact content** for every change.
+
+### Rule: Read Before Write (No Exceptions)
+
+For EVERY file you'll modify (including trivial changes like imports/typos):
+1. Read the current content with `Read` tool
+2. Find similar patterns in codebase (if creating new)
+3. Draft exact before/after content
+
+**No exceptions.** Even imports, typos, and renames need before/after.
+
+**If you can't write exact content → you haven't researched enough. Go back to Phase 1.**
+
+### For New Files
+
+```markdown
+**Create:** `path/to/new-file.ts`
+
+**Full content:**
+\`\`\`typescript
+// Complete file content - NOT a summary or placeholder
+export function newFunction(param: Type): ReturnType {
+  // Actual implementation code
+  return result;
+}
+\`\`\`
+
+**Pattern source:** Based on `similar-file.ts:15-40`
+```
+
+### For Modifications
+
+```markdown
+**Modify:** `path/to/file.ts:42-55`
+
+**Before:**
+\`\`\`typescript
+// Exact current content copied from file
+export function existing() {
+  return oldBehavior();
+}
+\`\`\`
+
+**After:**
+\`\`\`typescript
+// Exact replacement content
+export function existing(newParam: Type) {
+  return newBehavior(newParam);
+}
+\`\`\`
+```
+
+### Validation Checklist
+
+Before proceeding to Phase 2:
+- [ ] Every modified file has been read with `Read` tool
+- [ ] Every new file has complete content (not placeholders)
+- [ ] Every modification shows exact before/after code
+- [ ] Patterns sourced from existing codebase
+
+## Phase 2: Plan (Using Specified Content)
 
 Break into phases:
 - Each phase = independently testable
@@ -200,21 +262,54 @@ Entry: `file.ts:line` (functionName)
 **Files:**
 | File | Lines | Change |
 |------|-------|--------|
-| `file1.ts` | 42 | Modify `functionName()` to add X |
+| `file1.ts` | 42-50 | Modify `functionName()` |
 | `file2.ts` | 15-20 | Update interface `TypeName` |
 
-**Code Changes:**
-```typescript
-// file1.ts:42 - Before
-export function functionName() { ... }
+**Exact Changes:**
 
-// file1.ts:42 - After
-export function functionName(newParam: Type) { ... }
+<details>
+<summary><code>file1.ts:42</code> - Modify functionName</summary>
+
+**Before:**
+```typescript
+export function functionName() {
+  return oldLogic();
+}
 ```
 
+**After:**
+```typescript
+export function functionName(newParam: Type) {
+  validateParam(newParam);
+  return newLogic(newParam);
+}
+```
+
+</details>
+
+<details>
+<summary><code>file2.ts:15</code> - Update TypeName interface</summary>
+
+**Before:**
+```typescript
+interface TypeName {
+  existingField: string;
+}
+```
+
+**After:**
+```typescript
+interface TypeName {
+  existingField: string;
+  newField: Type;
+}
+```
+
+</details>
+
 **Tasks:**
-- [ ] Modify `functionName()` at `file1.ts:42` to accept new parameter
-- [ ] Add `newField: Type` to `TypeName` at `file2.ts:15`
+- [ ] Apply change to `functionName()` at `file1.ts:42`
+- [ ] Add `newField` to `TypeName` at `file2.ts:15`
 - [ ] Update imports at `file3.ts:5`
 
 **Verification:**
@@ -225,10 +320,28 @@ export function functionName(newParam: Type) { ... }
 **Files:**
 | File | Lines | Change |
 |------|-------|--------|
-| `file3.ts` | 10 | Add new function |
+| `file3.ts` | new | Add new function |
+
+**Exact Changes:**
+
+<details>
+<summary><code>file3.ts</code> - Create newFunction</summary>
+
+**Create:**
+```typescript
+// Full implementation - not a placeholder
+export function newFunction(input: InputType): OutputType {
+  const processed = transform(input);
+  return { result: processed };
+}
+```
+
+**Pattern source:** `utils.ts:23-35`
+
+</details>
 
 **Tasks:**
-- [ ] Create `newFunction()` following pattern at `utils.ts:23`
+- [ ] Create `newFunction()` in `file3.ts`
 
 **Verification:**
 - [ ] [Specific test or check]

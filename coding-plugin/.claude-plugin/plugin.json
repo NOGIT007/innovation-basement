@@ -1,6 +1,6 @@
 {
   "name": "coding-plugin",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "Phased coding workflow with spec interviews, project principles, and session handover. interview → constitution → plan-issue → implement.",
   "author": {
     "name": "Kennet Kusk"

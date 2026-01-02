@@ -1,6 +1,26 @@
-# coding-plugin v3.0.0
+# coding-plugin v3.0.1
 
 Simple, phased coding workflow for Claude Code. Part of the innovation-basement marketplace.
+
+## Recommended Plugins
+
+Install from `claude-plugins-official` marketplace to enhance the workflow:
+
+| Plugin | Purpose |
+|--------|---------|
+| `typescript-lsp` | LSP-precise code analysis for TypeScript |
+| `pyright-lsp` | LSP-precise code analysis for Python |
+| `frontend-design` | Create distinctive, production-grade frontend interfaces |
+
+```bash
+/plugin install typescript-lsp@claude-plugins-official
+/plugin install pyright-lsp@claude-plugins-official
+/plugin install frontend-design@claude-plugins-official
+```
+
+## Tip: Use /plan mode
+
+Claude Code's built-in `/plan` mode can be used to explore and design changes before running `/code:plan-issue`.
 
 ## What's New in v3.0
 

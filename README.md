@@ -1,6 +1,8 @@
-# Coding Plugin v3.0
+# Coding Plugin v3.0.1
 
 A Claude Code plugin for structured development workflow by Kennet Kusk.
+
+> **Tip:** Use Claude Code's `/plan` mode to explore changes before `/code:plan-issue`
 
 ```
 ┌───────────────────────────────────────────────────────────────────────────────┐
@@ -75,6 +77,16 @@ Choose your scope:
 ### Step 4: Restart Claude Code
 
 Restart to load the plugin, then verify with `/plugin` → Installed tab.
+
+## Recommended Plugins
+
+Install from `claude-plugins-official` to enhance the workflow:
+
+```bash
+/plugin install typescript-lsp@claude-plugins-official
+/plugin install pyright-lsp@claude-plugins-official
+/plugin install frontend-design@claude-plugins-official
+```
 
 ## Requirements
 

@@ -1,8 +1,14 @@
-# coding-plugin v2.8.1
+# coding-plugin v2.9.0
 
 Simple, phased coding workflow for Claude Code. Part of the innovation-basement marketplace.
 
-## What's New in v2.8
+## What's New in v2.9
+
+- **Spec Interview** - `/code:interview <spec>` develops vague ideas into comprehensive 1.0 specs
+- **Project Constitution** - `/code:constitution` creates project principles via interview
+- **Plan-issue integration** - Auto-reads `constitution.md` for context
+
+## v2.8 Features
 
 - **Handover/Resume workflow** - `/code:handover [description]` saves to `handover.md`, `/code:resume` continues
 - **Enhanced plan-issue** - Detailed code references, file tables, before/after snippets
@@ -25,19 +31,55 @@ Simple, phased coding workflow for Claude Code. Part of the innovation-basement 
 ## Workflow
 
 ```
-/code:plan-issue → /code:implement → /code:handover → /code:resume
-     ↓                   ↓                ↓               ↓
-  GitHub Issue    Work phases      .handover.md    Continue work
+┌───────────────────────────────────────────────────────────────────────────────────────┐
+│                              CODING PLUGIN WORKFLOW                                    │
+├───────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                        │
+│   PHASE 1: IDEATION          PHASE 2: PLANNING           PHASE 3: EXECUTION           │
+│                                                                                        │
+│   ┌──────────────┐          ┌──────────────┐            ┌──────────────┐              │
+│   │  /interview  │          │ /plan-issue  │            │  /implement  │              │
+│   │              │          │              │            │    #123      │              │
+│   │  Spec File   │───────▶  │   Creates    │─────────▶  │              │              │
+│   │  Interview   │          │ GitHub Issue │  Issue #   │   Code It    │              │
+│   └──────────────┘          └──────────────┘            └──────────────┘              │
+│          │                         ▲                           │                       │
+│          ▼                         │                           ▼                       │
+│   ┌──────────────┐                 │                    ┌──────────────┐              │
+│   │/constitution │                 │                    │  /handover   │              │
+│   │              │─────────────────┤                    │              │              │
+│   │   Project    │   (auto-reads)  │                    │ Save State   │              │
+│   │  Principles  │                 │                    └──────────────┘              │
+│   └──────────────┘                 │                           │                       │
+│                                    │                           ▼                       │
+│   ┌──────────────┐                 │                    ┌──────────────┐              │
+│   │   /lessons   │─────────────────┘                    │   /resume    │              │
+│   │              │   (auto-reads)                       │              │              │
+│   │   Learned    │                                      │  Continue    │              │
+│   │   Patterns   │                                      └──────────────┘              │
+│   └──────────────┘                                                                     │
+│         ▲                                                                              │
+│         │ (run after commits)                                                          │
+│         │                                                                              │
+│   ┌─────┴────────┐                                                                     │
+│   │  Commits     │                                                                     │
+│   └──────────────┘                                                                     │
+│                                                                                        │
+└───────────────────────────────────────────────────────────────────────────────────────┘
 ```
+
+*Interview and constitution are optional. Plan-issue auto-reads constitution.md and LESSONS.md if they exist.*
 
 ### Commands
 
 | Command | Description |
 |---------|-------------|
+| `/code:interview <spec>` | Interview to develop vague ideas into comprehensive specs |
+| `/code:constitution` | Interview to create project principles (constitution.md) |
 | `/code:plan-issue <feature>` | Research with LSP, plan phases, create GitHub issue |
 | `/code:implement #<number>` | Implement from GitHub issue, work through phases |
-| `/code:handover` | Save session state to `.handover.md` |
-| `/code:resume` | Continue from `.handover.md` |
+| `/code:handover` | Save session state to `handover.md` |
+| `/code:resume` | Continue from `handover.md` |
 | `/code:lessons [N]` | Analyze last N commits, update LESSONS.md |
 
 ## Usage
@@ -72,7 +114,7 @@ Creates GitHub issue with:
 /code:handover
 ```
 
-Saves session state to `.handover.md`:
+Saves session state to `handover.md`:
 - Issue and branch context
 - Key files with status
 - Resume instructions
@@ -83,7 +125,7 @@ Saves session state to `.handover.md`:
 /code:resume
 ```
 
-Loads `.handover.md` and continues exactly where you left off. File is deleted when task completes.
+Loads `handover.md` and continues exactly where you left off. File is deleted when task completes.
 
 ## Rules
 

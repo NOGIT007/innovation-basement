@@ -1,7 +1,7 @@
 ---
 name: coding-workflow
-description: Simple phased workflow - plan-issue, implement, handover, resume
-version: "2.8.1"
+description: Phased workflow with spec interviews and project principles
+version: "2.9.0"
 ---
 
 # Coding Workflow Rules
@@ -9,8 +9,39 @@ version: "2.8.1"
 ## Workflow
 
 ```
-/code:plan-issue → /code:implement → /code:handover → /code:resume
+/code:interview → /code:constitution → /code:plan-issue → /code:implement → /code:handover → /code:resume
+       ↓                ↓                    ↓
+   spec-spec.md    constitution.md     (reads both)
 ```
+
+**New commands:**
+- `/code:interview <spec>` - Interview to develop spec → `<spec>-spec.md`
+- `/code:constitution` - Interview to define principles → `constitution.md`
+
+Both are optional. `/plan-issue` auto-reads `constitution.md` if it exists.
+
+## Interview (New)
+
+`/code:interview <spec-file>` develops vague ideas into specs:
+
+1. **Read** - Load input spec file
+2. **Analyze** - What's covered vs. gaps
+3. **Interview** - Multi-choice questions (6 categories)
+4. **Write** - Output `<spec>-spec.md` in same folder
+
+Categories: Vision, UX, Technical, Risks, Dependencies, Verification
+
+## Constitution (New)
+
+`/code:constitution` creates project principles:
+
+1. **Check** - Warn if constitution.md exists
+2. **Interview** - Multi-choice questions (4 categories)
+3. **Write** - Output `constitution.md` at project root
+
+Categories: Core Values, Boundaries, Priorities, Non-Negotiables
+
+Output is auto-read by `/plan-issue`.
 
 ## Plan Issue
 

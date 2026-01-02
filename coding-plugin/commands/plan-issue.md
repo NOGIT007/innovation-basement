@@ -99,6 +99,19 @@ stat -f "%Sm" LESSONS.md 2>/dev/null
 
 Suggest: "LESSONS.md is stale. Run `/code:lessons` to refresh."
 
+## Step 0.8: Read Project Constitution
+
+Check for constitution.md in project root:
+```bash
+cat constitution.md 2>/dev/null
+```
+
+If exists:
+- Note core principles to follow
+- Note boundaries (in/out scope)
+- Note non-negotiables
+- Include relevant principles in issue "Context" section
+
 ## Phase 1: Research (LSP-Precise) — Skip if plan exists in session
 
 Research the **current project** codebase with LSP precision:
@@ -143,9 +156,15 @@ Issue format:
 ## Goal
 [1-2 sentences]
 
-## Context (from LESSONS.md)
+## Context
+
+### From LESSONS.md
 - Avoid: [relevant lesson if applicable]
 - Pattern: [relevant pattern if applicable]
+
+### From constitution.md (if exists)
+- Principles: [relevant principles]
+- Boundaries: [in/out scope constraints]
 
 ## Research Summary
 

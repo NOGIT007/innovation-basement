@@ -1,8 +1,13 @@
-# coding-plugin v2.9.0
+# coding-plugin v3.0.0
 
 Simple, phased coding workflow for Claude Code. Part of the innovation-basement marketplace.
 
-## What's New in v2.9
+## What's New in v3.0
+
+- **Focused on coding** - Removed workbench-plugin, single-purpose workflow
+- **Smart handover** - `/code:handover` now auto-detects issue from branch/context and parses phases
+
+## v2.9 Features
 
 - **Spec Interview** - `/code:interview <spec>` develops vague ideas into comprehensive 1.0 specs
 - **Project Constitution** - `/code:constitution` creates project principles via interview

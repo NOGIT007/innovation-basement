@@ -1,43 +1,49 @@
-# Innovation Basement
+# Coding Plugin v3.0
 
-A Claude Code marketplace with productivity plugins by Kennet Kusk.
+A Claude Code plugin for structured development workflow by Kennet Kusk.
 
-## Plugins
+```
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                           CODING PLUGIN WORKFLOW                              │
+├───────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│   IDEATION              PLANNING                EXECUTION                     │
+│                                                                               │
+│   ┌──────────────┐     ┌──────────────┐       ┌──────────────┐               │
+│   │  /interview  │     │ /plan-issue  │       │  /implement  │               │
+│   │              │────▶│              │──────▶│    #123      │               │
+│   │  Spec File   │     │ GitHub Issue │       │   Code It    │               │
+│   └──────────────┘     └──────────────┘       └──────────────┘               │
+│          │                    ▲                      │                        │
+│          ▼                    │                      ▼                        │
+│   ┌──────────────┐            │               ┌──────────────┐               │
+│   │/constitution │────────────┤               │  /handover   │               │
+│   │              │ (auto-read)│               │              │               │
+│   │  Principles  │            │               │ Save State   │               │
+│   └──────────────┘            │               └──────────────┘               │
+│                               │                      │                        │
+│   ┌──────────────┐            │                      ▼                        │
+│   │   /lessons   │────────────┘               ┌──────────────┐               │
+│   │              │ (auto-read)                │   /resume    │               │
+│   │   Patterns   │                            │  Continue    │               │
+│   └──────────────┘                            └──────────────┘               │
+│                                                                               │
+└───────────────────────────────────────────────────────────────────────────────┘
+```
 
-### workbench-plugin
+**Philosophy:** Interview → Plan → Implement (no code until plan approved)
 
-Daily assistant toolbox for research, document generation, and analysis.
+## Commands
 
-**Philosophy:** Skills first, agents for research, manual code last.
-
-**Features:**
-- 4 research agents (Market Researcher, Technical Analyst, Jina Searcher, Gemini Analyst)
-- 8 slash commands for research and workflows
-- Document skills (PDF, PPTX, DOCX, XLSX)
-- Theme Factory with 10 professional themes
-- Data Analyzer, Canvas Design, Internal Comms
-
-### coding-plugin v2.9
-
-Structured coding workflow with phased development and spec interviews.
-
-**Philosophy:** Interview -> Plan -> Implement (no code until plan approved).
-
-**Features:**
-- Spec interviews to develop vague ideas into 1.0 specs
-- Project constitution for guiding principles
-- LSP-precise planning with file:line references
-- Lessons learning from commits
-- Session handover/resume
-
-**Commands:**
-- `/code:interview <spec>` - Interview to develop vague ideas into specs
-- `/code:constitution` - Create project principles (constitution.md)
-- `/code:plan-issue <feature>` - Research with LSP, create GitHub issue
-- `/code:implement #<number>` - Execute phases from issue
-- `/code:handover` - Save session state
-- `/code:resume` - Continue from handover
-- `/code:lessons [N]` - Analyze commits, update LESSONS.md
+| Command | Description |
+|---------|-------------|
+| `/code:interview <spec>` | Develop vague ideas into comprehensive specs |
+| `/code:constitution` | Create project principles (constitution.md) |
+| `/code:plan-issue <feature>` | Research with LSP, create GitHub issue |
+| `/code:implement #<number>` | Execute phases from issue |
+| `/code:handover` | Save session state with issue progress |
+| `/code:resume` | Continue from handover |
+| `/code:lessons [N]` | Analyze commits, update LESSONS.md |
 
 ## Installation
 
@@ -72,13 +78,6 @@ Restart to load the plugin, then verify with `/plugin` → Installed tab.
 
 ## Requirements
 
-### workbench-plugin
-- GitHub CLI (`gh`) + Git
-- MCP Jina server (for web research)
-- Gemini CLI (optional)
-- Pandoc, LibreOffice (for document conversion)
-
-### coding-plugin
 - GitHub CLI (`gh`)
 - Git
 

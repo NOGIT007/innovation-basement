@@ -4,15 +4,10 @@
     "name": "Kennet Kusk"
   },
   "metadata": {
-    "description": "Innovation Basement plugin collection - workbench for research/docs and coding workflow tools",
-    "version": "2.2.0"
+    "description": "Claude Code plugin for structured development workflow",
+    "version": "3.0.0"
   },
   "plugins": [
-    {
-      "name": "workbench-plugin",
-      "source": "./workbench-plugin",
-      "description": "Daily assistant toolbox for research, document generation, and analysis. Skills first, agents for research."
-    },
     {
       "name": "coding-plugin",
       "source": "./coding-plugin",

@@ -4,7 +4,6 @@
 
 ## Structure
 - `coding-plugin/` - Main Claude Code plugin
-- `workbench-plugin/` - Secondary plugin
 - `.claude-plugin/` - Plugin configuration
 
 ## Versioning

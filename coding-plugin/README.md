@@ -70,6 +70,8 @@ Simple, phased coding workflow for Claude Code. Part of the innovation-basement 
 
 *Interview and constitution are optional. Plan-issue auto-reads constitution.md and LESSONS.md if they exist.*
 
+📖 **[Full workflow documentation with detailed diagrams](docs/workflow-v2.9.md)**
+
 ### Commands
 
 | Command | Description |

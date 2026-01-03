@@ -55,7 +55,7 @@ Otherwise, from current conversation, extract:
 
 ## Step 4: Write handover.md
 
-**ALWAYS overwrite** the file at project root:
+**ALWAYS overwrite** the file at project root (never delete, always keep):
 
 ```markdown
 # Handover

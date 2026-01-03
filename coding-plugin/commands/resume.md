@@ -45,10 +45,10 @@ Work through "Resume Instructions" sequentially:
 2. Mark progress as you go
 3. Stop at verification steps to confirm
 
-## Step 6: Update or Clear Handover
+## Step 6: Update Handover
 
 When work complete:
-- If more work remains → Update `handover.md` with new state
-- If task done → Delete file: `rm handover.md`
+- Update `handover.md` with new state (always overwrite, never delete)
+- Mark completed tasks, add new context for next session
 
 State progress: "Resuming from handover. Starting: <first instruction>"

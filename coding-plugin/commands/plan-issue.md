@@ -15,68 +15,21 @@ Check current project repo (issue will be created here):
 git remote -v
 ```
 
-## Step 0.5: Capture Existing Plan from Session
+## Step 0.5: Load Interview Spec (Required)
 
-If a plan already exists in the **current conversation context** (e.g., from plan mode):
-
-### Detection Criteria
-Look for ANY of these in conversation:
-- File paths with line numbers (`src/file.ts:42`)
-- Function/type references (`functionName()`, `interface X`)
-- Implementation phases or steps
-- Plan mode output or architecture decisions
-
-### Extraction Process (CRITICAL)
-When plan exists, **extract and preserve ALL details**:
-
-1. **Code References** - Capture every `file:line` mention
-   ```
-   Example: src/api/handler.ts:42 → processData()
-   ```
-
-2. **Type Information** - Preserve interface/type details
-   ```
-   Example: interface UserData at types/user.ts:15
-   ```
-
-3. **Code Snippets** - Include relevant code blocks from plan
-   ```typescript
-   // Example snippet that was discussed
-   function existingPattern() { ... }
-   ```
-
-4. **Dependencies** - Note all file relationships discovered
-
-5. **Risks/Edge Cases** - Carry forward any warnings
-
-### Output Format for Issue
-Transform plan into structured issue content:
-
-```markdown
-## Research Summary (from plan mode)
-
-### Files Analyzed
-| File | Lines | Purpose |
-|------|-------|---------|
-| `src/file.ts` | 42-58 | Entry point for feature |
-| `types/index.ts` | 15 | Type definitions |
-
-### Key Code References
-- `processData()` at `src/handler.ts:42` - needs modification
-- `UserData` interface at `types/user.ts:15` - extend with new field
-
-### Discovered Patterns
-\`\`\`typescript
-// Pattern found at src/utils.ts:23
-export function existingPattern() {
-  // Follow this style
-}
-\`\`\`
+Check for interview spec in project root:
+```bash
+ls interview_*.md 2>/dev/null
 ```
 
-State: "Using existing plan from this session. Preserving X file references."
+**If found:**
+- Read the most recent `interview_*.md`
+- Use as primary context for issue
+- Skip Phase 1 research (spec already has the details)
 
-If no existing plan in session → proceed with full research workflow.
+**If NOT found:**
+- Error: "No interview spec found. Run `/interview <spec-file>` first."
+- Stop execution
 
 ## Step 0.6: Read Project Lessons
 
@@ -112,7 +65,7 @@ If exists:
 - Note non-negotiables
 - Include relevant principles in issue "Context" section
 
-## Phase 1: Research (LSP-Precise) — Skip if plan exists in session
+## Phase 1: Research (LSP-Precise) — Skip if interview spec exists
 
 Research the **current project** codebase with LSP precision:
 
@@ -162,6 +115,24 @@ export function newFunction(param: Type): ReturnType {
 **Pattern source:** Based on `similar-file.ts:15-40`
 ```
 
+### For Markdown Files (CRITICAL)
+
+When creating `.md` files, the issue MUST contain **complete file content**.
+No summaries. No `[placeholder]` text. The implementer copies verbatim.
+
+❌ **Wrong:**
+```markdown
+## Vision
+[1-2 paragraphs about the vision]
+```
+
+✅ **Right:**
+```markdown
+## Vision
+This tool automates the deployment pipeline by integrating with GitHub Actions.
+It reduces manual steps from 12 to 3 and provides real-time status updates.
+```
+
 ### For Modifications
 
 ```markdown
@@ -190,6 +161,7 @@ Before proceeding to Phase 2:
 - [ ] Every modified file has been read with `Read` tool
 - [ ] Every new file has complete content (not placeholders)
 - [ ] Every modification shows exact before/after code
+- [ ] Markdown files have 1:1 complete content (no `[placeholder]` text)
 - [ ] Patterns sourced from existing codebase
 
 ## Phase 2: Plan (Using Specified Content)

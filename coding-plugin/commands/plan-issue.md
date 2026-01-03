@@ -15,20 +15,27 @@ Check current project repo (issue will be created here):
 git remote -v
 ```
 
-## Step 0.5: Load Interview Spec (Required)
+## Step 0.5: Load Existing Plan (Required)
 
-Check for interview spec in project root:
+Check for plan sources (either one is sufficient):
+
+**Option A: Interview spec**
 ```bash
 ls interview_*.md 2>/dev/null
 ```
 
-**If found:**
-- Read the most recent `interview_*.md`
-- Use as primary context for issue
-- Skip Phase 1 research (spec already has the details)
+**Option B: Claude Code plan file**
+```bash
+ls ~/.claude/plans/*.md 2>/dev/null
+```
 
-**If NOT found:**
-- Error: "No interview spec found. Run `/interview <spec-file>` first."
+**If found (either):**
+- Read the most recent file
+- Use as primary context for issue
+- Skip Phase 1 research (plan already has the details)
+
+**If NEITHER found:**
+- Error: "No plan found. Run `/interview` or use Claude Code `/plan` mode first."
 - Stop execution
 
 ## Step 0.6: Read Project Lessons
@@ -65,7 +72,7 @@ If exists:
 - Note non-negotiables
 - Include relevant principles in issue "Context" section
 
-## Phase 1: Research (LSP-Precise) — Skip if interview spec exists
+## Phase 1: Research (LSP-Precise) — Skip if plan exists
 
 Research the **current project** codebase with LSP precision:
 

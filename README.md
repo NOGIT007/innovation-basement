@@ -1,4 +1,4 @@
-# Coding Plugin v3.0.1
+# Coding Plugin v3.3.1
 
 A Claude Code plugin for structured development workflow by Kennet Kusk.
 
@@ -83,10 +83,29 @@ Restart to load the plugin, then verify with `/plugin` → Installed tab.
 Install from `claude-plugins-official` to enhance the workflow:
 
 ```bash
+/plugin install commit-commands@claude-plugins-official
+/plugin install code-review@claude-plugins-official
+/plugin install pr-review-toolkit@claude-plugins-official
+/plugin install frontend-design@claude-plugins-official
 /plugin install typescript-lsp@claude-plugins-official
 /plugin install pyright-lsp@claude-plugins-official
-/plugin install frontend-design@claude-plugins-official
 ```
+
+## User Config Backup
+
+The `claude-files/` folder contains a backup of user-level Claude Code config (Boris approach):
+
+```
+claude-files/
+├── CLAUDE.md              # Core instructions + emoji stacks
+├── settings.json          # Plugins, hooks, permissions
+├── statusline-command.sh  # Custom status line
+└── rules/
+    ├── git-workflow.md    # Heredoc workaround
+    └── ui.md              # Shadcn/React/Bun
+```
+
+To restore: `cp -r claude-files/* ~/.claude/`
 
 ## Requirements
 

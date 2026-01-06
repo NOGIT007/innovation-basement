@@ -12,10 +12,11 @@ See [rules/architecture.md](rules/architecture.md) for structure.
 
 1. `.claude-plugin/plugin.json` - bump version (source of truth)
 2. `rules/coding-workflow.md` - update frontmatter version
-3. `README.md`:
+3. `README.md` (in coding-plugin/):
    - Update title version
    - Add "What's New in vX.X" section if new feature
    - Update commands table if commands changed
+4. `README.md` (root) - update title version
 
 **Version bumps:**
 - Patch (x.x.X): Bug fixes, docs-only changes

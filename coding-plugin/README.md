@@ -1,4 +1,4 @@
-# coding-plugin v3.3.3
+# coding-plugin v3.4.0
 
 Simple, phased coding workflow for Claude Code. Part of the innovation-basement marketplace.
 
@@ -60,6 +60,10 @@ Web/Desktop                           CLI
 ```
 
 **Tip**: Use web/desktop to identify issues, then switch to CLI for the full workflow when changes are complex.
+
+## What's New in v3.4
+
+- **Development Modes** - Document dual-mode workflow (Web/Desktop for quick fixes, CLI for full implementation)
 
 ## What's New in v3.0
 

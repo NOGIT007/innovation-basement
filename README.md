@@ -1,4 +1,4 @@
-# Coding Plugin v3.4.2
+# Coding Plugin v3.4.3
 
 A Claude Code plugin for structured development workflow by Kennet Kusk.
 

@@ -1,4 +1,4 @@
-# coding-plugin v3.4.0
+# coding-plugin v3.4.1
 
 Simple, phased coding workflow for Claude Code. Part of the innovation-basement marketplace.
 
@@ -47,18 +47,6 @@ Use Claude Code CLI for:
 - Complex multi-file changes
 - Session continuity with `/code:handover`
 
-### Workflow Integration
-
-```
-Web/Desktop                           CLI
-    │                                  │
-    │  Find bug ──────────────────────▶ Test fix
-    │                                  │
-    │  Quick fix ─────────────────────▶ Merge
-    │                                  │
-    │  Explore ───────────────────────▶ /plan-issue
-```
-
 **Tip**: Use web/desktop to identify issues, then switch to CLI for the full workflow when changes are complex.
 
 ## What's New in v3.4
@@ -99,41 +87,55 @@ Web/Desktop                           CLI
 ## Workflow Overview
 
 ```
-┌───────────────────────────────────────────────────────────────────────────────────────┐
-│                              CODING PLUGIN WORKFLOW                                    │
-├───────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                        │
-│   PHASE 1: IDEATION          PHASE 2: PLANNING           PHASE 3: EXECUTION           │
-│                                                                                        │
-│   ┌──────────────┐          ┌──────────────┐            ┌──────────────┐              │
-│   │  /interview  │          │ /plan-issue  │            │  /implement  │              │
-│   │              │          │              │            │    #123      │              │
-│   │  Spec File   │───────▶  │   Creates    │─────────▶  │              │              │
-│   │  Interview   │          │ GitHub Issue │  Issue #   │   Code It    │              │
-│   └──────────────┘          └──────────────┘            └──────────────┘              │
-│          │                         ▲                           │                       │
-│          ▼                         │                           ▼                       │
-│   ┌──────────────┐                 │                    ┌──────────────┐              │
-│   │/constitution │                 │                    │  /handover   │              │
-│   │              │─────────────────┤                    │              │              │
-│   │   Project    │   (auto-reads)  │                    │ Save State   │              │
-│   │  Principles  │                 │                    └──────────────┘              │
-│   └──────────────┘                 │                           │                       │
-│                                    │                           ▼                       │
-│   ┌──────────────┐                 │                    ┌──────────────┐              │
-│   │   /lessons   │─────────────────┘                    │   /resume    │              │
-│   │              │   (auto-reads)                       │              │              │
-│   │   Learned    │                                      │  Continue    │              │
-│   │   Patterns   │                                      └──────────────┘              │
-│   └──────────────┘                                                                     │
-│         ▲                                                                              │
-│         │ (run after commits)                                                          │
-│         │                                                                              │
-│   ┌─────┴────────┐                                                                     │
-│   │  Commits     │                                                                     │
-│   └──────────────┘                                                                     │
-│                                                                                        │
-└───────────────────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│                              CODING PLUGIN WORKFLOW                                      │
+├─────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                          │
+│   ╔═══════════════════════════════════════════════════════════════════════════════════╗ │
+│   ║  WEB/DESKTOP (Quick Mode)                                                          ║ │
+│   ║  • Bug triage • TODO fixes • Exploration • Parallel sessions                       ║ │
+│   ╚═══════════════════════════════════════════════════════════════════════════════════╝ │
+│                          │                                                               │
+│                          │ complex task?                                                 │
+│                          ▼                                                               │
+│   ╔═══════════════════════════════════════════════════════════════════════════════════╗ │
+│   ║  CLI (Full Mode)                                                                   ║ │
+│   ╠═══════════════════════════════════════════════════════════════════════════════════╣ │
+│   ║                                                                                    ║ │
+│   ║   IDEATION                 PLANNING                    EXECUTION                   ║ │
+│   ║   (optional)               (required)                  (required)                  ║ │
+│   ║                                                                                    ║ │
+│   ║   ┌──────────────┐        ┌──────────────┐            ┌──────────────┐            ║ │
+│   ║   │  /interview  │        │ /plan-issue  │            │  /implement  │            ║ │
+│   ║   │              │        │              │            │    #123      │            ║ │
+│   ║   │  idea.md ──▶ │───────▶│   Creates    │───────────▶│              │            ║ │
+│   ║   │  spec.md     │        │ GitHub Issue │  Issue #   │   Code It    │            ║ │
+│   ║   └──────────────┘        └──────────────┘            └──────────────┘            ║ │
+│   ║          │                       ▲                           │                     ║ │
+│   ║          ▼                       │                           ▼                     ║ │
+│   ║   ┌──────────────┐               │                    ┌──────────────┐            ║ │
+│   ║   │/constitution │               │                    │   Commits    │            ║ │
+│   ║   │              │───────────────┤                    └──────┬───────┘            ║ │
+│   ║   │constitution.md│  (auto-read) │                           │                     ║ │
+│   ║   └──────────────┘               │                           ▼                     ║ │
+│   ║                                  │                    ┌──────────────┐            ║ │
+│   ║   ┌──────────────┐               │                    │  /handover   │            ║ │
+│   ║   │   /lessons   │───────────────┘                    │              │            ║ │
+│   ║   │              │   (auto-read)                      │ .handover.md │            ║ │
+│   ║   │  LESSONS.md  │◀──────────────────────────────────┐└──────────────┘            ║ │
+│   ║   └──────────────┘  (run after commits)              │       │                     ║ │
+│   ║                                                      │       ▼                     ║ │
+│   ║                                                      │┌──────────────┐            ║ │
+│   ║                                                      ││   /resume    │            ║ │
+│   ║                                                      ││              │            ║ │
+│   ║                                                      └│  Continue    │            ║ │
+│   ║                                                       └──────────────┘            ║ │
+│   ║                                                                                    ║ │
+│   ╚═══════════════════════════════════════════════════════════════════════════════════╝ │
+│                                                                                          │
+│   Philosophy: Interview → Plan → Implement (no code until plan approved)                 │
+│                                                                                          │
+└─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 *Interview and constitution are optional. Plan-issue auto-reads constitution.md and LESSONS.md if they exist.*

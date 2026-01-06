@@ -22,6 +22,45 @@ Install from `claude-plugins-official` marketplace to enhance the workflow:
 
 Claude Code's built-in `/plan` mode can be used to explore and design changes before running `/code:plan-issue`.
 
+## Development Modes
+
+This plugin works with both Claude Code CLI and Web/Desktop:
+
+| Mode | Best For |
+|------|----------|
+| **Web/Desktop** | Bug triage, TODO fixes, parallel exploration |
+| **CLI** | Phased implementation, testing, merging |
+
+### Quick Mode (Web/Desktop)
+
+Use Claude Code web/desktop for:
+- Finding and fixing small bugs
+- Resolving TODO comments
+- Exploring unfamiliar code
+- Running parallel sessions
+
+### Full Mode (CLI)
+
+Use Claude Code CLI for:
+- `/code:plan-issue` → `/code:implement` workflow
+- Testing before merge
+- Complex multi-file changes
+- Session continuity with `/code:handover`
+
+### Workflow Integration
+
+```
+Web/Desktop                           CLI
+    │                                  │
+    │  Find bug ──────────────────────▶ Test fix
+    │                                  │
+    │  Quick fix ─────────────────────▶ Merge
+    │                                  │
+    │  Explore ───────────────────────▶ /plan-issue
+```
+
+**Tip**: Use web/desktop to identify issues, then switch to CLI for the full workflow when changes are complex.
+
 ## What's New in v3.0
 
 - **Focused on coding** - Removed workbench-plugin, single-purpose workflow

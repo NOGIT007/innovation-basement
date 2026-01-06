@@ -14,6 +14,21 @@ version: "3.3.3"
    spec-spec.md    constitution.md     (reads both)
 ```
 
+## Development Modes
+
+**Web/Desktop (Quick Mode)**
+- Bug triage and exploration
+- Single-file fixes
+- TODO resolution
+- No phase tracking required
+
+**CLI (Full Mode)**
+- Phased workflow (`/plan-issue` → `/implement`)
+- Testing and merging
+- Session continuity with `/handover`
+
+Use GitHub issues as the handover point between modes.
+
 **New commands:**
 - `/code:interview <spec>` - Interview to develop spec → `<spec>-spec.md`
 - `/code:constitution` - Interview to define principles → `constitution.md`

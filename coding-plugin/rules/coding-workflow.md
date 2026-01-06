@@ -1,7 +1,7 @@
 ---
 name: coding-workflow
 description: Phased workflow with spec interviews and project principles
-version: "3.4.1"
+version: "3.4.2"
 ---
 
 # Coding Workflow Rules

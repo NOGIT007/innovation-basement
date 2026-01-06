@@ -1,4 +1,4 @@
-# coding-plugin v3.4.1
+# coding-plugin v3.4.2
 
 Simple, phased coding workflow for Claude Code. Part of the innovation-basement marketplace.
 

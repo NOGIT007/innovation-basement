@@ -1,1 +1,6 @@
 handover.md
+
+# Claude temp files (skip-cleanup pattern)
+.claude-issue-body.md
+.claude-pr-body.md
+.claude-commit-msg.txt

@@ -50,7 +50,12 @@ For the current phase:
 After completing phase tasks:
 
 ```bash
+# Short updates
 gh issue edit <number> --body "updated body with [x] checkboxes"
+
+# Long body updates (multi-line)
+# 1. Write .claude-issue-body.md with updated body
+# 2. gh issue edit <number> --body-file .claude-issue-body.md
 ```
 
 Mark completed tasks with `[x]`.

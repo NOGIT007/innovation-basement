@@ -29,31 +29,50 @@ gh issue create --title "Title" --body 'Short body here'
 git commit -m 'Short message'
 ```
 
-### Long content → Write file first
+### Long content → Write to fixed temp file (no cleanup needed)
+
+Use `.claude-` prefixed filenames that are gitignored and overwritten each time:
+
+| Use Case | Filename |
+|----------|----------|
+| Issue body | `.claude-issue-body.md` |
+| PR body | `.claude-pr-body.md` |
+| Commit message | `.claude-commit-msg.txt` |
 
 ```bash
 # 1. Use Write tool to create file
-# Write issue-body.md with full content...
+# Write .claude-issue-body.md with full content...
 
-# 2. Reference file
-gh issue create --title "[Feature] Name" --body-file issue-body.md
-
-# 3. Clean up
-rm issue-body.md
+# 2. Reference file (no cleanup - gitignored, overwritten next time)
+gh issue create --title "[Feature] Name" --body-file .claude-issue-body.md
 ```
 
 ### Commits with long messages
 
 ```bash
 # 1. Write commit message to file
-# Write commit-msg.txt...
+# Write .claude-commit-msg.txt...
 
-# 2. Commit with file
-git commit -F commit-msg.txt
-
-# 3. Clean up
-rm commit-msg.txt
+# 2. Commit with file (no cleanup needed)
+git commit -F .claude-commit-msg.txt
 ```
+
+### Updating issues with long body
+
+```bash
+# 1. Write updated body to file
+# Write .claude-issue-body.md...
+
+# 2. Update issue
+gh issue edit <number> --body-file .claude-issue-body.md
+```
+
+> **Note:** Add these to your project's `.gitignore`:
+> ```
+> .claude-issue-body.md
+> .claude-pr-body.md
+> .claude-commit-msg.txt
+> ```
 
 ### What NOT to do
 

@@ -113,6 +113,40 @@ Options:
 multiSelect: true
 ```
 
+## Step 6.5: Interview - Verification Strategy
+
+```
+Question: "How should code be verified before completion?"
+Options:
+- Tests must pass (automated)
+- Manual testing sufficient
+- Type checking only
+- No verification needed
+- Other (describe)
+```
+
+```
+Question: "What test framework does this project use?"
+Options:
+- Jest / Vitest (JavaScript)
+- Bun test
+- Pytest (Python)
+- Cargo test (Rust)
+- Make test
+- None / Will set up later
+- Other (describe)
+```
+
+```
+Question: "When should tests run?"
+Options:
+- Before every commit
+- Before marking tasks complete
+- Before merging PRs only
+- Manually when needed
+- Other (describe)
+```
+
 ## Step 7: Write Constitution
 
 Write to project root: `constitution.md`
@@ -154,6 +188,20 @@ These rules never bend:
 - [Hard rule 1]
 - [Hard rule 2]
 - [Hard rule 3]
+
+## Verification Strategy
+
+### Test Requirement
+[From interview: automated/manual/type-only/none]
+
+### Test Command
+```bash
+[detected or specified test command]
+```
+
+### Verification Points
+- [When tests must run]
+- [What must pass before completion]
 
 ---
 

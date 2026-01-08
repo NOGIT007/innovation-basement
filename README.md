@@ -1,6 +1,28 @@
-# Coding Plugin v3.4.3
+# Coding Plugin v3.5.0
 
 A Claude Code plugin for structured development workflow by Kennet Kusk.
+
+## What's New in v3.5.0
+
+### Hard Verification Gate
+- Tests **must pass** before marking any task `[x]`
+- Auto-detects test commands (bun, npm, pytest, cargo, make)
+- No exceptions - enforced by Implementer Agent
+
+### Specialized Agents
+- **Planner**: LSP-precise research and phase creation
+- **Implementer**: Code execution with verification gate
+- **Reviewer**: Code quality review (separate from tests)
+
+### New Hooks
+- `SessionStart`: Load context files (constitution, LESSONS, handover)
+- `SessionEnd`: Warn about uncommitted changes
+- `SubagentStop`: Trigger verification after agent phases
+- `PreCompact`: Save state before context compaction
+
+### Constitution Enhancement
+- New "Verification Strategy" section in interview
+- Captures test requirements and commands
 
 > **Tip:** Use Claude Code's `/plan` mode to explore changes before `/code:plan-issue`
 
@@ -132,6 +154,21 @@ To restore: `cp -r claude-files/* ~/.claude/`
 
 - GitHub CLI (`gh`)
 - Git
+- Node.js (for npx - used by MCP servers)
+- Homebrew (macOS package manager)
+
+## Included MCP Servers
+
+The plugin includes these MCP servers (project-level via `.mcp.json`):
+
+| Server | Purpose | Prerequisite |
+|--------|---------|--------------|
+| `chrome-devtools` | Browser automation | Node.js |
+| `shadcn` | UI component library | Node.js |
+| `Homebrew` | Package manager | Homebrew installed |
+| `jina` | Web reader (SSE) | None |
+
+These are automatically available when the plugin is installed - no user-level config needed.
 
 ## License
 

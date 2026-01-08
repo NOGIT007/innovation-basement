@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest", "--headless"]
+    },
+    "shadcn": {
+      "command": "npx",
+      "args": ["shadcn@latest", "mcp"]
+    },
+    "Homebrew": {
+      "command": "brew",
+      "args": ["mcp-server"]
+    },
+    "jina": {
+      "type": "sse",
+      "url": "https://mcp.jina.ai/sse"
+    }
+  }
+}

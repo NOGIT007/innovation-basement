@@ -29,15 +29,52 @@ If all phases complete:
 3. Wait for explicit "yes" before running `gh issue close`
 4. **Never auto-close** - user approval required
 
+## Step 2.5: Load Agent Context
+
+Before executing, prepare for verification:
+
+1. **Read implementer agent definition:**
+   - Load `${CLAUDE_PLUGIN_ROOT}/agents/implementer.md`
+   - Internalize the **HARD VERIFICATION GATE** rules
+
+2. **Detect test command** (in order):
+   - `package.json` with `"test"` script -> `bun test` or `npm test`
+   - `Makefile` with `test:` target -> `make test`
+   - `pyproject.toml` -> `uv run pytest` or `pytest`
+   - `Cargo.toml` -> `cargo test`
+   - If none found: Ask user for test command
+
+3. **Check constitution.md** (if exists):
+   - Read `## Verification Strategy` section
+   - Override auto-detect with specified test command
+
 ## Step 3: Execute Current Phase
 
 For the current phase:
-
-1. **Read the tasks** - Understand what needs to be done
+1. **Read the tasks** - ALWAYS READ CODE BEFORE CHANGING ON IT: Search thoroughly for key facts, patterns, and conventions in the codebase and Never speculate about code structure, implementation details, or behavior without first reading the relevant files
 2. **Identify files** - Check the `Files:` line for affected files
 3. **Implement** - Complete each task in order
-4. **Test** - Verify changes work
-5. **Commit** - Use descriptive commit message
+4. **Test (VERIFICATION GATE)** - Run test command, verify exit code 0
+   - If tests **fail**: Fix issues, re-run tests, repeat until passing
+   - If tests **pass**: Log "Tests passed" with summary
+   - **GATE: Cannot mark [x] until tests pass**
+5. **Commit** - Use descriptive commit message (only after tests pass)
+
+### Verification Gate
+
+```
++-------------------------------------------+
+| VERIFICATION GATE                         |
++-------------------------------------------+
+| Test command: <detected>                  |
+| Status: PASSING / FAILING                 |
+| Result: <test output summary>             |
++-------------------------------------------+
+| BLOCKED until tests pass                  |
++-------------------------------------------+
+```
+
+**Rule:** NEVER mark a task `[x]` without passing tests. No exceptions.
 
 ### Git Discipline
 

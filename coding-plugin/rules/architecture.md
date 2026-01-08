@@ -9,8 +9,8 @@ coding-plugin/
 ├── agents/            # Specialized agents: planner, implementer, reviewer
 ├── commands/          # /code:plan-issue, implement, handover, lessons, etc.
 ├── rules/             # vibe-coding, frontend-design, coding-workflow
-├── scripts/           # log-error, check-context, session-init, verify-gate, pre-compact
-├── hooks/hooks.json   # SessionStart, PostToolUse, Stop, SessionEnd, SubagentStop, PreCompact
+├── scripts/           # log-error, check-context, verify-gate, pre-compact, session-end
+├── hooks/hooks.json   # PostToolUse, Stop, SessionEnd, SubagentStop, PreCompact
 └── templates/         # lessons-learned.md
 
 ## Agents
@@ -25,7 +25,6 @@ coding-plugin/
 
 | Hook | Trigger | Script |
 |------|---------|--------|
-| SessionStart | Session begins | session-init.sh |
 | PostToolUse | After Bash | log-error.sh |
 | Stop | Session pause | check-context.sh |
 | SessionEnd | Session ends | session-end.sh |

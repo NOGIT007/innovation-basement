@@ -1,4 +1,4 @@
-# Coding Plugin v3.5.0
+# Coding Plugin v3.5.1
 
 A Claude Code plugin for structured development workflow by Kennet Kusk.
 
@@ -15,7 +15,6 @@ A Claude Code plugin for structured development workflow by Kennet Kusk.
 - **Reviewer**: Code quality review (separate from tests)
 
 ### New Hooks
-- `SessionStart`: Load context files (constitution, LESSONS, handover)
 - `SessionEnd`: Warn about uncommitted changes
 - `SubagentStop`: Trigger verification after agent phases
 - `PreCompact`: Save state before context compaction

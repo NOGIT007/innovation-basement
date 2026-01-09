@@ -1,6 +1,6 @@
 {
   "name": "coding-plugin",
-  "version": "3.5.1",
+  "version": "3.6.0",
   "description": "Phased coding workflow with specialized agents and hard verification gate. interview → constitution → plan-issue → implement.",
   "author": {
     "name": "Kennet Kusk"

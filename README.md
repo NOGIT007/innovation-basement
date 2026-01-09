@@ -1,6 +1,17 @@
-# Coding Plugin v3.5.1
+# Coding Plugin v3.6.0
 
 A Claude Code plugin for structured development workflow by Kennet Kusk.
+
+## What's New in v3.6.0
+
+### Context Fork for Implementer
+- Implementer agent now runs in **isolated context** (forked subagent)
+- Main conversation stays clean - only summaries returned
+- Token efficiency: heavy implementation traces don't bloat context
+- Failure isolation: if implementer hits issues, main context unaffected
+
+### Command Rename
+- `/code:resume` renamed to `/code:continue` for clarity
 
 ## What's New in v3.5.0
 
@@ -65,7 +76,7 @@ A Claude Code plugin for structured development workflow by Kennet Kusk.
 │   ║   └──────────────┘  (run after commits)              │       │                     ║ │
 │   ║                                                      │       ▼                     ║ │
 │   ║                                                      │┌──────────────┐            ║ │
-│   ║                                                      ││   /resume    │            ║ │
+│   ║                                                      ││  /continue   │            ║ │
 │   ║                                                      ││              │            ║ │
 │   ║                                                      └│  Continue    │            ║ │
 │   ║                                                       └──────────────┘            ║ │
@@ -86,7 +97,7 @@ A Claude Code plugin for structured development workflow by Kennet Kusk.
 | `/code:plan-issue <feature>` | Research with LSP, create GitHub issue |
 | `/code:implement #<number>` | Execute phases from issue |
 | `/code:handover` | Save session state with issue progress |
-| `/code:resume` | Continue from handover |
+| `/code:continue` | Continue from handover |
 | `/code:lessons [N]` | Analyze commits, update LESSONS.md |
 
 ## Installation

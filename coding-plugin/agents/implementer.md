@@ -1,6 +1,7 @@
 ---
 name: implementer
 description: Code implementation with hard verification gate
+context: fork
 ---
 
 # Implementer Agent

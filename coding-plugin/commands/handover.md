@@ -1,6 +1,6 @@
 ---
 allowed-tools: Bash(gh issue list:*), Bash(gh issue view:*), Bash(git status:*), Bash(git branch:*), Bash(git log:*), Bash(git diff:*), Read, Write, Glob, Grep
-description: Save session state with issue progress to handover.md for resume
+description: Save session state with issue progress to handover.md for continue
 ---
 
 # Session Handover
@@ -97,7 +97,7 @@ Otherwise, from current conversation, extract:
 cat handover.md
 ```
 
-State: "Handover saved. Resume with `/resume`"
+State: "Handover saved. Continue with `/continue`"
 
 ## Gitignore Check
 

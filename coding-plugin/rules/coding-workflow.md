@@ -1,7 +1,7 @@
 ---
 name: coding-workflow
 description: Phased workflow with spec interviews and project principles
-version: "3.5.1"
+version: "3.6.0"
 ---
 
 # Coding Workflow Rules
@@ -9,7 +9,7 @@ version: "3.5.1"
 ## Workflow
 
 ```
-/code:interview → /code:constitution → /code:plan-issue → /code:implement → /code:handover → /code:resume
+/code:interview → /code:constitution → /code:plan-issue → /code:implement → /code:handover → /code:continue
        ↓                ↓                    ↓
    spec-spec.md    constitution.md     (reads both)
 ```

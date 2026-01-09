@@ -1,9 +1,9 @@
 ---
 allowed-tools: Bash(gh issue view:*), Bash(git status:*), Bash(git branch:*), Bash(git log:*), Read, Glob, Grep, Task, Edit, Write
-description: Resume work from handover.md
+description: Continue work from handover.md
 ---
 
-# Resume Session
+# Continue Session
 
 Load `handover.md` and continue work from where it left off.
 
@@ -38,7 +38,7 @@ For each file in "Key Files" table:
 - Read the file at specified lines
 - Verify status matches (modified/pending)
 
-## Step 5: Execute Resume Instructions
+## Step 5: Execute Continue Instructions
 
 Work through "Resume Instructions" sequentially:
 1. Start with immediate next step
@@ -51,4 +51,4 @@ When work complete:
 - Update `handover.md` with new state (always overwrite, never delete)
 - Mark completed tasks, add new context for next session
 
-State progress: "Resuming from handover. Starting: <first instruction>"
+State progress: "Continuing from handover. Starting: <first instruction>"

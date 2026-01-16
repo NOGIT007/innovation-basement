@@ -17,7 +17,9 @@ Include version in commit message: `✨ v2.8.0: feature description`
 
 **Source of truth:** `coding-plugin/.claude-plugin/plugin.json`
 
-Update ALL version locations:
+**ALWAYS update ALL version locations on every version bump:**
 1. `coding-plugin/.claude-plugin/plugin.json` ← Claude Code reads this
-2. `coding-plugin/README.md` (title)
+2. `README.md` (root) - title + What's New section
 3. `coding-plugin/rules/coding-workflow.md` (frontmatter)
+
+⚠️ **Never skip README updates** - version in README must match plugin.json

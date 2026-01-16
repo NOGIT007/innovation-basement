@@ -1,5 +1,6 @@
 ---
-allowed-tools: Bash(gh issue view:*), Bash(gh issue edit:*), Bash(git:*), Read, Grep, Glob, Edit, Write, Task
+context: fork
+allowed-tools: Bash(gh issue view:*), Bash(gh issue edit:*), Bash(git:*), Read, Grep, Glob, Edit, Write, Task, Skill
 description: Start implementation from a GitHub issue URL
 argument-hint: #<issue-number> or <issue-url>
 ---
@@ -48,10 +49,61 @@ Before executing, prepare for verification:
    - Read `## Verification Strategy` section
    - Override auto-detect with specified test command
 
-## Step 3: Execute Current Phase
+## Step 3: Execute Phase via Subagent
+
+**Auto-Phase Management:** Spawn a fresh subagent for each phase to maintain clean context.
+
+```
+For each phase with unchecked [ ] tasks:
+  1. Spawn Task(implementer subagent) with phase context
+  2. Subagent implements tasks, monitors context usage
+  3. If context ≥55% → Skill("handover") → return → spawn continue
+  4. When phase complete → subagent returns → next phase
+```
+
+### Spawn Implementer Subagent
+
+Use the Task tool with `subagent_type: coding-plugin:implementer`:
+
+```
+Task(
+  subagent_type: "coding-plugin:implementer",
+  prompt: """
+  Issue #<number>: <title>
+
+  Current Phase: <phase-name>
+
+  Tasks:
+  - [ ] Task 1
+  - [ ] Task 2
+  ...
+
+  Files: <file-list>
+
+  Test command: <detected-command>
+
+  Implement all tasks in this phase. Monitor context usage.
+  If context reaches 55%, call Skill("coding-plugin:handover") and return.
+  """
+)
+```
+
+### Context Monitoring (Inside Subagent)
+
+The implementer subagent monitors `context_window.used_percentage`:
+
+- **Below 55%**: Continue implementing
+- **At 55%**:
+  1. Stop current work cleanly
+  2. Call `Skill("coding-plugin:handover")` to save state
+  3. Return summary to caller
+
+Caller spawns fresh subagent to continue (effective context clear).
+
+### Phase Execution Flow
 
 For the current phase:
-1. **Read the tasks** - ALWAYS READ CODE BEFORE CHANGING ON IT: Search thoroughly for key facts, patterns, and conventions in the codebase and Never speculate about code structure, implementation details, or behavior without first reading the relevant files
+1. **Read the tasks** - ALWAYS READ CODE BEFORE CHANGING: Search thoroughly for key facts, patterns, and conventions
 2. **Identify files** - Check the `Files:` line for affected files
 3. **Implement** - Complete each task in order
 4. **Test (VERIFICATION GATE)** - Run test command, verify exit code 0

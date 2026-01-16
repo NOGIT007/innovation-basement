@@ -1,6 +1,13 @@
-# Coding Plugin v3.6.0
+# Coding Plugin v3.7.0
 
 A Claude Code plugin for structured development workflow by Kennet Kusk.
+
+## What's New in v3.7.0
+
+### Cleanup & Simplification
+- Removed unused `/code:interview` command
+- Removed orphaned agents (planner, reviewer) - only **Implementer** remains
+- Renamed "Resume Instructions" → "Continue Instructions" in handover flow
 
 ## What's New in v3.6.0
 
@@ -20,10 +27,8 @@ A Claude Code plugin for structured development workflow by Kennet Kusk.
 - Auto-detects test commands (bun, npm, pytest, cargo, make)
 - No exceptions - enforced by Implementer Agent
 
-### Specialized Agents
-- **Planner**: LSP-precise research and phase creation
-- **Implementer**: Code execution with verification gate
-- **Reviewer**: Code quality review (separate from tests)
+### Specialized Agent
+- **Implementer**: Code execution with hard verification gate
 
 ### New Hooks
 - `SessionEnd`: Warn about uncommitted changes
@@ -56,34 +61,34 @@ A Claude Code plugin for structured development workflow by Kennet Kusk.
 │   ║   (optional)               (required)                  (required)                  ║ │
 │   ║                                                                                    ║ │
 │   ║   ┌──────────────┐        ┌──────────────┐            ┌──────────────┐            ║ │
-│   ║   │  /interview  │        │ /plan-issue  │            │  /implement  │            ║ │
+│   ║   │/constitution │        │ /plan-issue  │            │  /implement  │            ║ │
 │   ║   │              │        │              │            │    #123      │            ║ │
-│   ║   │  idea.md ──▶ │───────▶│   Creates    │───────────▶│              │            ║ │
-│   ║   │  spec.md     │        │ GitHub Issue │  Issue #   │   Code It    │            ║ │
+│   ║   │constitution.md│──────▶│   Creates    │───────────▶│              │            ║ │
+│   ║   │  (optional)  │        │ GitHub Issue │  Issue #   │   Code It    │            ║ │
 │   ║   └──────────────┘        └──────────────┘            └──────────────┘            ║ │
-│   ║          │                       ▲                           │                     ║ │
-│   ║          ▼                       │                           ▼                     ║ │
+│   ║                                  ▲                           │                     ║ │
+│   ║                                  │                           ▼                     ║ │
 │   ║   ┌──────────────┐               │                    ┌──────────────┐            ║ │
-│   ║   │/constitution │               │                    │   Commits    │            ║ │
+│   ║   │   /lessons   │               │                    │   Commits    │            ║ │
 │   ║   │              │───────────────┤                    └──────┬───────┘            ║ │
-│   ║   │constitution.md│  (auto-read) │                           │                     ║ │
+│   ║   │  LESSONS.md  │   (auto-read) │                           │                     ║ │
 │   ║   └──────────────┘               │                           ▼                     ║ │
 │   ║                                  │                    ┌──────────────┐            ║ │
-│   ║   ┌──────────────┐               │                    │  /handover   │            ║ │
-│   ║   │   /lessons   │───────────────┘                    │              │            ║ │
-│   ║   │              │   (auto-read)                      │ .handover.md │            ║ │
-│   ║   │  LESSONS.md  │◀──────────────────────────────────┐└──────────────┘            ║ │
-│   ║   └──────────────┘  (run after commits)              │       │                     ║ │
-│   ║                                                      │       ▼                     ║ │
-│   ║                                                      │┌──────────────┐            ║ │
-│   ║                                                      ││  /continue   │            ║ │
-│   ║                                                      ││              │            ║ │
-│   ║                                                      └│  Continue    │            ║ │
+│   ║                                  │                    │  /handover   │            ║ │
+│   ║                                  │                    │              │            ║ │
+│   ║                                  │                    │ .handover.md │            ║ │
+│   ║                                  │                   ┌└──────────────┘            ║ │
+│   ║                                  │                   │       │                     ║ │
+│   ║                                  │                   │       ▼                     ║ │
+│   ║                                  │                   │┌──────────────┐            ║ │
+│   ║                                  │                   ││  /continue   │            ║ │
+│   ║                                  └───────────────────┘│              │            ║ │
+│   ║                                     (loop back)       │  Continue    │            ║ │
 │   ║                                                       └──────────────┘            ║ │
 │   ║                                                                                    ║ │
 │   ╚═══════════════════════════════════════════════════════════════════════════════════╝ │
 │                                                                                          │
-│   Philosophy: Interview → Plan → Implement (no code until plan approved)                 │
+│   Philosophy: Plan → Implement (no code until plan approved)                             │
 │                                                                                          │
 └─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -92,7 +97,6 @@ A Claude Code plugin for structured development workflow by Kennet Kusk.
 
 | Command | Description |
 |---------|-------------|
-| `/code:interview <spec>` | Develop vague ideas into comprehensive specs |
 | `/code:constitution` | Create project principles (constitution.md) |
 | `/code:plan-issue <feature>` | Research with LSP, create GitHub issue |
 | `/code:implement #<number>` | Execute phases from issue |

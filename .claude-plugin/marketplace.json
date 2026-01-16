@@ -5,13 +5,13 @@
   },
   "metadata": {
     "description": "Claude Code plugin for structured development workflow",
-    "version": "3.7.0"
+    "version": "4.0.0"
   },
   "plugins": [
     {
       "name": "coding-plugin",
       "source": "./coding-plugin",
-      "description": "Simple phased workflow: plan-issue → implement → handover. GitHub issues track progress."
+      "description": "Phased workflow with auto-phase management: plan-issue → implement (auto-loops until done)."
     }
   ]
 }

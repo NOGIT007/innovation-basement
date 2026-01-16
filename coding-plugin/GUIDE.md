@@ -1,18 +1,31 @@
-# Coding Plugin User Guide
+# Coding Plugin User Guide v4.0.0
 
-Simple workflow: **Plan → Implement → Handover**
+Simple workflow: **Plan → Implement** (auto-manages context)
 
 ## Quick Start
 
 ```bash
-# 1. Plan a feature (creates GitHub issue)
+# 1. Plan a feature (creates GitHub issue + branch)
 /code:plan-issue add dark mode toggle
 
-# 2. Implement from the issue
+# 2. Implement - runs autonomously until done
 /code:implement #42
+```
 
-# 3. End session with handover
+**That's it!** `/implement` now handles everything:
+- Spawns fresh subagent per phase (clean context)
+- Auto-handover at 55% context → spawns continue
+- Loops until all phases complete
+- No manual `/handover` needed
+
+### Manual Flow (still supported)
+
+```bash
+# End session manually
 /code:handover
+
+# Continue next session
+/code:continue
 ```
 
 ## Commands
@@ -139,13 +152,14 @@ Focus on one feature issue. Complete it before starting another.
 ## Quick Reference
 
 ```
-┌─────────────────────────────────────────┐
-│         CODING PLUGIN                   │
-├─────────────────────────────────────────┤
-│ /code:plan-issue <desc>  Plan + Issue   │
-│ /code:implement #<num>   Work phases    │
-│ /code:handover           Next session   │
-├─────────────────────────────────────────┤
-│ Flow: Plan → Implement → Handover       │
-└─────────────────────────────────────────┘
+┌─────────────────────────────────────────────┐
+│         CODING PLUGIN v4.0.0                │
+├─────────────────────────────────────────────┤
+│ /code:plan-issue <desc>  Plan + Issue       │
+│ /code:implement #<num>   Auto-loop phases   │
+├─────────────────────────────────────────────┤
+│ Flow: Plan → Implement (auto until done)    │
+│                                             │
+│ Manual: /handover + /continue (optional)    │
+└─────────────────────────────────────────────┘
 ```

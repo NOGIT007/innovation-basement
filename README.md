@@ -1,6 +1,23 @@
-# Coding Plugin v3.7.0
+# Coding Plugin v4.0.0
 
 A Claude Code plugin for structured development workflow by Kennet Kusk.
+
+## What's New in v4.0.0
+
+### Auto-Phase Management
+- `/implement` now runs in **forked context** with auto-phase management
+- Spawns **fresh subagent per phase** (clean context each phase)
+- **Auto-handover at 55% context** → spawns continue subagent
+- Loops autonomously until all phases complete
+- No manual `/handover` needed (still supported)
+
+### Auto-Branch Creation
+- `/plan-issue` now creates feature branch automatically after issue creation
+- Branch format: `feature/<issue-number>-<slug>`
+
+### Phase Sizing Guidance
+- Phases are sized for ~55% context usage
+- Enables auto-handover without mid-phase interruption
 
 ## What's New in v3.7.0
 

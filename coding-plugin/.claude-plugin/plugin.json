@@ -1,7 +1,7 @@
 {
   "name": "coding-plugin",
-  "version": "3.7.0",
-  "description": "Phased coding workflow with specialized agents and hard verification gate. constitution → plan-issue → implement.",
+  "version": "4.0.0",
+  "description": "Phased coding workflow with auto-phase management. plan-issue → implement (spawns subagents per phase, auto-handover at 55% context).",
   "author": {
     "name": "Kennet Kusk"
   },
@@ -12,6 +12,8 @@
     "github",
     "phased-development",
     "agents",
-    "verification"
+    "verification",
+    "auto-phase",
+    "context-management"
   ]
 }

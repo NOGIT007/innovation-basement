@@ -1,7 +1,7 @@
 ---
 name: coding-workflow
-description: Phased workflow with project principles
-version: "3.7.0"
+description: Phased workflow with auto-phase management
+version: "4.0.0"
 ---
 
 # Coding Workflow Rules
@@ -9,10 +9,23 @@ version: "3.7.0"
 ## Workflow
 
 ```
-/code:constitution → /code:plan-issue → /code:implement → /code:handover → /code:continue
-       ↓                    ↓
-  constitution.md     (reads context)
+/code:plan-issue → /code:implement → (auto-loop until done)
+       ↓                   │
+ Creates issue      ┌──────┴──────┐
+ + branch           │  Per Phase  │
+                    │  Subagent   │
+                    │   ↓         │
+                    │ If 55% →   │
+                    │ handover → │
+                    │ new agent  │
+                    └─────────────┘
 ```
+
+**Auto-Phase Management:**
+- `/implement` runs in forked context
+- Spawns fresh subagent per phase
+- Auto-handover at 55% context → spawn continue
+- Loops until all phases complete
 
 ## Development Modes
 

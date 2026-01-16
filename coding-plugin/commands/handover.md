@@ -5,7 +5,7 @@ description: Save session state with issue progress to handover.md for continue
 
 # Session Handover
 
-Save current work state to `handover.md` for seamless session resume.
+Save current work state to `handover.md` for seamless session continuation.
 
 ## Arguments
 
@@ -82,7 +82,7 @@ Otherwise, from current conversation, extract:
 ## Context
 <Key decisions, patterns discovered, or important notes>
 
-## Resume Instructions
+## Continue Instructions
 1. <Immediate next step with file:line>
 2. <Following step>
 3. <Verification step>

@@ -19,23 +19,18 @@ git remote -v
 
 Check for plan sources (either one is sufficient):
 
-**Option A: Interview spec**
-```bash
-ls interview_*.md 2>/dev/null
-```
-
-**Option B: Claude Code plan file**
+**Claude Code plan file:**
 ```bash
 ls ~/.claude/plans/*.md 2>/dev/null
 ```
 
-**If found (either):**
+**If found:**
 - Read the most recent file
 - Use as primary context for issue
 - Skip Phase 1 research (plan already has the details)
 
-**If NEITHER found:**
-- Error: "No plan found. Run `/interview` or use Claude Code `/plan` mode first."
+**If NOT found:**
+- Error: "No plan found. Use Claude Code `/plan` mode first."
 - Stop execution
 
 ## Step 0.6: Read Project Lessons

@@ -6,7 +6,7 @@ generated: 2025-01-08
 ## Structure
 
 coding-plugin/
-├── agents/            # Specialized agents: planner, implementer, reviewer
+├── agents/            # Specialized agents: implementer
 ├── commands/          # /code:plan-issue, implement, handover, lessons, etc.
 ├── rules/             # vibe-coding, frontend-design, coding-workflow
 ├── scripts/           # log-error, check-context, verify-gate, pre-compact, session-end
@@ -17,9 +17,7 @@ coding-plugin/
 
 | Agent | Responsibility | Key Feature |
 |-------|---------------|-------------|
-| `planner.md` | LSP research, phase creation | File:line precision |
 | `implementer.md` | Code execution | **Hard verification gate** |
-| `reviewer.md` | Code quality review | Pattern checking |
 
 ## Hooks
 

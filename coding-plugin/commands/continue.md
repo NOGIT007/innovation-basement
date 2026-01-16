@@ -40,7 +40,7 @@ For each file in "Key Files" table:
 
 ## Step 5: Execute Continue Instructions
 
-Work through "Resume Instructions" sequentially:
+Work through "Continue Instructions" sequentially:
 1. Start with immediate next step
 2. Mark progress as you go
 3. Stop at verification steps to confirm

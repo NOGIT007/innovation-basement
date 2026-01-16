@@ -1,7 +1,7 @@
 ---
 name: coding-workflow
-description: Phased workflow with spec interviews and project principles
-version: "3.6.0"
+description: Phased workflow with project principles
+version: "3.7.0"
 ---
 
 # Coding Workflow Rules
@@ -9,9 +9,9 @@ version: "3.6.0"
 ## Workflow
 
 ```
-/code:interview → /code:constitution → /code:plan-issue → /code:implement → /code:handover → /code:continue
-       ↓                ↓                    ↓
-   spec-spec.md    constitution.md     (reads both)
+/code:constitution → /code:plan-issue → /code:implement → /code:handover → /code:continue
+       ↓                    ↓
+  constitution.md     (reads context)
 ```
 
 ## Development Modes
@@ -30,28 +30,16 @@ version: "3.6.0"
 Use GitHub issues as the handover point between modes.
 
 **New commands:**
-- `/code:interview <spec>` - Interview to develop spec → `<spec>-spec.md`
 - `/code:constitution` - Interview to define principles → `constitution.md`
 
-Both are optional. `/plan-issue` auto-reads `constitution.md` if it exists.
+Optional. `/plan-issue` auto-reads `constitution.md` if it exists.
 
-## Interview (New)
-
-`/code:interview <spec-file>` develops vague ideas into specs:
-
-1. **Read** - Load input spec file
-2. **Analyze** - What's covered vs. gaps
-3. **Interview** - Multi-choice questions (6 categories)
-4. **Write** - Output `<spec>-spec.md` in same folder
-
-Categories: Vision, UX, Technical, Risks, Dependencies, Verification
-
-## Constitution (New)
+## Constitution
 
 `/code:constitution` creates project principles:
 
 1. **Check** - Warn if constitution.md exists
-2. **Interview** - Multi-choice questions (4 categories)
+2. **Questions** - Multi-choice questions (4 categories)
 3. **Write** - Output `constitution.md` at project root
 
 Categories: Core Values, Boundaries, Priorities, Non-Negotiables
@@ -93,17 +81,17 @@ Changed since plan? → ❗ flag and ask.
 - Current issue and phase
 - Key files table (file:line + status)
 - Context and decisions
-- Resume instructions
+- Continue instructions
 
 File is gitignored and overwritten each time.
 
-## Resume
+## Continue
 
-`/code:resume` continues from `.handover.md`:
+`/code:continue` continues from `.handover.md`:
 1. Loads handover file
 2. Verifies git state matches
 3. Reads key files
-4. Executes resume instructions
+4. Executes continue instructions
 5. Clears file when done
 
 ## Git Discipline

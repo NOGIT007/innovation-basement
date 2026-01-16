@@ -95,4 +95,3 @@ Proceeding to Phase N+1...
 After all phases complete:
 - Notify user
 - Ask: "All phases complete. Close issue #<number>?"
-- Pass to **Reviewer Agent** if code review requested

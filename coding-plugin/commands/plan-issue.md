@@ -329,4 +329,26 @@ export function newFunction(input: InputType): OutputType {
 Created with `/plan-issue` (LSP-precise)
 ```
 
+## Phase 4.5: Create Feature Branch
+
+After issue created:
+
+1. Extract issue number from URL
+2. Create branch:
+   ```bash
+   ISSUE_NUM=<from issue URL>
+   SLUG=$(echo "$ARGUMENTS" | tr ' ' '-' | tr '[:upper:]' '[:lower:]' | cut -c1-30)
+   BRANCH="feature/${ISSUE_NUM}-${SLUG}"
+   git checkout -b "$BRANCH"
+   git push -u origin "$BRANCH"
+   ```
+3. Output: "Created branch: $BRANCH"
+
+## Phase Sizing Guidance
+
+When creating phases, aim for ~55% context usage per phase:
+- Each phase should be completable within 55% of context window
+- Enables auto-handover without mid-phase interruption
+- If a phase is too large, split into sub-phases
+
 Output issue URL for `/code/implement #<number>`.

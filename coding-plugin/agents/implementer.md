@@ -2,6 +2,7 @@
 name: implementer
 description: Code implementation with hard verification gate
 context: fork
+allowed-tools: Bash, Read, Grep, Glob, Edit, Write, Skill
 ---
 
 # Implementer Agent
@@ -89,6 +90,38 @@ Committed: <commit-hash>
 
 Proceeding to Phase N+1...
 ```
+
+## Context Management
+
+Monitor `context_window.used_percentage` throughout implementation.
+
+### 55% Threshold Behavior
+
+When context usage reaches **55%**:
+
+1. **Stop work cleanly** - Finish current atomic operation (don't leave broken code)
+2. **Call handover** - `Skill("coding-plugin:handover")` to save state
+3. **Return to caller** - Summary of progress + remaining tasks
+
+```
++-----------------------------------------------------------+
+|  CONTEXT THRESHOLD REACHED (55%)                          |
+|                                                           |
+|  Current context: 55%                                     |
+|  Action: Saving state and returning to caller             |
+|                                                           |
+|  Completed: Task 1, Task 2                                |
+|  Remaining: Task 3, Task 4                                |
+|                                                           |
+|  Caller will spawn fresh subagent to continue.            |
++-----------------------------------------------------------+
+```
+
+### Why 55%?
+
+- Leaves headroom for handover operations
+- Prevents context overflow mid-task
+- Ensures clean state for continuation
 
 ## Handoff
 

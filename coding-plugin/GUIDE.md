@@ -1,4 +1,4 @@
-# Coding Plugin User Guide v4.0.0
+# Coding Plugin User Guide v1.0.0
 
 Simple workflow: **Plan → Implement** (auto-manages context)
 

@@ -17,23 +17,39 @@ Check current project repo (issue will be created here):
 git remote -v
 ```
 
-## Step 0.5: Load Existing Plan (Required)
+## Step 0.5: Load Existing Plan
 
-Check for plan sources (either one is sufficient):
+Check for plan sources in order:
 
-**Claude Code plan file:**
+**1. File reference in arguments:**
+If `$ARGUMENTS` contains `@SPEC.md` or similar file reference:
+- Claude Code expands `@file` automatically
+- Use the expanded content as primary context
+- Skip Phase 1 research
+
+**2. Project SPEC.md:**
+```bash
+cat SPEC.md 2>/dev/null
+```
+
+If found:
+- Read the file
+- Use as primary context for issue
+- Skip Phase 1 research
+
+**3. Claude Code plan file:**
 ```bash
 ls ~/.claude/plans/*.md 2>/dev/null
 ```
 
-**If found:**
+If found:
 - Read the most recent file
 - Use as primary context for issue
-- Skip Phase 1 research (plan already has the details)
+- Skip Phase 1 research
 
-**If NOT found:**
-- Error: "No plan found. Use Claude Code `/plan` mode first."
-- Stop execution
+**If NONE found:**
+- Proceed to Phase 1 research (explore codebase)
+- Generate plan from scratch based on `$ARGUMENTS`
 
 ## Step 0.6: Read Project Lessons
 

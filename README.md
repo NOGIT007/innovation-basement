@@ -114,7 +114,9 @@ That's it. Two commands.
 
 ### Building Project Knowledge
 
-After completing 3-5 issues (or significant changes), run:
+**Start with `/init`** — Run this in any new project to create a `CLAUDE.md` file. This tells Claude about your project structure, tech stack, and preferences.
+
+**Run `/code:lessons` periodically** — After completing 3-5 issues (or significant changes), run:
 
 ```
 /code:lessons
@@ -217,6 +219,8 @@ Add these to your project's `.mcp.json` or user-level config:
 ---
 
 ## Tips for Non-Coders
+
+**Run `/init` first** — In any new project, run `/init` to create a `CLAUDE.md` file. This teaches Claude about your project.
 
 **Keep scope small** — Start with one feature. The AI will suggest many features. Say no. Build the minimum first.
 

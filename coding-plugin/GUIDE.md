@@ -153,7 +153,7 @@ Focus on one feature issue. Complete it before starting another.
 
 ```
 ┌─────────────────────────────────────────────┐
-│         CODING PLUGIN v4.0.0                │
+│         CODING PLUGIN v1.0.0                │
 ├─────────────────────────────────────────────┤
 │ /code:plan-issue <desc>  Plan + Issue       │
 │ /code:implement #<num>   Auto-loop phases   │

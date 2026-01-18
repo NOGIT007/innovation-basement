@@ -1,7 +1,7 @@
 ---
 name: coding-workflow
 description: Phased workflow with auto-phase management
-version: "1.0.0"
+version: "1.0.1"
 ---
 
 # Coding Workflow Rules

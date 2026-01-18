@@ -1,8 +1,25 @@
 # Coding Plugin
 
-See [rules/architecture.md](rules/architecture.md) for structure.
-
 🏗️ = Architecture updated after commit
+
+## Architecture
+
+```
+coding-plugin/
+├── agents/        # implementer
+├── commands/      # plan-issue, implement, handover, lessons, etc.
+├── hooks/         # PostToolUse, Stop, SessionEnd, SubagentStop, PreCompact
+├── scripts/       # log-error, check-context, verify-gate, etc.
+└── templates/     # lessons-learned
+```
+
+| Hook | Trigger | Script |
+|------|---------|--------|
+| PostToolUse | After Bash | log-error.sh |
+| Stop | Session pause | check-context.sh |
+| SessionEnd | Session ends | session-end.sh |
+| SubagentStop | Agent done | verify-gate.sh |
+| PreCompact | Before compaction | pre-compact.sh |
 
 ## Project Memory
 
@@ -11,12 +28,11 @@ See [rules/architecture.md](rules/architecture.md) for structure.
 **Any change to workflow, commands, or features requires ALL of these:**
 
 1. `.claude-plugin/plugin.json` - bump version (source of truth)
-2. `rules/coding-workflow.md` - update frontmatter version
-3. `README.md` (in coding-plugin/):
+2. `README.md` (in coding-plugin/):
    - Update title version
    - Add "What's New in vX.X" section if new feature
    - Update commands table if commands changed
-4. `README.md` (root) - update title version
+3. `README.md` (root) - update title version
 
 **Version bumps:**
 - Patch (x.x.X): Bug fixes, docs-only changes

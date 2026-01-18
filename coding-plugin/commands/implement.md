@@ -26,17 +26,15 @@ Look for the first phase with unchecked `- [ ]` tasks.
 
 If all phases complete:
 1. Congratulate user on completion
-2. **Auto-simplify** (unless `--no-simplify` flag):
-   ```
-   Task(
-     subagent_type: "coding-plugin:simplifier",
-     prompt: "Simplify recently changed files. Create issues for bugs found."
-   )
-   ```
-3. Report simplifier results (changes made, issues created)
-4. **Ask:** "All phases complete. Close issue #<number>?"
-5. Wait for explicit "yes" before running `gh issue close`
-6. **Never auto-close** - user approval required
+2. **Run auto-simplify** (unless `--no-simplify` flag in `$ARGUMENTS`):
+   - Use the Task tool to spawn the simplifier agent
+   - `subagent_type`: `coding-plugin:simplifier`
+   - `prompt`: "Simplify recently changed files. Create issues for bugs found."
+   - Wait for simplifier to complete
+   - Report results (changes made, issues created)
+3. **Ask:** "All phases complete. Close issue #<number>?"
+4. Wait for explicit "yes" before running `gh issue close`
+5. **Never auto-close** - user approval required
 
 ## Step 2.5: Load Agent Context
 

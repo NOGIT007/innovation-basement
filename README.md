@@ -1,4 +1,4 @@
-# Coding Plugin v1.0.2
+# Coding Plugin v1.0.3
 
 **Build apps with AI, even if you can't code.**
 
@@ -77,6 +77,26 @@ If you're already in Claude Code, use the built-in `/plan` command to explore yo
 ```
 /code:implement #123
 ```
+
+---
+
+### Quick Fixes (No Plugin Needed)
+
+For small bugs or one-line changes, skip the full workflow. Just tell Claude what's wrong:
+
+```
+Fix the typo in the login button text
+```
+
+or
+
+```
+The submit button doesn't disable after clicking - fix it
+```
+
+Claude will find and fix it directly. **Use the plugin for features, not fixes.**
+
+**Tip:** If you started `/plan` mode and want to exit, press `Shift+Tab` or type `/plan` again.
 
 ---
 

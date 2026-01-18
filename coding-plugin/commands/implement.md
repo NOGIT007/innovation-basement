@@ -24,14 +24,7 @@ Parse the issue body to extract:
 
 Look for the first phase with unchecked `- [ ]` tasks.
 
-If all phases complete:
-1. Congratulate user on completion
-2. **Run auto-simplify** (unless `--no-simplify` flag in `$ARGUMENTS`):
-   - Run `Skill("coding-plugin:simplify")` on recently changed files
-   - Report results (changes made, issues created)
-3. **Ask:** "All phases complete. Close issue #<number>?"
-4. Wait for explicit "yes" before running `gh issue close`
-5. **Never auto-close** - user approval required
+If all phases complete → proceed to **Step 6: Completion**.
 
 ## Step 2.5: Load Agent Context
 
@@ -155,6 +148,22 @@ Tell user:
 - What was completed
 - What's next (next phase or done)
 - Any blockers encountered
+
+## Step 6: Completion
+
+After all phases are marked `[x]`:
+
+1. **Run auto-simplify** (unless `--no-simplify` in `$ARGUMENTS`):
+   ```
+   Skill("coding-plugin:simplify")
+   ```
+   Report: files simplified, issues created (if any)
+
+2. **Ask user:** "All phases complete. Close issue #<number>?"
+
+3. **Wait for explicit "yes"** before running `gh issue close`
+
+4. **Never auto-close** - user approval required
 
 ## Rules
 

@@ -1,4 +1,4 @@
-# Coding Plugin v1.0.4
+# Coding Plugin v1.1.0
 
 **Build apps with AI, even if you can't code.**
 
@@ -127,6 +127,8 @@ That's it. Two commands.
 |---------|-------------|
 | `/code:plan-issue <feature>` | Research codebase, create GitHub issue with phases |
 | `/code:implement #<number>` | Execute phases from issue (runs until complete) |
+| `/code:commit` | Generate conventional commit from staged changes |
+| `/code:pr` | Create GitHub PR with auto-generated description |
 | `/code:handover` | Save session state (optional - auto-managed) |
 | `/code:continue` | Resume from handover |
 | `/code:simplify` | Clean up code after implementation |
@@ -269,6 +271,19 @@ claude-files/
 ```
 
 To restore: `cp -r claude-files/* ~/.claude/`
+
+---
+
+## Optional: Frontend Stack Rules
+
+For frontend projects using Bun/Shadcn/TypeScript, add this to your project's `CLAUDE.md`:
+
+```markdown
+# Frontend Stack Rules
+@coding-plugin/rules/frontend.md
+```
+
+Or copy the content directly from `coding-plugin/rules/frontend.md` into your project's `CLAUDE.md`.
 
 ---
 

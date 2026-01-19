@@ -126,6 +126,7 @@ For the current phase:
 - Branch: `feature/<issue-number>-<short-desc>` (if not already on it)
 - Commits: Small, atomic, descriptive
 - Format: `✨ <description>` for features, `🐛 <description>` for fixes
+- **Smart Commit:** Use `/commit` for auto-generated conventional commits
 
 ## Step 4: Update Issue
 

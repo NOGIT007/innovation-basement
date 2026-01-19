@@ -49,11 +49,27 @@ Created with `/code:pr`
 
 ## Step 4: Write Description to File
 
-**CRITICAL:** Never use heredocs. Always write to file first.
+### ⚠️ CRITICAL: No Heredocs
+
+Heredocs fail silently in sandbox → empty PR body. **Use Write tool only.**
 
 Write description to `.claude-pr-body.md` using Write tool.
 
-## Step 5: Create PR
+## Step 5: Validate & Create PR
+
+### Validation (REQUIRED)
+
+Before creating PR, verify file exists:
+```bash
+if [ ! -s .claude-pr-body.md ]; then
+  echo "❌ ERROR: .claude-pr-body.md missing or empty."
+  echo "Use Write tool to create it first."
+  exit 1
+fi
+echo "✅ PR body validated ($(wc -l < .claude-pr-body.md) lines)"
+```
+
+### Create PR
 
 ```bash
 gh pr create --title "<type>: <summary>" --body-file .claude-pr-body.md

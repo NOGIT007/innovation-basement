@@ -46,24 +46,28 @@ Flag potential bugs:
 - Race conditions
 
 **If bug found:**
-```bash
-gh issue create --title "[Bug] <description>" --body "..."
-```
 
-Issue body format:
-```markdown
-## Bug Description
-[what's wrong]
+1. Write issue body to `.claude-issue-body.md` using Write tool:
+   ```markdown
+   ## Bug Description
+   [what's wrong]
 
-## Location
-`file.ts:line`
+   ## Location
+   `file.ts:line`
 
-## Suggested Fix
-[approach]
+   ## Suggested Fix
+   [approach]
 
----
-Created by `/code:simplify`
-```
+   ---
+   Created by `/code:simplify`
+   ```
+
+2. Create issue with body file:
+   ```bash
+   gh issue create --title "[Bug] <description>" --body-file .claude-issue-body.md
+   ```
+
+> ⚠️ **Never use `--body "..."`** — fails with special characters in sandbox.
 
 ## Step 4: Apply Simplifications
 

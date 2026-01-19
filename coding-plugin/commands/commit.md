@@ -51,30 +51,43 @@ Format: `<emoji> <type>: <subject>`
 
 ## Step 5: Execute Commit
 
-**Short message (< 50 chars):**
+### ⚠️ CRITICAL: Always Use -F Flag
+
+**Never use `git commit -m`** — emojis and special characters cause sandbox errors.
+
+**Always:**
+1. Write message to `.claude-commit-msg.txt` using Write tool
+2. Commit with `-F` flag
+
 ```bash
-git commit -m "✨ feat: add user authentication"
+git commit -F .claude-commit-msg.txt
 ```
 
-**Long message (multi-line):**
-1. Write to `.claude-commit-msg.txt`:
-   ```
-   ✨ feat: add user authentication
+**Example `.claude-commit-msg.txt`:**
+```
+✨ feat: add user authentication
 
-   - Add login/logout endpoints
-   - Implement JWT token handling
-   - Add auth middleware
+- Add login/logout endpoints
+- Implement JWT token handling
+- Add auth middleware
 
-   Closes #123
-   ```
-2. Commit with file:
-   ```bash
-   git commit -F .claude-commit-msg.txt
-   ```
+Closes #123
+```
+
+### Validation (REQUIRED)
+
+Before committing, verify file exists:
+```bash
+if [ ! -s .claude-commit-msg.txt ]; then
+  echo "❌ ERROR: Commit message file missing. Use Write tool first."
+  exit 1
+fi
+```
 
 ## Rules
 
-- **No heredocs** - Always use Write tool + `-F` flag for long messages
-- **Atomic commits** - One logical change per commit
-- **Present tense** - "add feature" not "added feature"
-- **No period** - Subject line doesn't end with period
+- **No `-m` flag** — Always use `-F .claude-commit-msg.txt`
+- **No heredocs** — Always use Write tool
+- **Atomic commits** — One logical change per commit
+- **Present tense** — "add feature" not "added feature"
+- **No period** — Subject line doesn't end with period

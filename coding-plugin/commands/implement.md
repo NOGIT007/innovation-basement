@@ -132,14 +132,15 @@ For the current phase:
 
 After completing phase tasks:
 
-```bash
-# Short updates
-gh issue edit <number> --body "updated body with [x] checkboxes"
+### ⚠️ Always Use --body-file
 
-# Long body updates (multi-line)
-# 1. Write .claude-issue-body.md with updated body
-# 2. gh issue edit <number> --body-file .claude-issue-body.md
-```
+**Never use `--body "..."`** — fails with special characters in sandbox.
+
+1. Write updated body to `.claude-issue-body.md` using Write tool
+2. Update issue:
+   ```bash
+   gh issue edit <number> --body-file .claude-issue-body.md
+   ```
 
 Mark completed tasks with `[x]`.
 

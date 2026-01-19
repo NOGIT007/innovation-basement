@@ -71,6 +71,15 @@ Only mark phase complete when:
 3. **Small commits** - Atomic, descriptive commits per task
 4. **Update checkboxes** - Keep issue in sync (after verification)
 
+## 🔀 Git & Terminal Rules
+
+- **No Heredocs:** NEVER use `cat <<EOF` - fails silently. Use `Write` tool instead.
+- **Temp Files:** Use `.claude-*` prefix (`.claude-commit-msg.txt`, `.claude-pr-body.md`)
+- **Diffs:** Always use `--` separator: `git diff -- file.ts`
+- **Commit Format:** `<emoji> <type>: <subject>`
+  - ✨ feat | 🐛 fix | ♻️ refactor | 📝 docs | 🧪 test | 🔧 config
+- **Smart Commit:** Use `Skill("coding-plugin:commit")` for auto-generated messages
+
 ## Constraints
 
 - **NEVER mark [x] without passing tests**

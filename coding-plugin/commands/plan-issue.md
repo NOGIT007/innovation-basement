@@ -352,4 +352,12 @@ When creating phases, aim for ~55% context usage per phase:
 - Enables auto-handover without mid-phase interruption
 - If a phase is too large, split into sub-phases
 
+## Next Steps
+
+After branch is created, implement with `/implement #<number>`.
+
+**Git Commands Available:**
+- `/commit` - Auto-generate conventional commit from staged changes
+- `/pr` - Create PR with auto-generated description
+
 Output issue URL for `/code/implement #<number>`.

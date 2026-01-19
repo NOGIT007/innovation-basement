@@ -10,6 +10,11 @@
 - Ask questions when uncertain
 - Never push without approval
 
+##Plan
+
+- Make the plan extremely concise. Sacrifice grammar for the sake of concision.
+- At the end of each plan, give me list of unresolved questions to answer, if any.
+
 ## Stacks
 
 | Emoji | Meaning |
@@ -23,8 +28,3 @@
 | ❗ | Warning |
 
 **Stack example:** `🧪🛠️🍀` = TDD + dev + user rules loaded
-
-## Development
-
-- TypeScript/Web → Bun
-- Python/CLI → UV

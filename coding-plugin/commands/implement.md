@@ -50,8 +50,9 @@ Before executing, prepare for verification:
 For each phase with unchecked [ ] tasks:
   1. Spawn Task(implementer subagent) with phase context
   2. Subagent implements tasks, monitors context usage
-  3. If context ≥55% → Skill("handover") → return → spawn continue
-  4. When phase complete → subagent returns → next phase
+  3. If context ≥55% → Skill("handover") → return "HANDOVER"
+  4. If subagent returns "HANDOVER" → spawn fresh subagent for SAME phase
+  5. If subagent returns "COMPLETE" → move to next phase
 ```
 
 ### Spawn Implementer Subagent
@@ -107,17 +108,7 @@ For the current phase:
 
 ### Verification Gate
 
-```
-+-------------------------------------------+
-| VERIFICATION GATE                         |
-+-------------------------------------------+
-| Test command: <detected>                  |
-| Status: PASSING / FAILING                 |
-| Result: <test output summary>             |
-+-------------------------------------------+
-| BLOCKED until tests pass                  |
-+-------------------------------------------+
-```
+**BLOCKED:** Cannot mark `[x]` until tests pass (exit code 0).
 
 **Rule:** NEVER mark a task `[x]` without passing tests. No exceptions.
 

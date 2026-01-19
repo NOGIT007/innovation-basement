@@ -1,4 +1,4 @@
-# Coding Plugin v1.1.2
+# Coding Plugin v1.2.0
 
 **Build apps with AI, even if you can't code.**
 
@@ -131,6 +131,7 @@ That's it. Two commands.
 | `/code:pr` | Create GitHub PR with auto-generated description |
 | `/code:handover` | Save session state (optional - auto-managed) |
 | `/code:continue` | Resume from handover |
+| `/code:finish <issue> <pr>` | Close issue, merge PR, update local main |
 | `/code:simplify` | Clean up code after implementation |
 | `/code:lessons [N]` | Analyze recent commits, update LESSONS.md |
 

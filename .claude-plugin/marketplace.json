@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Claude Code plugin for structured development workflow",
-    "version": "1.1.2"
+    "version": "1.2.0"
   },
   "plugins": [
     {

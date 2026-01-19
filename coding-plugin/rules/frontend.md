@@ -17,8 +17,6 @@ bunx shadcn@latest init
 bunx shadcn@latest add button card dialog ...
 ```
 
-Reference: https://ui.shadcn.com/
-
 ## Component Rules
 
 - Use Shadcn components before building custom

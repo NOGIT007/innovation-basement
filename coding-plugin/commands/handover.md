@@ -55,40 +55,28 @@ Otherwise, from current conversation, extract:
 
 ## Step 4: Write handover.md
 
-**ALWAYS overwrite** the file at project root (never delete, always keep):
+Overwrite at project root:
 
 ```markdown
 # Handover
+**Created:** <timestamp> | **Branch:** <branch>
 
-**Created:** <timestamp>
-**Branch:** <branch-name>
-
-## Issue Progress (if issue detected)
-- **Issue:** #<number> - <title>
-- **State:** open/closed
-- **Current Phase:** Phase N - <phase title>
-- **Progress:** X/Y tasks complete
-- **Next task:** <first unchecked task text>
+## Issue: #<num> - <title>
+**Phase:** N - <name> | **Progress:** X/Y | **Next:** <task>
 
 ## Status
-<1-2 sentences: what's done>
+<1-2 sentences>
 
 ## Key Files
-| File | Lines | Status |
-|------|-------|--------|
-| `src/file.ts` | 42-58 | Modified - added X |
-| `types/index.ts` | 15 | Pending - needs Y |
+- `file.ts:42-58` - Modified: <what>
+- `file2.ts:15` - Pending: <what>
 
-## Context
-<Key decisions, patterns discovered, or important notes>
-
-## Continue Instructions
-1. <Immediate next step with file:line>
-2. <Following step>
-3. <Verification step>
+## Continue
+1. <next step with file:line>
+2. <verification>
 
 ## Open Questions
-- [ ] <Any unresolved decisions>
+- [ ] <unresolved>
 ```
 
 ## Step 5: Confirm

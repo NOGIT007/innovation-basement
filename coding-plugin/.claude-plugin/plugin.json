@@ -1,0 +1,19 @@
+{
+  "name": "coding-plugin",
+  "version": "1.0.0",
+  "description": "Phased coding workflow with auto-phase management. plan-issue → implement (spawns subagents per phase, auto-handover at 55% context).",
+  "author": {
+    "name": "Kennet Kusk"
+  },
+  "license": "MIT",
+  "keywords": [
+    "coding",
+    "workflow",
+    "github",
+    "phased-development",
+    "agents",
+    "verification",
+    "auto-phase",
+    "context-management"
+  ]
+}

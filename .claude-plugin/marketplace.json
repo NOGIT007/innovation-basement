@@ -1,0 +1,17 @@
+{
+  "name": "innovation-basement",
+  "owner": {
+    "name": "Kennet Kusk"
+  },
+  "metadata": {
+    "description": "Claude Code plugin for structured development workflow",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "coding-plugin",
+      "source": "./coding-plugin",
+      "description": "Phased workflow with auto-phase management: plan-issue → implement (auto-loops until done)."
+    }
+  ]
+}

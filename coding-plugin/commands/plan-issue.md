@@ -92,83 +92,19 @@ Document with **file:line precision**:
 
 ## Phase 1.5: Content Specification
 
-Before planning, you MUST have **exact content** for every change.
+**Rules:**
+1. **Read First:** MUST read every file you intend to modify (no exceptions)
+2. **No Placeholders:** New files have full executable content. No `// ... rest`
+3. **Exact Diffs:** Modifications show exact before/after from actual file content
+4. **No Summaries:** Markdown files have complete content, no `[placeholder]` text
+5. **Sizing:** Each phase fits within 55% context window
 
-### Rule: Read Before Write (No Exceptions)
+**If you can't write exact content → research more (Phase 1).**
 
-For EVERY file you'll modify (including trivial changes like imports/typos):
-1. Read the current content with `Read` tool
-2. Find similar patterns in codebase (if creating new)
-3. Draft exact before/after content
-
-**No exceptions.** Even imports, typos, and renames need before/after.
-
-**If you can't write exact content → you haven't researched enough. Go back to Phase 1.**
-
-### For New Files
-
-```markdown
-**Create:** `path/to/new-file.ts`
-
-**Full content:**
-\`\`\`typescript
-// Complete file content - NOT a summary or placeholder
-export function newFunction(param: Type): ReturnType {
-  // Actual implementation code
-  return result;
-}
-\`\`\`
-
-**Pattern source:** Based on `similar-file.ts:15-40`
-```
-
-### For Markdown Files (CRITICAL)
-
-When creating `.md` files, the issue MUST contain **complete file content**.
-No summaries. No `[placeholder]` text. The implementer copies verbatim.
-
-❌ **Wrong:**
-```markdown
-## Vision
-[1-2 paragraphs about the vision]
-```
-
-✅ **Right:**
-```markdown
-## Vision
-This tool automates the deployment pipeline by integrating with GitHub Actions.
-It reduces manual steps from 12 to 3 and provides real-time status updates.
-```
-
-### For Modifications
-
-```markdown
-**Modify:** `path/to/file.ts:42-55`
-
-**Before:**
-\`\`\`typescript
-// Exact current content copied from file
-export function existing() {
-  return oldBehavior();
-}
-\`\`\`
-
-**After:**
-\`\`\`typescript
-// Exact replacement content
-export function existing(newParam: Type) {
-  return newBehavior(newParam);
-}
-\`\`\`
-```
-
-### Validation Checklist
-
-Before proceeding to Phase 2:
-- [ ] Every modified file has been read with `Read` tool
-- [ ] Every new file has complete content (not placeholders)
-- [ ] Every modification shows exact before/after code
-- [ ] Markdown files have 1:1 complete content (no `[placeholder]` text)
+**Validation (all must be true before Phase 2):**
+- [ ] Every modified file read with `Read` tool
+- [ ] Every new file has complete content
+- [ ] Every modification has exact before/after
 - [ ] Patterns sourced from existing codebase
 
 ## Phase 2: Plan (Using Specified Content)

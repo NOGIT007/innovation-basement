@@ -186,11 +186,40 @@ Wait for confirmation.
 
 ## Phase 4: Create Issue
 
-Create in **current project repo**:
+Create in **current project repo**.
+
+### ⚠️ CRITICAL: No Heredocs
+
+Heredocs fail silently in sandbox → empty issue body. **Use Write tool instead.**
+
+### Step 4.1: Write Body File (Use Write Tool)
+
+Use Claude's **Write tool** to create `.claude-issue-body.md` with full issue content (see format below).
+
+**Do NOT use heredocs or `cat <<EOF`** — they fail silently.
+
+### Step 4.2: Validate Body (REQUIRED)
+
+Before creating, verify the file exists and isn't empty:
 
 ```bash
-gh issue create --title "[Feature] $ARGUMENTS" --body "..."
+if [ ! -s .claude-issue-body.md ]; then
+  echo "❌ ERROR: .claude-issue-body.md is empty or missing."
+  echo "Use Write tool to create the file first."
+  exit 1
+fi
+echo "✅ Body validated ($(wc -l < .claude-issue-body.md) lines)"
 ```
+
+**If validation fails:** Use Write tool to create `.claude-issue-body.md`, then retry.
+
+### Step 4.3: Create Issue with Body File
+
+```bash
+gh issue create --title "[Feature] $ARGUMENTS" --body-file .claude-issue-body.md
+```
+
+> **Note:** `.claude-issue-body.md` is gitignored and overwritten each time. No cleanup needed.
 
 Issue format:
 ```markdown

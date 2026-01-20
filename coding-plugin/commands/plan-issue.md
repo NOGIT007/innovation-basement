@@ -94,17 +94,13 @@ Document with **file:line precision**:
 
 **Rules:**
 1. **Read First:** MUST read every file you intend to modify (no exceptions)
-2. **No Placeholders:** New files have full executable content. No `// ... rest`
-3. **Exact Diffs:** Modifications show exact before/after from actual file content
-4. **No Summaries:** Markdown files have complete content, no `[placeholder]` text
-5. **Sizing:** Each phase fits within 55% context window
-
-**If you can't write exact content → research more (Phase 1).**
+2. **Precise Tasks:** Tasks describe WHAT to change with file:line references
+3. **Pattern References:** Reference existing code patterns by location
+4. **Sizing:** Each phase fits within 55% context window
 
 **Validation (all must be true before Phase 2):**
 - [ ] Every modified file read with `Read` tool
-- [ ] Every new file has complete content
-- [ ] Every modification has exact before/after
+- [ ] Tasks have file:line precision
 - [ ] Patterns sourced from existing codebase
 
 ## Phase 2: Plan (Using Specified Content)
@@ -205,56 +201,13 @@ Entry: `file.ts:line` (functionName)
 | `file1.ts` | 42-50 | Modify `functionName()` |
 | `file2.ts` | 15-20 | Update interface `TypeName` |
 
-**Exact Changes:**
-
-<details>
-<summary><code>file1.ts:42</code> - Modify functionName</summary>
-
-**Before:**
-```typescript
-export function functionName() {
-  return oldLogic();
-}
-```
-
-**After:**
-```typescript
-export function functionName(newParam: Type) {
-  validateParam(newParam);
-  return newLogic(newParam);
-}
-```
-
-</details>
-
-<details>
-<summary><code>file2.ts:15</code> - Update TypeName interface</summary>
-
-**Before:**
-```typescript
-interface TypeName {
-  existingField: string;
-}
-```
-
-**After:**
-```typescript
-interface TypeName {
-  existingField: string;
-  newField: Type;
-}
-```
-
-</details>
-
 **Tasks:**
-- [ ] Apply change to `functionName()` at `file1.ts:42`
+- [ ] Modify `functionName()` at `file1.ts:42` - add newParam validation
 - [ ] Add `newField` to `TypeName` at `file2.ts:15`
 - [ ] Update imports at `file3.ts:5`
 
 **Verification:**
 - [ ] `bun run typecheck` passes
-- [ ] `bun run test` passes
 
 ### Phase 2: [name]
 **Files:**
@@ -262,26 +215,8 @@ interface TypeName {
 |------|-------|--------|
 | `file3.ts` | new | Add new function |
 
-**Exact Changes:**
-
-<details>
-<summary><code>file3.ts</code> - Create newFunction</summary>
-
-**Create:**
-```typescript
-// Full implementation - not a placeholder
-export function newFunction(input: InputType): OutputType {
-  const processed = transform(input);
-  return { result: processed };
-}
-```
-
-**Pattern source:** `utils.ts:23-35`
-
-</details>
-
 **Tasks:**
-- [ ] Create `newFunction()` in `file3.ts`
+- [ ] Create `newFunction()` in `file3.ts` (pattern: `utils.ts:23-35`)
 
 **Verification:**
 - [ ] [Specific test or check]

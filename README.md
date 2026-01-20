@@ -1,4 +1,4 @@
-# Coding Plugin v1.2.4
+# Coding Plugin v1.2.5
 
 **Build apps with AI, even if you can't code.**
 

@@ -146,13 +146,13 @@ Tell user:
 
 After all phases are marked `[x]`, **DO NOT SKIP** this step:
 
-**Checklist:**
-- [ ] Run `Skill("coding-plugin:simplify")` (unless `--no-simplify` in `$ARGUMENTS`)
-- [ ] Report: files simplified, issues created (if any)
-- [ ] Ask user: "All phases complete. Close issue #<number>?"
-- [ ] Wait for explicit "yes" before running `gh issue close`
+**Sequence (in order):**
+1. **AUTO-RUN** `Skill("coding-plugin:simplify")` - do NOT ask, just run it (unless `--no-simplify`)
+2. Report: files simplified, issues created (if any)
+3. Ask user: "All phases complete. Close issue #<number>?"
+4. Wait for explicit "yes" before running `gh issue close`
 
-**Never auto-close** - user approval required
+**Never auto-close** - user approval required for close only (simplify runs automatically)
 
 ## Rules
 

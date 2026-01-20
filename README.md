@@ -1,4 +1,4 @@
-# Coding Plugin v1.2.7
+# Coding Plugin v1.3.0
 
 **Build apps with AI, even if you can't code.**
 
@@ -275,16 +275,24 @@ To restore: `cp -r claude-files/* ~/.claude/`
 
 ---
 
-## Optional: Frontend Stack Rules
+## Optional Rules
 
-For frontend projects using Bun/Shadcn/TypeScript, add this to your project's `CLAUDE.md`:
+Add these to your project's `CLAUDE.md`:
 
 ```markdown
-# Frontend Stack Rules
+# Code Quality Rules
+@coding-plugin/rules/caller-impact.md
+@coding-plugin/rules/security-check.md
+
+# Frontend Stack (Bun/Shadcn/TypeScript)
 @coding-plugin/rules/frontend.md
 ```
 
-Or copy the content directly from `coding-plugin/rules/frontend.md` into your project's `CLAUDE.md`.
+| Rule | Purpose |
+|------|---------|
+| `caller-impact.md` | Check for breaking changes before modifying functions |
+| `security-check.md` | Prevent SQL injection, XSS, command injection, hardcoded secrets |
+| `frontend.md` | Enforce Bun/Shadcn/TypeScript stack |
 
 ---
 

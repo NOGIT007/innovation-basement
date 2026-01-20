@@ -14,8 +14,12 @@ git branch --show-current
 git status --short
 ```
 
-If uncommitted changes → Warn user to commit first.
 If on main/master → Warn user to create feature branch.
+
+**If uncommitted changes exist:**
+1. Stage all changes: `git add -A`
+2. Auto-commit with: `Skill("coding-plugin:commit")`
+3. Continue to Step 2
 
 ## Step 2: Get Branch Diff
 
@@ -89,5 +93,5 @@ Show:
 ## Rules
 
 - **No heredocs** - Always use `--body-file`
-- **Check for uncommitted changes** - Warn if dirty working tree
+- **Auto-commit uncommitted changes** - Never create PR with dirty working tree
 - **Don't force push** - Let user handle that manually

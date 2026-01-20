@@ -142,21 +142,17 @@ Tell user:
 - What's next (next phase or done)
 - Any blockers encountered
 
-## Step 6: Completion
+## ⚠️ MANDATORY: Step 6 - Completion
 
-After all phases are marked `[x]`:
+After all phases are marked `[x]`, **DO NOT SKIP** this step:
 
-1. **Run auto-simplify** (unless `--no-simplify` in `$ARGUMENTS`):
-   ```
-   Skill("coding-plugin:simplify")
-   ```
-   Report: files simplified, issues created (if any)
+**Checklist:**
+- [ ] Run `Skill("coding-plugin:simplify")` (unless `--no-simplify` in `$ARGUMENTS`)
+- [ ] Report: files simplified, issues created (if any)
+- [ ] Ask user: "All phases complete. Close issue #<number>?"
+- [ ] Wait for explicit "yes" before running `gh issue close`
 
-2. **Ask user:** "All phases complete. Close issue #<number>?"
-
-3. **Wait for explicit "yes"** before running `gh issue close`
-
-4. **Never auto-close** - user approval required
+**Never auto-close** - user approval required
 
 ## Rules
 

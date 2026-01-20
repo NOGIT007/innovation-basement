@@ -127,7 +127,7 @@ After completing phase tasks:
 
 **Never use `--body "..."`** — fails with special characters in sandbox.
 
-1. Write updated body to `.claude-issue-body.md` using Write tool
+1. Read `.claude-issue-body.md` first (if exists), then Write updated body
 2. Update issue:
    ```bash
    gh issue edit <number> --body-file .claude-issue-body.md

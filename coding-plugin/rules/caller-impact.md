@@ -1,6 +1,6 @@
 # Caller Impact Rules
 
-> Add to your project's `CLAUDE.md` to enable: `@coding-plugin/rules/caller-impact.md`
+> Auto-loaded by `/code:plan-issue`
 
 ## When to Check for Callers
 

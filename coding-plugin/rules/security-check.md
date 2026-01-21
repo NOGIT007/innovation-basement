@@ -1,6 +1,6 @@
 # Security Check Rules
 
-> Add to your project's `CLAUDE.md` to enable: `@coding-plugin/rules/security-check.md`
+> Auto-loaded by `/code:plan-issue`
 
 ## SQL Injection
 

@@ -1,4 +1,4 @@
-# Coding Plugin v1.3.0
+# Coding Plugin v1.5.0
 
 **Build apps with AI, even if you can't code.**
 
@@ -275,24 +275,17 @@ To restore: `cp -r claude-files/* ~/.claude/`
 
 ---
 
-## Optional Rules
+## Built-in Code Quality Rules
 
-Add these to your project's `CLAUDE.md`:
-
-```markdown
-# Code Quality Rules
-@coding-plugin/rules/caller-impact.md
-@coding-plugin/rules/security-check.md
-
-# Frontend Stack (Bun/Shadcn/TypeScript)
-@coding-plugin/rules/frontend.md
-```
+The following rules are automatically applied during `/code:plan-issue`:
 
 | Rule | Purpose |
 |------|---------|
-| `caller-impact.md` | Check for breaking changes before modifying functions |
-| `security-check.md` | Prevent SQL injection, XSS, command injection, hardcoded secrets |
-| `frontend.md` | Enforce Bun/Shadcn/TypeScript stack |
+| Caller Impact | Check for breaking changes before modifying functions |
+| Security | Prevent SQL injection, XSS, command injection, hardcoded secrets |
+| Frontend | Enforce Bun/Shadcn/TypeScript stack (when applicable) |
+
+These rules guide planning decisions. No manual configuration needed.
 
 ---
 

@@ -1,6 +1,6 @@
 # Frontend Stack Rules
 
-> Add to your project's `CLAUDE.md` to enable: `@coding-plugin/rules/frontend.md`
+> Auto-loaded by `/code:plan-issue`
 
 ## Stack (Non-Negotiable)
 

@@ -42,6 +42,23 @@ Before executing, prepare for verification:
    - `.claude/CLAUDE.md` with `## Verification` section -> use specified command
    - If none found: Ask user for test command
 
+## Step 2.7: Ensure Feature Branch
+
+If not on feature branch for this issue:
+
+```bash
+ISSUE_NUM=<from arguments>
+CURRENT_BRANCH=$(git branch --show-current)
+
+if [[ "$CURRENT_BRANCH" != feature/${ISSUE_NUM}-* ]]; then
+  SLUG=$(gh issue view $ISSUE_NUM --json title -q '.title' | tr ' ' '-' | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]//g' | cut -c1-30)
+  BRANCH="feature/${ISSUE_NUM}-${SLUG}"
+  git checkout -b "$BRANCH" 2>/dev/null || git checkout "$BRANCH"
+  git push -u origin "$BRANCH" 2>/dev/null || true
+  echo "On branch: $BRANCH"
+fi
+```
+
 ## Step 3: Execute Phase via Subagent
 
 **Auto-Phase Management:** Spawn a fresh subagent for each phase to maintain clean context.

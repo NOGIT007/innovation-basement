@@ -72,6 +72,33 @@ stat -f "%Sm" LESSONS.md 2>/dev/null
 
 Suggest: "LESSONS.md is stale. Run `/code:lessons` to refresh."
 
+## Step 0.8: Load Code Quality Rules
+
+Apply these rules during planning:
+
+### Caller Impact Rules
+Before modifying any function, check:
+| Change Type | Impact |
+|-------------|--------|
+| Parameter added/removed | All callers must update |
+| Return type changed | Callers may handle incorrectly |
+| Function renamed | All imports/calls break |
+
+**Required:** grep for callers before breaking changes.
+
+### Security Rules
+| Risk | Bad | Good |
+|------|-----|------|
+| SQL injection | `f"SELECT * WHERE id = {id}"` | Parameterized queries |
+| Command injection | `os.system(f"rm {file}")` | `subprocess.run(["rm", file])` |
+| Hardcoded secrets | `API_KEY = "sk-..."` | `os.environ["API_KEY"]` |
+| XSS | `innerHTML = userInput` | `textContent = userInput` |
+
+### Frontend Rules (if applicable)
+- **Stack:** React/Next.js + Bun + Shadcn + TypeScript
+- Use Shadcn components before custom
+- No npm/yarn, no JavaScript files
+
 ## Phase 1: Research (LSP-Precise) — Skip if plan exists
 
 Research the **current project** codebase with LSP precision:
@@ -230,21 +257,6 @@ Entry: `file.ts:line` (functionName)
 Created with `/plan-issue` (LSP-precise)
 ```
 
-## Phase 4.5: Create Feature Branch
-
-After issue created:
-
-1. Extract issue number from URL
-2. Create branch:
-   ```bash
-   ISSUE_NUM=<from issue URL>
-   SLUG=$(echo "$ARGUMENTS" | tr ' ' '-' | tr '[:upper:]' '[:lower:]' | cut -c1-30)
-   BRANCH="feature/${ISSUE_NUM}-${SLUG}"
-   git checkout -b "$BRANCH"
-   git push -u origin "$BRANCH"
-   ```
-3. Output: "Created branch: $BRANCH"
-
 ## Phase Sizing Guidance
 
 When creating phases, aim for ~55% context usage per phase:
@@ -254,10 +266,6 @@ When creating phases, aim for ~55% context usage per phase:
 
 ## Next Steps
 
-After branch is created, implement with `/implement #<number>`.
+Issue created. Run `/code:implement #<number>` to start.
 
-**Git Commands Available:**
-- `/commit` - Auto-generate conventional commit from staged changes
-- `/pr` - Create PR with auto-generated description
-
-Output issue URL for `/code/implement #<number>`.
+The implementer creates the feature branch automatically.

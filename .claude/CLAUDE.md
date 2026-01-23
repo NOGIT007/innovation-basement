@@ -3,23 +3,23 @@
 **Repo:** https://github.com/NOGIT007/innovation-basement
 
 ## Structure
+
 - `coding-plugin/` - Main Claude Code plugin
 - `.claude-plugin/` - Plugin configuration
 - `claude-files/` - Example user config (for learning)
 
 ## Versioning
 
-Bump version on every push:
-- Patch (x.x.X): Bug fixes, small changes
-- Minor (x.X.0): New features
-- Major (X.0.0): Breaking changes
+**⛔ CANNOT push without version bump.** Before any `git push`:
 
-Include version in commit message: `v1.2.3: feature description`
+1. Determine version type:
+   - Patch (x.x.X): Bug fixes, small changes
+   - Minor (x.X.0): New features
+   - Major (X.0.0): Breaking changes
 
-**Source of truth:** `coding-plugin/.claude-plugin/plugin.json`
+2. Update ALL version locations:
+   - `coding-plugin/.claude-plugin/plugin.json` (source of truth)
+   - `README.md` (root) - title
+   - `.claude-plugin/marketplace.json` (metadata.version)
 
-**ALWAYS update ALL version locations on every version bump:**
-1. `coding-plugin/.claude-plugin/plugin.json` - Claude Code reads this
-2. `README.md` (root) - title
-3. `coding-plugin/rules/coding-workflow.md` (frontmatter)
-4. `.claude-plugin/marketplace.json` (metadata.version)
+3. Include version in commit: `🔖 v1.2.3: description`

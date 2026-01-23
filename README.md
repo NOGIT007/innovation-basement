@@ -1,4 +1,4 @@
-# Coding Plugin v1.6.1
+# Coding Plugin v1.6.2
 
 **Build apps with AI, even if you can't code.**
 
@@ -120,14 +120,14 @@ Claude will find and fix it directly. **Use the plugin for features, not fixes.*
 └─────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────┐
-│              CONTEXT MANAGEMENT (>55%)                      │
+│              CONTEXT MANAGEMENT (>55%) - MANUAL             │
 │                                                             │
 │   During /code:implement, if context exceeds 55%:           │
 │                                                             │
-│   /handover  →  /clear  →  /continue                        │
-│       ↓           ↓            ↓                            │
-│   Save state   Reset ctx   Resume with                      │
-│   to file                  implementer rules                │
+│   Esc  →  /handover  →  /clear  →  /continue                │
+│    ↓         ↓           ↓            ↓                     │
+│   Stop    Save state   Reset ctx   Resume with              │
+│   Claude  to file                  implementer rules        │
 │                                                             │
 │   (This loop repeats until implementation completes)        │
 └─────────────────────────────────────────────────────────────┘
@@ -143,7 +143,7 @@ Claude will find and fix it directly. **Use the plugin for features, not fixes.*
 | 4    | `/code:implement #<number>`  | Builds it automatically          |
 | 5    | `/code:finish`               | Close issue, merge PR, cleanup   |
 
-**Context overflow?** Run `/handover` → `/clear` → `/continue` to resume.
+**Context overflow?** Press `Esc` → `/handover` → `/clear` → `/continue` to resume.
 
 ---
 

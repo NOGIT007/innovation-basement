@@ -43,6 +43,7 @@ When the AI finishes asking questions and outputs your spec, save it as `SPEC.md
 **Step 3: Create the plan**
 
 In Claude Code, run:
+
 ```
 /code:plan-issue @SPEC.md
 ```
@@ -64,16 +65,19 @@ The plugin writes the code, phase by phase, until it's done.
 If you're already in Claude Code, use the built-in `/plan` command to explore your idea, then convert it to an issue.
 
 **Step 1: Plan in Claude Code**
+
 ```
 /plan add a dark mode toggle to the app
 ```
 
 **Step 2: Create the issue**
+
 ```
 /code:plan-issue add dark mode toggle
 ```
 
 **Step 3: Build it**
+
 ```
 /code:implement #123
 ```
@@ -100,14 +104,46 @@ Claude will find and fix it directly. **Use the plugin for features, not fixes.*
 
 ---
 
-## The Simple Workflow
+## The Complete Workflow
 
-| Step | Command | What Happens |
-|------|---------|--------------|
-| 1 | `/code:plan-issue <feature>` | Creates GitHub issue with phases |
-| 2 | `/code:implement #<number>` | Builds it automatically |
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    NORMAL FLOW                              │
+│                                                             │
+│   /plan  →  /code:plan-issue  →  /clear  →  /code:implement │
+│     ↓            ↓                            ↓             │
+│   Explore    Create GitHub              Build phase by      │
+│   the idea   issue w/ phases            phase               │
+│                                               ↓             │
+│                                         /code:finish        │
+│                                         (close & merge)     │
+└─────────────────────────────────────────────────────────────┘
 
-That's it. Two commands.
+┌─────────────────────────────────────────────────────────────┐
+│              CONTEXT MANAGEMENT (>55%)                      │
+│                                                             │
+│   During /code:implement, if context exceeds 55%:           │
+│                                                             │
+│   /handover  →  /clear  →  /continue                        │
+│       ↓           ↓            ↓                            │
+│   Save state   Reset ctx   Resume with                      │
+│   to file                  implementer rules                │
+│                                                             │
+│   (This loop repeats until implementation completes)        │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Quick Reference
+
+| Step | Command                      | What Happens                     |
+| ---- | ---------------------------- | -------------------------------- |
+| 1    | `/plan <feature>`            | Explore idea in plan mode        |
+| 2    | `/code:plan-issue <feature>` | Creates GitHub issue with phases |
+| 3    | `/clear`                     | Reset context before implement   |
+| 4    | `/code:implement #<number>`  | Builds it automatically          |
+| 5    | `/code:finish`               | Close issue, merge PR, cleanup   |
+
+**Context overflow?** Run `/handover` → `/clear` → `/continue` to resume.
 
 ---
 
@@ -123,17 +159,17 @@ That's it. Two commands.
 
 ## Commands Reference
 
-| Command | Description |
-|---------|-------------|
+| Command                      | Description                                        |
+| ---------------------------- | -------------------------------------------------- |
 | `/code:plan-issue <feature>` | Research codebase, create GitHub issue with phases |
-| `/code:implement #<number>` | Execute phases from issue (runs until complete) |
-| `/code:commit` | Generate conventional commit from staged changes |
-| `/code:pr` | Create GitHub PR with auto-generated description |
-| `/code:handover` | Save session state (optional - auto-managed) |
-| `/code:continue` | Resume from handover |
-| `/code:finish <issue> <pr>` | Close issue, merge PR, update local main |
-| `/code:simplify` | Clean up code after implementation |
-| `/code:lessons [N]` | Analyze recent commits, update LESSONS.md |
+| `/code:implement #<number>`  | Execute phases from issue (runs until complete)    |
+| `/code:commit`               | Generate conventional commit from staged changes   |
+| `/code:pr`                   | Create GitHub PR with auto-generated description   |
+| `/code:handover`             | Save session state (optional - auto-managed)       |
+| `/code:continue`             | Resume from handover                               |
+| `/code:finish <issue> <pr>`  | Close issue, merge PR, update local main           |
+| `/code:simplify`             | Clean up code after implementation                 |
+| `/code:lessons [N]`          | Analyze recent commits, update LESSONS.md          |
 
 ### Building Project Knowledge
 
@@ -157,9 +193,18 @@ This analyzes your recent commits, identifies patterns that worked, mistakes to 
 - [GitHub CLI](https://cli.github.com/) (`gh`) installed and authenticated
 - Git configured
 
-### Install the Plugin
+### Option A: Marketplace (Recommended)
+
+If you installed this plugin from the Claude Code marketplace, **you're done!** The plugin is already active.
+
+Verify with `/plugin` → Installed tab → look for `coding-plugin`.
+
+### Option B: Manual Installation
+
+If the plugin isn't in your marketplace yet:
 
 **Step 1: Clone the plugin**
+
 ```bash
 mkdir -p ~/.claude/plugins/marketplaces
 cd ~/.claude/plugins/marketplaces
@@ -167,16 +212,19 @@ git clone https://github.com/NOGIT007/innovation-basement.git
 ```
 
 **Step 2: Add the marketplace**
+
 ```
 /plugin marketplace add ~/.claude/plugins/marketplaces/innovation-basement
 ```
 
 **Step 3: Install**
+
 ```
 /plugin install coding-plugin@innovation-basement
 ```
 
 Choose your scope:
+
 - **User scope**: Available in all your projects
 - **Project scope**: Shared with collaborators (via git)
 - **Local scope**: This repo only, not shared
@@ -201,10 +249,10 @@ Install from `claude-plugins-official` to enhance the workflow:
 
 Add these to your project's `.mcp.json` or user-level config:
 
-| Server | Purpose | Config |
-|--------|---------|--------|
-| `shadcn` | UI component library | `npx shadcn@latest mcp` |
-| `Homebrew` | Package manager (macOS) | `brew mcp-server` |
+| Server     | Purpose                 | Config                  |
+| ---------- | ----------------------- | ----------------------- |
+| `shadcn`   | UI component library    | `npx shadcn@latest mcp` |
+| `Homebrew` | Package manager (macOS) | `brew mcp-server`       |
 
 ---
 
@@ -279,11 +327,11 @@ To restore: `cp -r claude-files/* ~/.claude/`
 
 The following rules are automatically applied during `/code:plan-issue`:
 
-| Rule | Purpose |
-|------|---------|
-| Caller Impact | Check for breaking changes before modifying functions |
-| Security | Prevent SQL injection, XSS, command injection, hardcoded secrets |
-| Frontend | Enforce Bun/Shadcn/TypeScript stack (when applicable) |
+| Rule          | Purpose                                                          |
+| ------------- | ---------------------------------------------------------------- |
+| Caller Impact | Check for breaking changes before modifying functions            |
+| Security      | Prevent SQL injection, XSS, command injection, hardcoded secrets |
+| Frontend      | Enforce Bun/Shadcn/TypeScript stack (when applicable)            |
 
 These rules guide planning decisions. No manual configuration needed.
 

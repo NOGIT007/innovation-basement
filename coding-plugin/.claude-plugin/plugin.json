@@ -1,7 +1,7 @@
 {
   "name": "coding-plugin",
-  "version": "2.0.1",
-  "description": "Task-driven coding workflow with orchestrator agent. plan-issue → implement (orchestrator spawns implementer per task, auto-compact at 65%).",
+  "version": "2.1.0",
+  "description": "Task-driven coding workflow with native Task tools. plan-issue → implement (orchestrator spawns implementer per task, ctrl+t progress view).",
   "author": {
     "name": "Kennet Kusk"
   },

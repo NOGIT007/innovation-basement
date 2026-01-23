@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(gh:*), Bash(git:*), Read, Write
+allowed-tools: Bash(gh:*), Bash(git:*), Read, Write, TaskList
 description: Finalize feature: close issue, merge or create PR, cleanup
 argument-hint: [--pr] [issue-number]
 ---
@@ -28,10 +28,10 @@ If no issue number found → error: "Provide issue number or run from feature br
 
 ## Step 2: Verify All Tasks Complete
 
-Read the manifest and check all tasks are completed:
+Check tasks via native TaskList:
 
-```bash
-cat .claude/tasks/<issue>/manifest.json
+```
+TaskList() → filter by metadata.issueNumber = <issue>
 ```
 
 **If any task has `status != "completed"`:**
@@ -45,6 +45,10 @@ Incomplete tasks:
 - Task 1: <subject> (in_progress)
 - Task 3: <subject> (pending)
 ```
+
+**If no tasks found:**
+
+Warning: "No tasks found for issue #<number>. Proceeding without task verification."
 
 ## Step 3: Determine Action (PR or Merge)
 
@@ -184,6 +188,4 @@ After successful completion, cleanup is automatic:
 
 - Local feature branch deleted
 - Remote feature branch deleted
-- Task manifest remains (for history)
-
-The `.claude/tasks/<issue>/` folder is kept for reference but can be deleted manually.
+- Native tasks remain in task list (visible via `ctrl+t`)

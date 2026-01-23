@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(gh issue create:*), Bash(gh issue list:*), Bash(git log:*), Bash(git branch:*), Bash(git remote:*), Bash(mkdir:*), Read, Write, Grep, Glob, Task, AskUserQuestion, mcp__typescript-lsp__*
+allowed-tools: Bash(gh issue create:*), Bash(gh issue list:*), Bash(git log:*), Bash(git branch:*), Bash(git remote:*), Read, Write, Grep, Glob, Task, AskUserQuestion, TaskCreate, TaskUpdate, mcp__typescript-lsp__*
 description: Research codebase with LSP precision, plan feature with phases, create GitHub issue
 argument-hint: [feature-description] [@spec-file]
 ---
@@ -161,57 +161,15 @@ Show plan to user. Ask: **"Create issue in [repo-name]?"**
 
 Wait for confirmation.
 
-## Phase 4: Create Issue & Task Manifest
+## Phase 4: Create Issue & Native Tasks
 
-### Step 4.1: Extract Issue Number
-
-After creating the issue, extract the issue number for task storage:
-
-```bash
-# Will be used after gh issue create
-ISSUE_NUM=$(gh issue create ... 2>&1 | grep -o '#[0-9]*' | tr -d '#')
-```
-
-### Step 4.2: Create Task Storage Directory
-
-```bash
-mkdir -p .claude/tasks/$ISSUE_NUM
-```
-
-### Step 4.3: Write Task Manifest
-
-Use **Write tool** to create `.claude/tasks/<issue>/manifest.json`:
-
-```json
-{
-  "issueNumber": <issue-number>,
-  "title": "<feature title>",
-  "branch": "feature/<issue>-<slug>",
-  "created": "<ISO timestamp>",
-  "status": "pending",
-  "tasks": [
-    {
-      "id": "001",
-      "subject": "<imperative task title>",
-      "activeForm": "<present continuous form>",
-      "description": "<detailed steps with file:line refs>",
-      "status": "pending",
-      "blockedBy": [],
-      "blocks": ["002"],
-      "verification": "<test command>",
-      "files": ["file.ts:15-30"]
-    }
-  ]
-}
-```
-
-### Step 4.4: Write Issue Body File
+### Step 4.1: Write Issue Body File
 
 Use **Write tool** to create `.claude-issue-body.md` (see format below).
 
 **Do NOT use heredocs or `cat <<EOF`** — they fail silently.
 
-### Step 4.5: Validate Body (REQUIRED)
+### Step 4.2: Validate Body (REQUIRED)
 
 ```bash
 if [ ! -s .claude-issue-body.md ]; then
@@ -221,11 +179,45 @@ fi
 echo "Body validated ($(wc -l < .claude-issue-body.md) lines)"
 ```
 
-### Step 4.6: Create Issue with Body File
+### Step 4.3: Create Issue with Body File
 
 ```bash
 gh issue create --title "[Feature] $ARGUMENTS" --body-file .claude-issue-body.md
 ```
+
+Extract issue number from output for task creation.
+
+### Step 4.4: Create Native Tasks
+
+For each planned task, use **TaskCreate**:
+
+```
+TaskCreate(
+  subject: "<imperative task title>",
+  description: "<detailed steps with file:line refs>",
+  activeForm: "<present continuous form>",
+  metadata: {
+    "issueNumber": <issue-number>,
+    "verification": "<test command>",
+    "files": ["file.ts:15-30"]
+  }
+)
+```
+
+**Important:** Create ALL tasks before setting dependencies.
+
+### Step 4.5: Set Task Dependencies
+
+After all tasks are created, use **TaskUpdate** to set blockedBy relationships:
+
+```
+TaskUpdate(
+  taskId: "<id>",
+  addBlockedBy: ["<blocker-id-1>", "<blocker-id-2>"]
+)
+```
+
+Tasks will appear in `ctrl+t` task view immediately.
 
 ## Issue Format (Task Headlines)
 
@@ -275,8 +267,8 @@ gh issue create --title "[Feature] $ARGUMENTS" --body-file .claude-issue-body.md
 
 ---
 
-**Task Manifest:** `.claude/tasks/<issue>/manifest.json`
 **Branch:** `feature/<issue>-<slug>`
+**Tasks:** View with `ctrl+t`
 
 _Created with `/plan-issue`_
 ```
@@ -291,14 +283,13 @@ When creating tasks, aim for ~55% context usage per task:
 
 ## Next Steps
 
-Issue created with task manifest.
+Issue created with native tasks.
 
 Output:
 
 ```
 Issue #<number> created
-Task manifest: .claude/tasks/<number>/manifest.json
-Branch: feature/<number>-<slug>
+Tasks: <count> tasks in native task list (view with ctrl+t)
 
 Run `/code:implement #<number>` to start.
 ```

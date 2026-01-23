@@ -1,6 +1,7 @@
 {
   "plansDirectory": "plans",
   "env": {
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "65"
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",
+    "CLAUDE_CODE_TASK_LIST_ID": "coding-plugin-tasks"
   }
 }

@@ -1,6 +1,6 @@
 ---
 context: fork
-allowed-tools: Bash(gh issue view:*), Bash(git:*), Read, Task
+allowed-tools: Bash(gh issue view:*), Bash(git:*), Read, Task, TaskList
 description: Start implementation from a GitHub issue
 argument-hint: #<issue-number>
 ---
@@ -34,24 +34,24 @@ if [[ "$CURRENT_BRANCH" != feature/${ISSUE_NUM}-* ]]; then
 fi
 ```
 
-## Step 3: Verify Task Manifest
+## Step 3: Verify Tasks Exist
 
-Check for task manifest:
+Check for tasks in native task list:
 
-```bash
-cat .claude/tasks/<number>/manifest.json 2>/dev/null
+```
+TaskList() → filter by metadata.issueNumber = <number>
 ```
 
-**If manifest exists:**
+**If tasks exist:**
 
-- Read manifest to understand task state
+- Count tasks with matching issueNumber
 - Continue to Step 4
 
-**If manifest missing:**
+**If no tasks found:**
 
-Error: "Task manifest not found. Run `/code:plan-issue` first to create the issue with task structure."
+Error: "No tasks found for issue #<number>. Run `/code:plan-issue` first to create the issue with tasks."
 
-> **Note:** For backwards compatibility with old issues (without manifests), you may fall back to parsing GitHub issue checkboxes. However, the Task-based workflow is preferred.
+> **Note:** For backwards compatibility with old issues (without native tasks), you may fall back to parsing GitHub issue checkboxes. However, the native Task workflow is preferred.
 
 ## Step 4: Launch Orchestrator
 
@@ -63,10 +63,10 @@ Task(
   prompt: """
   Issue: #<number>
   Title: <title>
-  Manifest: .claude/tasks/<number>/manifest.json
 
   Execute all pending tasks for this feature.
-  Update manifest and GitHub issue as you complete each task.
+  Use TaskList to find tasks with metadata.issueNumber = <number>.
+  Update task status and GitHub issue as you complete each task.
   Run /simplify when all tasks are done.
   """
 )
@@ -76,17 +76,17 @@ Task(
 
 The orchestrator now controls execution:
 
-1. Reads manifest to find pending tasks
+1. Uses TaskList to find pending tasks
 2. Spawns implementer for each task
 3. Commits after each task
 4. Updates GitHub issue status
 5. Runs simplify when complete
 6. Reports: "Run /code:finalizer [--pr] to finish"
 
-You will see progress as tasks complete.
+You will see progress as tasks complete. Press `ctrl+t` to view task progress.
 
 ## Resuming Work
 
 To resume interrupted work, simply run `/code:implement #<number>` again.
 
-The orchestrator reads the manifest and continues from where it left off. No handover needed.
+The orchestrator uses TaskList and continues from where it left off. No handover needed.

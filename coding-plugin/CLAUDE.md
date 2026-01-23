@@ -10,17 +10,19 @@ coding-plugin/
 ├── commands/      # plan-issue, implement, finalizer, lessons, etc.
 ├── hooks/         # PostToolUse, Stop, SessionEnd, SubagentStop, PreCompact
 ├── scripts/       # log-error, check-context, verify-gate, etc.
-├── schemas/       # task.json schema
 └── templates/     # lessons-learned
 ```
 
 ## Task Storage
 
-```
-.claude/tasks/
-└── <issue-number>/
-    └── manifest.json    # Task list metadata + status
-```
+Tasks are stored using Claude Code's **native Task tools**:
+
+- **TaskCreate** - Create tasks with metadata.issueNumber
+- **TaskList** - List all tasks, filter by issueNumber
+- **TaskUpdate** - Update status (pending → in_progress → completed)
+- **TaskGet** - Get full task details
+
+View tasks with `ctrl+t` in Claude Code terminal.
 
 ## Required Environment
 
@@ -30,7 +32,8 @@ Project `.claude/settings.json`:
 {
   "plansDirectory": "plans",
   "env": {
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "65"
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",
+    "CLAUDE_CODE_TASK_LIST_ID": "coding-plugin-tasks"
   }
 }
 ```
@@ -38,7 +41,8 @@ Project `.claude/settings.json`:
 | Setting                           | Purpose                                       |
 | --------------------------------- | --------------------------------------------- |
 | `plansDirectory`                  | Store plans in `plans/` folder                |
-| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | Auto-compact at 65% (agents never hit limits) |
+| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | Auto-compact at 70% (agents never hit limits) |
+| `CLAUDE_CODE_TASK_LIST_ID`        | Persist tasks across sessions                 |
 
 | Hook         | Trigger           | Script           |
 | ------------ | ----------------- | ---------------- |

@@ -1,4 +1,4 @@
-# Coding Plugin v2.0.1
+# Coding Plugin v2.1.0
 
 **Build apps with AI, even if you can't code.**
 
@@ -15,11 +15,11 @@ A Claude Code plugin that turns your ideas into working software through a task-
 │     │            │                              │                    │
 │     ▼            ▼                              ▼                    ▼
 │   Explore     Create issue              Orchestrator runs      Merge or PR
-│   the idea    + task manifest           all tasks              + cleanup
+│   the idea    + native tasks            all tasks              + cleanup
 │                     │                         │                      │
 │                     ▼                         ▼                      ▼
-│               Output: #42              Auto-compact at 55%     Close issue
-│                                        No manual handover      Delete branch
+│               Output: #42              Auto-compact at 70%     Close issue
+│               (ctrl+t to view)         No manual handover      Delete branch
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -47,7 +47,7 @@ A Claude Code plugin that turns your ideas into working software through a task-
 /code:finalizer --pr    # Create PR for review
 ```
 
-**Interrupted?** Just run `/code:implement #42` again. The manifest tracks progress.
+**Interrupted?** Just run `/code:implement #42` again. Native tasks track progress (`ctrl+t` to view).
 
 ---
 
@@ -59,7 +59,8 @@ Add to your project's `.claude/settings.json`:
 {
   "plansDirectory": "plans",
   "env": {
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "65"
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",
+    "CLAUDE_CODE_TASK_LIST_ID": "coding-plugin-tasks"
   }
 }
 ```
@@ -67,7 +68,8 @@ Add to your project's `.claude/settings.json`:
 | Setting                           | Purpose                                               |
 | --------------------------------- | ----------------------------------------------------- |
 | `plansDirectory`                  | Store plans in `plans/` folder                        |
-| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | Auto-compact at 65% context (agents run indefinitely) |
+| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | Auto-compact at 70% context (agents run indefinitely) |
+| `CLAUDE_CODE_TASK_LIST_ID`        | Persist tasks across sessions (`ctrl+t` to view)      |
 
 Without these settings, the Task-based workflow may not work correctly.
 
@@ -139,7 +141,7 @@ Launch orchestrator to execute all tasks from the issue.
 - Updates GitHub issue status
 - Runs `/simplify` when complete
 
-**Resume:** Run the same command again. Orchestrator reads manifest and continues.
+**Resume:** Run the same command again. Orchestrator reads native tasks and continues.
 
 ---
 

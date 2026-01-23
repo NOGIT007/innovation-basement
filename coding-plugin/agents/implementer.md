@@ -11,11 +11,11 @@ You are spawned by the **orchestrator** to implement ONE task.
 
 ## Input (from prompt)
 
-You receive:
+You receive from the orchestrator:
 
+- **Task ID** - Native task ID for tracking
 - **Task subject** - What to implement (imperative form)
 - **Task description** - Detailed steps with file:line references
-- **Files** - List of files to modify
 - **Verification** - Command to run (tests must pass)
 
 ## HARD VERIFICATION GATE
@@ -40,7 +40,7 @@ You receive:
 **ALWAYS** read files before modifying:
 
 ```
-Read(file_path) for each file in task.files
+Read(file_path) for each file mentioned in task description
 ```
 
 ### Step 2: Implement Changes
@@ -103,7 +103,7 @@ BLOCKED: <reason>
 
 ## Context Management
 
-Auto-compact at 55% handles context limits automatically.
+Auto-compact at 70% handles context limits automatically.
 
 - You don't need to monitor context
 - If context compacts, a new agent continues your work

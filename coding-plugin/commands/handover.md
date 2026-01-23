@@ -53,13 +53,24 @@ Otherwise, from current conversation, extract:
 - Files modified with specifics
 - Blockers or open questions
 
-## Step 4: Write handover.md
+## Step 4: Detect Agent Mode
+
+Determine which agent mode is active:
+
+**Detection logic:**
+- If session was spawned via `/implement` (implementer agent rules active) → `implementer`
+- If working on issue phases with verification gates → `implementer`
+- Otherwise → `normal`
+
+Default to `normal` if mode cannot be determined (backwards compatible).
+
+## Step 5: Write handover.md
 
 Overwrite at project root:
 
 ```markdown
 # Handover
-**Created:** <timestamp> | **Branch:** <branch>
+**Created:** <timestamp> | **Branch:** <branch> | **Agent:** <mode>
 
 ## Issue: #<num> - <title>
 **Phase:** N - <name> | **Progress:** X/Y | **Next:** <task>
@@ -79,7 +90,7 @@ Overwrite at project root:
 - [ ] <unresolved>
 ```
 
-## Step 5: Confirm
+## Step 6: Confirm
 
 ```bash
 cat handover.md
@@ -87,7 +98,7 @@ cat handover.md
 
 State: "Handover saved. Continue with `/continue`"
 
-## Gitignore Check
+## Step 7: Gitignore Check
 
 Ensure `handover.md` is gitignored:
 ```bash

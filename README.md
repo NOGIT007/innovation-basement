@@ -1,4 +1,4 @@
-# Coding Plugin v2.0.0
+# Coding Plugin v2.0.1
 
 **Build apps with AI, even if you can't code.**
 
@@ -59,7 +59,7 @@ Add to your project's `.claude/settings.json`:
 {
   "plansDirectory": "plans",
   "env": {
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "55"
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "65"
   }
 }
 ```
@@ -67,7 +67,7 @@ Add to your project's `.claude/settings.json`:
 | Setting                           | Purpose                                               |
 | --------------------------------- | ----------------------------------------------------- |
 | `plansDirectory`                  | Store plans in `plans/` folder                        |
-| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | Auto-compact at 55% context (agents run indefinitely) |
+| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | Auto-compact at 65% context (agents run indefinitely) |
 
 Without these settings, the Task-based workflow may not work correctly.
 

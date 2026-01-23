@@ -26,13 +26,13 @@ Reference: https://ui.shadcn.com/
 - Use Shadcn font conventions (Inter default)
 - Import from `@/components/ui/*`
 
-| Need | Use |
-|------|-----|
-| Buttons | `<Button variant="...">` |
-| Forms | Shadcn Form + react-hook-form |
-| Modals | `<Dialog>` |
-| Lists | `<Card>` or `<Table>` |
-| Feedback | `<Toast>` via sonner |
+| Need     | Use                           |
+| -------- | ----------------------------- |
+| Buttons  | `<Button variant="...">`      |
+| Forms    | Shadcn Form + react-hook-form |
+| Modals   | `<Dialog>`                    |
+| Lists    | `<Card>` or `<Table>`         |
+| Feedback | `<Toast>` via sonner          |
 
 ## File Structure
 

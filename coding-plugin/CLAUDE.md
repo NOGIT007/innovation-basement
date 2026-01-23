@@ -30,7 +30,7 @@ Project `.claude/settings.json`:
 {
   "plansDirectory": "plans",
   "env": {
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "55"
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "65"
   }
 }
 ```
@@ -38,7 +38,7 @@ Project `.claude/settings.json`:
 | Setting                           | Purpose                                       |
 | --------------------------------- | --------------------------------------------- |
 | `plansDirectory`                  | Store plans in `plans/` folder                |
-| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | Auto-compact at 55% (agents never hit limits) |
+| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | Auto-compact at 65% (agents never hit limits) |
 
 | Hook         | Trigger           | Script           |
 | ------------ | ----------------- | ---------------- |

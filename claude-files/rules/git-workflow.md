@@ -6,15 +6,15 @@
 
 Use `gh` for GitHub operations. Stay in terminal.
 
-| Operation | Command |
-|-----------|---------|
-| Create issue | `gh issue create -t "..." -b "..."` |
+| Operation           | Command                                        |
+| ------------------- | ---------------------------------------------- |
+| Create issue        | `gh issue create -t "..." -b "..."`            |
 | Create issue (long) | `gh issue create -t "..." --body-file file.md` |
-| View issue | `gh issue view <number>` |
-| List issues | `gh issue list` |
-| Close issue | `gh issue close <number>` |
-| Create PR | `gh pr create -t "..." -b "..."` |
-| Create PR (long) | `gh pr create -t "..." --body-file file.md` |
+| View issue          | `gh issue view <number>`                       |
+| List issues         | `gh issue list`                                |
+| Close issue         | `gh issue close <number>`                      |
+| Create PR           | `gh pr create -t "..." -b "..."`               |
+| Create PR (long)    | `gh pr create -t "..." --body-file file.md`    |
 
 ---
 
@@ -33,10 +33,10 @@ git commit -m 'Short message'
 
 Use `.claude-` prefixed filenames that are gitignored and overwritten each time:
 
-| Use Case | Filename |
-|----------|----------|
-| Issue body | `.claude-issue-body.md` |
-| PR body | `.claude-pr-body.md` |
+| Use Case       | Filename                 |
+| -------------- | ------------------------ |
+| Issue body     | `.claude-issue-body.md`  |
+| PR body        | `.claude-pr-body.md`     |
 | Commit message | `.claude-commit-msg.txt` |
 
 ```bash
@@ -68,6 +68,7 @@ gh issue edit <number> --body-file .claude-issue-body.md
 ```
 
 > **Note:** Add these to your project's `.gitignore`:
+>
 > ```
 > .claude-issue-body.md
 > .claude-pr-body.md
@@ -113,24 +114,24 @@ EOF
 [Closes #123 if applicable]
 ```
 
-| Emoji | Type | Example |
-|-------|------|---------|
-| ✨ | Feature | `✨ feat: add auth` |
-| 🐛 | Bug fix | `🐛 fix: redirect loop` |
-| ♻️ | Refactor | `♻️ refactor: extract logic` |
-| 📝 | Docs | `📝 docs: update readme` |
-| 🧪 | Tests | `🧪 test: add unit tests` |
-| 🔧 | Config | `🔧 config: update eslint` |
+| Emoji | Type     | Example                      |
+| ----- | -------- | ---------------------------- |
+| ✨    | Feature  | `✨ feat: add auth`          |
+| 🐛    | Bug fix  | `🐛 fix: redirect loop`      |
+| ♻️    | Refactor | `♻️ refactor: extract logic` |
+| 📝    | Docs     | `📝 docs: update readme`     |
+| 🧪    | Tests    | `🧪 test: add unit tests`    |
+| 🔧    | Config   | `🔧 config: update eslint`   |
 
 ---
 
 ## Branch Conventions
 
-| Branch | Purpose |
-|--------|---------|
-| `main` | Production |
+| Branch           | Purpose      |
+| ---------------- | ------------ |
+| `main`           | Production   |
 | `feature/<name>` | New features |
-| `fix/<name>` | Bug fixes |
+| `fix/<name>`     | Bug fixes    |
 
 ---
 

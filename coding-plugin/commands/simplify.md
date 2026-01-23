@@ -14,19 +14,23 @@ Expert code simplification. Focus: clarity, consistency, maintainability while p
 ## Step 1: Determine Scope
 
 If `$ARGUMENTS` is empty or `--recent`:
+
 ```bash
 git diff --name-only HEAD~5
 ```
 
 If `$ARGUMENTS` is `--all`:
+
 - Scan entire src/ directory
 
 If `$ARGUMENTS` is a path:
+
 - Use that specific file/folder
 
 ## Step 2: Analyze Each File
 
 For each file in scope:
+
 1. Read the file
 2. Identify simplification opportunities:
    - Unnecessary complexity/nesting
@@ -39,6 +43,7 @@ For each file in scope:
 ## Step 3: Detect Bugs
 
 Flag potential bugs:
+
 - Unhandled edge cases
 - Missing null checks
 - Incorrect error handling
@@ -48,17 +53,22 @@ Flag potential bugs:
 **If bug found:**
 
 1. Write issue body to `.claude-issue-body.md` using Write tool:
+
    ```markdown
    ## Bug Description
+
    [what's wrong]
 
    ## Location
+
    `file.ts:line`
 
    ## Suggested Fix
+
    [approach]
 
    ---
+
    Created by `/code:simplify`
    ```
 
@@ -72,10 +82,12 @@ Flag potential bugs:
 ## Step 4: Apply Simplifications
 
 For safe refactors (no behavior change):
+
 1. Apply edit
 2. Verify tests still pass
 
 **Rules:**
+
 - NEVER change functionality
 - Prefer explicit over compact
 - Delete > Add
@@ -93,6 +105,7 @@ If tests fail after simplification -> revert and report.
 ## Step 6: Report Summary
 
 Output:
+
 - Files simplified: [list]
 - Changes made: [summary]
 - Issues created: [#numbers with links]

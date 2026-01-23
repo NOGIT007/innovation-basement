@@ -6,13 +6,13 @@
 
 Before modifying any function/method, check if changes affect callers:
 
-| Change Type | Impact |
-|-------------|--------|
-| Parameter added/removed | All callers must update |
-| Parameter type changed | Callers may pass wrong type |
-| Return type changed | Callers may handle incorrectly |
-| Function renamed | All imports/calls break |
-| Exception behavior changed | Callers may not catch |
+| Change Type                | Impact                         |
+| -------------------------- | ------------------------------ |
+| Parameter added/removed    | All callers must update        |
+| Parameter type changed     | Callers may pass wrong type    |
+| Return type changed        | Callers may handle incorrectly |
+| Function renamed           | All imports/calls break        |
+| Exception behavior changed | Callers may not catch          |
 
 ## Finding Callers
 

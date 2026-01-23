@@ -15,6 +15,7 @@ git log --oneline -${ARGUMENTS:-20}
 ```
 
 Parse each commit for:
+
 - Issue references (#N)
 - Commit type (feature, fix, refactor)
 - Files changed scope
@@ -28,6 +29,7 @@ gh issue view <N> --json title,body,state
 ```
 
 Check:
+
 - Did commit match issue scope?
 - Was it a single-phase or multi-commit?
 - Any follow-up "fix" commits?
@@ -45,17 +47,20 @@ Keep relevant existing lessons, remove outdated ones (>30 days unless still appl
 Look for:
 
 ### Patterns That Worked
+
 - Commits that closed issues cleanly
 - Good commit message patterns
 - Effective phase breakdowns
 
 ### Mistakes Repeated
+
 - Reverts or "oops" commits
 - Fix commits right after features
 - Scope creep (commit exceeded issue)
 - Missing tests after features
 
 ### Project Quirks
+
 - Environment-specific issues
 - Framework gotchas
 - Config requirements
@@ -69,15 +74,18 @@ Write or update `LESSONS.md` (max 50 lines):
 ```markdown
 # Project Lessons
 
-*Last updated: [date] from [N] commits*
+_Last updated: [date] from [N] commits_
 
 ## Patterns That Work
+
 - [Specific pattern with issue reference if applicable]
 
 ## Mistakes to Avoid
+
 - [Specific mistake - how to prevent]
 
 ## Project Quirks
+
 - [Specific quirk - workaround]
 ```
 

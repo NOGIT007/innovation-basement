@@ -1,4 +1,4 @@
-# Coding Plugin User Guide v2.0.0
+# Coding Plugin User Guide v2.0.1
 
 Simple workflow: **Plan → Implement → Finalize** (fully autonomous)
 
@@ -220,18 +220,18 @@ Add to your project's `.claude/settings.json`:
 {
   "plansDirectory": "plans",
   "env": {
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "55"
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "65"
   }
 }
 ```
 
-This enables auto-compact at 55% context, allowing agents to run indefinitely.
+This enables auto-compact at 65% context, allowing agents to run indefinitely.
 
 ## Quick Reference
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│              CODING PLUGIN v2.0.0                   │
+│              CODING PLUGIN v2.0.1                   │
 ├─────────────────────────────────────────────────────┤
 │ /code:plan-issue <desc>    Plan + Issue + Manifest  │
 │ /code:implement #<num>     Orchestrator runs tasks  │

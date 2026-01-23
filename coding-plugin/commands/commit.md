@@ -19,11 +19,13 @@ If nothing staged → Tell user to stage changes first (`git add`).
 ## Step 2: Analyze Changes
 
 Read the staged diff:
+
 ```bash
 git diff --cached
 ```
 
 Determine:
+
 - Type: feat/fix/refactor/docs/test/config
 - Scope: affected area (optional)
 - Summary: what changed and why
@@ -40,14 +42,14 @@ Match the project's commit style.
 
 Format: `<emoji> <type>: <subject>`
 
-| Emoji | Type | Use for |
-|-------|------|---------|
-| ✨ | feat | New features |
-| 🐛 | fix | Bug fixes |
-| ♻️ | refactor | Code restructuring |
-| 📝 | docs | Documentation |
-| 🧪 | test | Tests |
-| 🔧 | config | Configuration |
+| Emoji | Type     | Use for            |
+| ----- | -------- | ------------------ |
+| ✨    | feat     | New features       |
+| 🐛    | fix      | Bug fixes          |
+| ♻️    | refactor | Code restructuring |
+| 📝    | docs     | Documentation      |
+| 🧪    | test     | Tests              |
+| 🔧    | config   | Configuration      |
 
 ## Step 5: Execute Commit
 
@@ -56,6 +58,7 @@ Format: `<emoji> <type>: <subject>`
 **Never use `git commit -m`** — emojis and special characters cause sandbox errors.
 
 **Always:**
+
 1. Write message to `.claude-commit-msg.txt` using Write tool
 2. Commit with `-F` flag
 
@@ -64,6 +67,7 @@ git commit -F .claude-commit-msg.txt
 ```
 
 **Example `.claude-commit-msg.txt`:**
+
 ```
 ✨ feat: add user authentication
 
@@ -77,6 +81,7 @@ Closes #123
 ### Validation (REQUIRED)
 
 Before committing, verify file exists:
+
 ```bash
 if [ ! -s .claude-commit-msg.txt ]; then
   echo "❌ ERROR: Commit message file missing. Use Write tool first."

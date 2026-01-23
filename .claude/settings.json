@@ -1,6 +1,6 @@
 {
   "plansDirectory": "plans",
   "env": {
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "55"
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "65"
   }
 }

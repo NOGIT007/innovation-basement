@@ -17,6 +17,7 @@ git status --short
 If on main/master → Warn user to create feature branch.
 
 **If uncommitted changes exist:**
+
 1. Stage all changes: `git add -A`
 2. Auto-commit with: `Skill("coding-plugin:commit")`
 3. Continue to Step 2
@@ -29,6 +30,7 @@ git diff main...HEAD --stat
 ```
 
 Identify:
+
 - All commits on this branch
 - Files changed
 - Purpose of the changes
@@ -36,18 +38,23 @@ Identify:
 ## Step 3: Generate PR Description
 
 Format:
+
 ```markdown
 ## Summary
+
 [1-2 sentences describing what this PR does]
 
 ## Changes
+
 - [Bullet points of key changes]
 
 ## Testing
+
 - [ ] Tests pass
 - [ ] Manual testing done
 
 ---
+
 Created with `/code:pr`
 ```
 
@@ -64,6 +71,7 @@ Write description to `.claude-pr-body.md` using Write tool.
 ### Validation (REQUIRED)
 
 Before creating PR, verify file exists:
+
 ```bash
 if [ ! -s .claude-pr-body.md ]; then
   echo "❌ ERROR: .claude-pr-body.md missing or empty."
@@ -80,12 +88,14 @@ gh pr create --title "<type>: <summary>" --body-file .claude-pr-body.md
 ```
 
 Title format matches commit convention:
+
 - `feat: add user authentication`
 - `fix: resolve login redirect loop`
 
 ## Step 6: Output Result
 
 Show:
+
 - PR URL
 - Title
 - Target branch (usually main)

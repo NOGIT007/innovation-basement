@@ -1,4 +1,4 @@
-# Coding Plugin v2.1.0
+# Coding Plugin v2.1.1
 
 **Build apps with AI, even if you can't code.**
 
@@ -60,16 +60,16 @@ Add to your project's `.claude/settings.json`:
   "plansDirectory": "plans",
   "env": {
     "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",
-    "CLAUDE_CODE_TASK_LIST_ID": "coding-plugin-tasks"
+    "CLAUDE_CODE_TASK_LIST_ID": "<your-project-name>-tasks"
   }
 }
 ```
 
-| Setting                           | Purpose                                               |
-| --------------------------------- | ----------------------------------------------------- |
-| `plansDirectory`                  | Store plans in `plans/` folder                        |
-| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | Auto-compact at 70% context (agents run indefinitely) |
-| `CLAUDE_CODE_TASK_LIST_ID`        | Persist tasks across sessions (`ctrl+t` to view)      |
+| Setting                           | Purpose                                                  |
+| --------------------------------- | -------------------------------------------------------- |
+| `plansDirectory`                  | Store plans in `plans/` folder                           |
+| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | Auto-compact at 70% context (agents run indefinitely)    |
+| `CLAUDE_CODE_TASK_LIST_ID`        | Unique per project to avoid conflicts (`ctrl+t` to view) |
 
 Without these settings, the Task-based workflow may not work correctly.
 

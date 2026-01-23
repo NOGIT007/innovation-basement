@@ -33,7 +33,7 @@ Project `.claude/settings.json`:
   "plansDirectory": "plans",
   "env": {
     "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",
-    "CLAUDE_CODE_TASK_LIST_ID": "coding-plugin-tasks"
+    "CLAUDE_CODE_TASK_LIST_ID": "<your-project-name>-tasks"
   }
 }
 ```
@@ -42,7 +42,7 @@ Project `.claude/settings.json`:
 | --------------------------------- | --------------------------------------------- |
 | `plansDirectory`                  | Store plans in `plans/` folder                |
 | `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | Auto-compact at 70% (agents never hit limits) |
-| `CLAUDE_CODE_TASK_LIST_ID`        | Persist tasks across sessions                 |
+| `CLAUDE_CODE_TASK_LIST_ID`        | Unique per project to avoid conflicts         |
 
 | Hook         | Trigger           | Script           |
 | ------------ | ----------------- | ---------------- |

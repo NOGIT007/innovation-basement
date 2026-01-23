@@ -6,20 +6,47 @@
 
 ```
 coding-plugin/
-├── agents/        # implementer
-├── commands/      # plan-issue, implement, handover, lessons, etc.
+├── agents/        # orchestrator, implementer
+├── commands/      # plan-issue, implement, finalizer, lessons, etc.
 ├── hooks/         # PostToolUse, Stop, SessionEnd, SubagentStop, PreCompact
 ├── scripts/       # log-error, check-context, verify-gate, etc.
+├── schemas/       # task.json schema
 └── templates/     # lessons-learned
 ```
 
-| Hook | Trigger | Script |
-|------|---------|--------|
-| PostToolUse | After Bash | log-error.sh |
-| Stop | Session pause | check-context.sh |
-| SessionEnd | Session ends | session-end.sh |
-| SubagentStop | Agent done | verify-gate.sh |
-| PreCompact | Before compaction | pre-compact.sh |
+## Task Storage
+
+```
+.claude/tasks/
+└── <issue-number>/
+    └── manifest.json    # Task list metadata + status
+```
+
+## Required Environment
+
+Project `.claude/settings.json`:
+
+```json
+{
+  "plansDirectory": "plans",
+  "env": {
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "55"
+  }
+}
+```
+
+| Setting                           | Purpose                                       |
+| --------------------------------- | --------------------------------------------- |
+| `plansDirectory`                  | Store plans in `plans/` folder                |
+| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | Auto-compact at 55% (agents never hit limits) |
+
+| Hook         | Trigger           | Script           |
+| ------------ | ----------------- | ---------------- |
+| PostToolUse  | After Bash        | log-error.sh     |
+| Stop         | Session pause     | check-context.sh |
+| SessionEnd   | Session ends      | session-end.sh   |
+| SubagentStop | Agent done        | verify-gate.sh   |
+| PreCompact   | Before compaction | pre-compact.sh   |
 
 ## Project Memory
 
@@ -35,6 +62,7 @@ coding-plugin/
 3. `README.md` (root) - update title version
 
 **Version bumps:**
+
 - Patch (x.x.X): Bug fixes, docs-only changes
 - Minor (x.X.0): New features, workflow additions
 - Major (X.0.0): Breaking changes

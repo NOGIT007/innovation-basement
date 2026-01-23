@@ -1,7 +1,7 @@
 {
   "name": "coding-plugin",
-  "version": "1.6.2",
-  "description": "Phased coding workflow with auto-phase management. plan-issue → implement (spawns subagents per phase, auto-handover at 55% context).",
+  "version": "2.0.0",
+  "description": "Task-driven coding workflow with orchestrator agent. plan-issue → implement (orchestrator spawns implementer per task, auto-compact at 55%).",
   "author": {
     "name": "Kennet Kusk"
   },
@@ -10,10 +10,10 @@
     "coding",
     "workflow",
     "github",
-    "phased-development",
+    "task-driven",
     "agents",
+    "orchestrator",
     "verification",
-    "auto-phase",
-    "context-management"
+    "auto-compact"
   ]
 }

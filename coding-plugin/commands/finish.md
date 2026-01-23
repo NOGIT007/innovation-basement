@@ -1,10 +1,12 @@
 ---
 allowed-tools: Bash(gh issue close:*), Bash(git checkout:*), Bash(git pull:*), Bash(git merge:*), Bash(git push:*), Bash(git branch:*)
-description: Close issue, merge branch to main, cleanup
+description: Close issue, merge branch to main, cleanup (use /code:finalizer for new workflow)
 argument-hint: [issue-number]
 ---
 
-# Finish
+# Finish (Legacy)
+
+> **Recommended:** Use `/code:finalizer` instead. It supports `--pr` for pull request creation and validates task completion.
 
 Wrap up after implementation: merge branch to main, close issue, cleanup.
 
@@ -15,6 +17,7 @@ Arguments: $ARGUMENTS (optional issue number)
 If `$ARGUMENTS` provided → use as issue number.
 
 Otherwise, extract from current branch:
+
 ```bash
 git branch --show-current
 # e.g., feature/10-add-auth → issue #10
@@ -48,6 +51,15 @@ gh issue close <issue-number>
 ## Step 4: Report
 
 Done:
+
 - ✅ Branch `<branch>` merged to main
 - ✅ Branch deleted (local + remote)
 - ✅ Issue #<number> closed
+
+---
+
+**Note:** This command is maintained for backwards compatibility. For new features, use `/code:finalizer [--pr]` which:
+
+- Validates all tasks are complete
+- Supports `--pr` flag for pull request creation
+- Has better error handling

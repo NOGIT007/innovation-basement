@@ -1,0 +1,98 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Task Manifest Schema",
+  "description": "Schema for coding-plugin task management",
+  "definitions": {
+    "taskStatus": {
+      "type": "string",
+      "enum": ["pending", "in_progress", "completed", "blocked"]
+    },
+    "task": {
+      "type": "object",
+      "required": ["id", "subject", "status"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique task identifier (e.g., '001', '002')"
+        },
+        "subject": {
+          "type": "string",
+          "description": "Brief title for the task (imperative form)"
+        },
+        "activeForm": {
+          "type": "string",
+          "description": "Present continuous form for spinner display"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed implementation steps with file:line references"
+        },
+        "status": {
+          "$ref": "#/definitions/taskStatus"
+        },
+        "blockedBy": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Task IDs that must complete before this task"
+        },
+        "blocks": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Task IDs that wait on this task"
+        },
+        "verification": {
+          "type": "string",
+          "description": "Command to verify task completion (e.g., 'bun run typecheck')"
+        },
+        "files": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Files to modify (e.g., 'src/auth.ts:15-30')"
+        },
+        "commits": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Commit SHAs for this task"
+        }
+      }
+    }
+  },
+  "type": "object",
+  "required": ["issueNumber", "title", "status", "tasks"],
+  "properties": {
+    "issueNumber": {
+      "type": "integer",
+      "description": "GitHub issue number"
+    },
+    "title": {
+      "type": "string",
+      "description": "Feature title from GitHub issue"
+    },
+    "taskListId": {
+      "type": "string",
+      "description": "Claude Code task list ID for linking"
+    },
+    "branch": {
+      "type": "string",
+      "description": "Feature branch name"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Manifest creation timestamp"
+    },
+    "updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last update timestamp"
+    },
+    "status": {
+      "$ref": "#/definitions/taskStatus"
+    },
+    "tasks": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/task" },
+      "description": "List of tasks for this feature"
+    }
+  }
+}

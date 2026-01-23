@@ -1,90 +1,131 @@
-# Coding Plugin User Guide v1.0.0
+# Coding Plugin User Guide v2.0.0
 
-Simple workflow: **Plan → Implement** (auto-manages context)
+Simple workflow: **Plan → Implement → Finalize** (fully autonomous)
 
 ## Quick Start
 
 ```bash
-# 1. Plan a feature (creates GitHub issue + branch)
+# 1. Plan a feature (creates GitHub issue + task manifest)
 /code:plan-issue add dark mode toggle
 
-# 2. Implement - runs autonomously until done
+# 2. Implement - orchestrator runs all tasks autonomously
 /code:implement #42
+
+# 3. Finalize - merge or create PR
+/code:finalizer --pr   # Create PR for review
+/code:finalizer        # Merge directly to main
 ```
 
-**That's it!** `/implement` now handles everything:
-- Spawns fresh subagent per phase (clean context)
-- Auto-handover at 55% context → spawns continue
-- Loops until all phases complete
-- No manual `/handover` needed
+**That's it!** The orchestrator handles everything:
 
-### Manual Flow (still supported)
+- Spawns implementer per task (isolated context)
+- Auto-compact at 55% → continues seamlessly
+- Commits after each task
+- Updates GitHub issue status
+- Runs simplify automatically
+- No manual handover needed
 
-```bash
-# End session manually
-/code:handover
+## What's New in v2.0.0
 
-# Continue next session
-/code:continue
-```
+| Feature      | Before (v1.x)             | Now (v2.0)                  |
+| ------------ | ------------------------- | --------------------------- |
+| Architecture | Commands control tasks    | Tasks control agents        |
+| Context      | Manual handover           | Auto-compact at 55%         |
+| Resume       | `/handover` → `/continue` | Just run `/implement` again |
+| State        | GitHub checkboxes         | Task manifest JSON          |
+| Finalize     | `/finish`                 | `/finalizer [--pr]`         |
 
 ## Commands
 
 ### `/code:plan-issue <feature>`
 
-Research codebase and create a GitHub issue with phases.
+Research codebase and create a GitHub issue with task manifest.
 
 ```bash
 /code:plan-issue add user authentication
 ```
 
 **What happens:**
-1. Researches your codebase (patterns, files, dependencies)
-2. Creates implementation plan with phases
-3. Asks for confirmation
-4. Creates GitHub issue with checkboxes
 
-**Output:** GitHub issue URL like `#123`
+1. Researches your codebase (patterns, files, dependencies)
+2. Creates task list with verification commands
+3. Asks for confirmation
+4. Creates GitHub issue with task headlines
+5. Writes task manifest to `.claude/tasks/<issue>/manifest.json`
+
+**Output:** GitHub issue URL + manifest path
 
 ### `/code:implement #<number>`
 
-Work through phases from a GitHub issue.
+Launch orchestrator to execute all tasks.
 
 ```bash
 /code:implement #123
 ```
 
 **What happens:**
-1. Fetches issue and parses phases
-2. Identifies current phase (first unchecked)
-3. Implements tasks in order
-4. Updates checkboxes when done
-5. Reports progress
 
-**Between sessions:** Just run `/code:implement #123` again - it reads the checkboxes to know where you left off.
+1. Validates issue is open
+2. Ensures feature branch exists
+3. Reads task manifest
+4. Spawns orchestrator agent
+5. Orchestrator loops through tasks:
+   - Spawns implementer for each task
+   - Commits after each task
+   - Updates GitHub issue status
+6. Runs simplify when all tasks complete
+7. Reports: "Run `/code:finalizer [--pr]` to finish"
 
-### `/code:handover`
+**Resume:** Just run `/code:implement #123` again. The orchestrator reads the manifest and continues from where it left off.
 
-Generate handover text for next session.
+### `/code:finalizer [--pr] [issue-number]`
+
+Finalize the feature: merge or create PR, close issue, cleanup.
 
 ```bash
-/code:handover
+/code:finalizer --pr   # Create pull request for review
+/code:finalizer        # Merge directly to main
 ```
 
-**Output:**
+**What happens:**
+
+1. Verifies all tasks complete
+2. Creates PR (if `--pr`) or merges to main
+3. Closes GitHub issue
+4. Deletes feature branch (local + remote)
+
+### `/code:commit`
+
+Generate conventional commit from staged changes.
+
+```bash
+/code:commit
 ```
-## Handover
 
-**Issue:** #123 - Add dark mode toggle
-**Phase:** Phase 2 - Theme context
-**Branch:** feature/123-dark-mode
-**Status:** Phase 1 complete, starting theme context
+### `/code:pr`
 
-### Next Steps
-- [ ] Create ThemeContext provider
+Create GitHub PR with auto-generated description.
+
+```bash
+/code:pr
 ```
 
-Copy this and paste at the start of your next session.
+### `/code:simplify`
+
+Clean up code after implementation.
+
+```bash
+/code:simplify
+```
+
+### `/code:lessons [N]`
+
+Analyze recent commits and update LESSONS.md.
+
+```bash
+/code:lessons       # Analyze last 5 commits
+/code:lessons 10    # Analyze last 10 commits
+```
 
 ## Typical Flow
 
@@ -94,31 +135,67 @@ Copy this and paste at the start of your next session.
 # Plan and create issue
 /code:plan-issue add export to CSV feature
 
-# Start implementing
+# Start implementing - runs autonomously
 /code:implement #45
 
-# ... work through Phase 1 ...
+# ... orchestrator runs all tasks ...
+# Output: "All tasks complete. Run /code:finalizer [--pr]"
 
-# End session
-/code:handover
+# Create PR
+/code:finalizer --pr
 ```
 
-### Day 2: Continue
+### Interrupted Session
+
+If you need to stop mid-implementation:
 
 ```bash
-# Paste yesterday's handover, then:
+# Next session - just run implement again
 /code:implement #45
 
-# ... continues from Phase 2 ...
+# Orchestrator reads manifest, continues from last task
 ```
 
-### Day 3: Finish
+No handover file needed. The manifest tracks progress.
 
-```bash
-/code:implement #45
+## Architecture
 
-# All phases complete - issue auto-closes
 ```
+User → /implement #42 (thin launcher)
+         ↓
+    Task(orchestrator) - Master controller
+         ↓
+         ├── Task(implementer) - Task 1
+         ├── Task(implementer) - Task 2
+         ├── Task(implementer) - Task 3
+         └── Task(simplifier) - Cleanup
+         ↓
+    "Run /finalizer [--pr]"
+```
+
+**Key principle:** Intelligence lives in agents, not commands.
+
+## Agents
+
+| Agent          | Purpose                                  |
+| -------------- | ---------------------------------------- |
+| `orchestrator` | Controls task lifecycle, spawns workers  |
+| `implementer`  | Implements single task with verification |
+
+## Task Storage
+
+```
+.claude/tasks/
+└── <issue-number>/
+    └── manifest.json
+```
+
+The manifest tracks:
+
+- Task list with status (pending/in_progress/completed)
+- Dependencies (blockedBy/blocks)
+- Verification commands
+- File references
 
 ## Rules
 
@@ -135,31 +212,33 @@ Copy this and paste at the start of your next session.
 - **Avoid AI clichés** - No Inter font, purple gradients
 - **Match complexity** - Simple design = simple code
 
-## Tips
+## Required Configuration
 
-### Clear Sessions Often
+Add to your project's `.claude/settings.json`:
 
-Your workflow supports clearing sessions between phases. The GitHub issue tracks progress, not the chat.
+```json
+{
+  "plansDirectory": "plans",
+  "env": {
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "55"
+  }
+}
+```
 
-### Keep Issues Updated
-
-If you manually change something, update the issue checkboxes so `/code:implement` knows the current state.
-
-### One Issue at a Time
-
-Focus on one feature issue. Complete it before starting another.
+This enables auto-compact at 55% context, allowing agents to run indefinitely.
 
 ## Quick Reference
 
 ```
-┌─────────────────────────────────────────────┐
-│         CODING PLUGIN v1.0.0                │
-├─────────────────────────────────────────────┤
-│ /code:plan-issue <desc>  Plan + Issue       │
-│ /code:implement #<num>   Auto-loop phases   │
-├─────────────────────────────────────────────┤
-│ Flow: Plan → Implement (auto until done)    │
-│                                             │
-│ Manual: /handover + /continue (optional)    │
-└─────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────┐
+│              CODING PLUGIN v2.0.0                   │
+├─────────────────────────────────────────────────────┤
+│ /code:plan-issue <desc>    Plan + Issue + Manifest  │
+│ /code:implement #<num>     Orchestrator runs tasks  │
+│ /code:finalizer [--pr]     Merge or PR + cleanup    │
+├─────────────────────────────────────────────────────┤
+│ Flow: Plan → Implement → Finalizer (autonomous)     │
+│                                                     │
+│ Resume: Just run /implement again (reads manifest)  │
+└─────────────────────────────────────────────────────┘
 ```

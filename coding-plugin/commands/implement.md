@@ -1,50 +1,25 @@
 ---
 context: fork
-allowed-tools: Bash(gh issue view:*), Bash(gh issue edit:*), Bash(git:*), Read, Grep, Glob, Edit, Write, Task, Skill
-description: Start implementation from a GitHub issue URL
-argument-hint: #<issue-number> or <issue-url>
+allowed-tools: Bash(gh issue view:*), Bash(git:*), Read, Task
+description: Start implementation from a GitHub issue
+argument-hint: #<issue-number>
 ---
 
 # Implement from GitHub Issue
 
 Issue: $ARGUMENTS
 
-## Step 1: Fetch Issue
+This is a **thin launcher** that spawns the orchestrator agent.
+
+## Step 1: Validate Issue
 
 ```bash
-gh issue view <number> --json title,body,state
+gh issue view <number> --json state,title -q '.state + " " + .title'
 ```
 
-Parse the issue body to extract:
-- **Goal**: What we're building
-- **Phases**: Implementation phases with checkboxes
-- **Current phase**: First unchecked phase
+If state is "CLOSED" → error: "Issue is closed."
 
-## Step 2: Identify Current Phase
-
-Look for the first phase with unchecked `- [ ]` tasks.
-
-If all phases complete → proceed to **Step 6: Completion**.
-
-## Step 2.5: Load Agent Context
-
-Before executing, prepare for verification:
-
-1. **Read implementer agent definition:**
-   - Load `${CLAUDE_PLUGIN_ROOT}/agents/implementer.md`
-   - Internalize the **HARD VERIFICATION GATE** rules
-
-2. **Detect test command** (in order):
-   - `package.json` with `"test"` script -> `bun test` or `npm test`
-   - `Makefile` with `test:` target -> `make test`
-   - `pyproject.toml` -> `uv run pytest` or `pytest`
-   - `Cargo.toml` -> `cargo test`
-   - `.claude/CLAUDE.md` with `## Verification` section -> use specified command
-   - If none found: Ask user for test command
-
-## Step 2.7: Ensure Feature Branch
-
-If not on feature branch for this issue:
+## Step 2: Ensure Feature Branch
 
 ```bash
 ISSUE_NUM=<from arguments>
@@ -59,121 +34,59 @@ if [[ "$CURRENT_BRANCH" != feature/${ISSUE_NUM}-* ]]; then
 fi
 ```
 
-## Step 3: Execute Phase via Subagent
+## Step 3: Verify Task Manifest
 
-**Auto-Phase Management:** Spawn a fresh subagent for each phase to maintain clean context.
+Check for task manifest:
 
-```
-For each phase with unchecked [ ] tasks:
-  1. Spawn Task(implementer subagent) with phase context
-  2. Subagent implements tasks, monitors context usage
-  3. If context ≥55% → Skill("handover") → return "HANDOVER"
-  4. If subagent returns "HANDOVER" → spawn fresh subagent for SAME phase
-  5. If subagent returns "COMPLETE" → move to next phase
+```bash
+cat .claude/tasks/<number>/manifest.json 2>/dev/null
 ```
 
-### Spawn Implementer Subagent
+**If manifest exists:**
 
-Use the Task tool with `subagent_type: coding-plugin:implementer`:
+- Read manifest to understand task state
+- Continue to Step 4
+
+**If manifest missing:**
+
+Error: "Task manifest not found. Run `/code:plan-issue` first to create the issue with task structure."
+
+> **Note:** For backwards compatibility with old issues (without manifests), you may fall back to parsing GitHub issue checkboxes. However, the Task-based workflow is preferred.
+
+## Step 4: Launch Orchestrator
+
+Spawn the orchestrator agent to manage all task execution:
 
 ```
 Task(
-  subagent_type: "coding-plugin:implementer",
+  subagent_type: "coding-plugin:orchestrator",
   prompt: """
-  Issue #<number>: <title>
+  Issue: #<number>
+  Title: <title>
+  Manifest: .claude/tasks/<number>/manifest.json
 
-  Current Phase: <phase-name>
-
-  Tasks:
-  - [ ] Task 1
-  - [ ] Task 2
-  ...
-
-  Files: <file-list>
-
-  Test command: <detected-command>
-
-  Implement all tasks in this phase. Monitor context usage.
-  If context reaches 55%, call Skill("coding-plugin:handover") and return.
+  Execute all pending tasks for this feature.
+  Update manifest and GitHub issue as you complete each task.
+  Run /simplify when all tasks are done.
   """
 )
 ```
 
-### Context Monitoring (Inside Subagent)
+## Done
 
-The implementer subagent monitors `context_window.used_percentage`:
+The orchestrator now controls execution:
 
-- **Below 55%**: Continue implementing
-- **At 55%**:
-  1. Stop current work cleanly
-  2. Call `Skill("coding-plugin:handover")` to save state
-  3. Return summary to caller
+1. Reads manifest to find pending tasks
+2. Spawns implementer for each task
+3. Commits after each task
+4. Updates GitHub issue status
+5. Runs simplify when complete
+6. Reports: "Run /code:finalizer [--pr] to finish"
 
-Caller spawns fresh subagent to continue (effective context clear).
+You will see progress as tasks complete.
 
-### Phase Execution Flow
+## Resuming Work
 
-For the current phase:
-1. **Read the tasks** - ALWAYS READ CODE BEFORE CHANGING: Search thoroughly for key facts, patterns, and conventions
-2. **Identify files** - Check the `Files:` line for affected files
-3. **Implement** - Complete each task in order
-4. **Test (VERIFICATION GATE)** - Run test command, verify exit code 0
-   - If tests **fail**: Fix issues, re-run tests, repeat until passing
-   - If tests **pass**: Log "Tests passed" with summary
-   - **GATE: Cannot mark [x] until tests pass**
-5. **Commit** - Use descriptive commit message (only after tests pass)
+To resume interrupted work, simply run `/code:implement #<number>` again.
 
-### Verification Gate
-
-**BLOCKED:** Cannot mark `[x]` until tests pass (exit code 0).
-
-**Rule:** NEVER mark a task `[x]` without passing tests. No exceptions.
-
-### Git Discipline
-
-- Branch: `feature/<issue-number>-<short-desc>` (if not already on it)
-- Commits: Small, atomic, descriptive
-- Format: `✨ <description>` for features, `🐛 <description>` for fixes
-- **Smart Commit:** Use `/commit` for auto-generated conventional commits
-
-## Step 4: Update Issue
-
-After completing phase tasks:
-
-### ⚠️ Always Use --body-file
-
-**Never use `--body "..."`** — fails with special characters in sandbox.
-
-1. Read `.claude-issue-body.md` first (if exists), then Write updated body
-2. Update issue:
-   ```bash
-   gh issue edit <number> --body-file .claude-issue-body.md
-   ```
-
-Mark completed tasks with `[x]`.
-
-## Step 5: Report Progress
-
-Tell user:
-- What was completed
-- What's next (next phase or done)
-- Any blockers encountered
-
-## ⚠️ MANDATORY: Step 6 - Completion
-
-After all phases are marked `[x]`, **DO NOT SKIP** this step:
-
-**Sequence (in order):**
-1. **AUTO-RUN** `Skill("coding-plugin:simplify")` - do NOT ask, just run it (unless `--no-simplify`)
-2. Report: files simplified, issues created (if any)
-3. Ask user: "All phases complete. Close issue #<number>?"
-4. Wait for explicit "yes" before running `gh issue close`
-
-**Never auto-close** - user approval required for close only (simplify runs automatically)
-
-## Rules
-
-- **Follow the plan** - Don't deviate from the issue phases
-- **One phase at a time** - Complete current phase before moving on
-- **Update checkboxes** - Keep issue in sync with progress
-- **Ask if unclear** - Don't guess, ask the user
+The orchestrator reads the manifest and continues from where it left off. No handover needed.

@@ -4,3 +4,10 @@ handover.md
 .claude-issue-body.md
 .claude-pr-body.md
 .claude-commit-msg.txt
+
+# Plan files (keep plans/ folder tracked)
+plans/*.md
+
+# Task storage (keep structure, track manifests)
+.claude/tasks/**/manifest.json
+!.claude/tasks/.gitkeep

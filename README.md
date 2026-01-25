@@ -1,4 +1,4 @@
-# Coding Plugin v2.1.1
+# Coding Plugin v2.2.0
 
 **Build apps with AI, even if you can't code.**
 
@@ -136,7 +136,7 @@ Launch orchestrator to execute all tasks from the issue.
 - Validates issue is open
 - Creates feature branch
 - Spawns orchestrator agent
-- Orchestrator runs each task sequentially
+- Orchestrator runs tasks in parallel (up to 5 concurrent)
 - Commits after each task
 - Updates GitHub issue status
 - Runs `/simplify` when complete
@@ -227,9 +227,11 @@ User
   ▼
 Task(orchestrator)       ← Master controller
   │
-  ├── Task(implementer)  ← Task 1
-  ├── Task(implementer)  ← Task 2
-  ├── Task(implementer)  ← Task 3
+  ├─┬─ Task(implementer)  ← Task 1 ─┐
+  │ ├─ Task(implementer)  ← Task 2 ─┼→ parallel
+  │ └─ Task(implementer)  ← Task 3 ─┘
+  │
+  ├── Task(implementer)  ← Task 4 (blocked by 1,2,3)
   └── Task(simplifier)   ← Cleanup
   │
   ▼
@@ -237,6 +239,16 @@ Task(orchestrator)       ← Master controller
 ```
 
 **Key principle:** Intelligence lives in agents, not commands.
+
+### Parallel Execution
+
+```
+Task 1 ─┐
+Task 2 ─┼→ all complete → Task 4 (blocked by 1,2,3)
+Task 3 ─┘
+```
+
+Tasks without dependencies run in parallel. Blocked tasks wait for their dependencies to complete.
 
 ---
 

@@ -1,4 +1,4 @@
-# Coding Plugin v2.2.0
+# Coding Plugin v2.2.1
 
 **Build apps with AI, even if you can't code.**
 
@@ -202,16 +202,6 @@ Analyze recent commits and update LESSONS.md with patterns.
 ```bash
 /code:lessons        # Last 5 commits
 /code:lessons 10     # Last 10 commits
-```
-
----
-
-### `/code:finish` (Legacy)
-
-Merge and close. Use `/code:finalizer` instead.
-
-```bash
-/code:finish
 ```
 
 ---

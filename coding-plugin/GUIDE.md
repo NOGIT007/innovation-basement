@@ -127,6 +127,24 @@ Analyze recent commits and update LESSONS.md.
 /code:lessons 10    # Analyze last 10 commits
 ```
 
+### `/code:cleanup`
+
+Refactor CLAUDE.md and LESSONS.md for progressive disclosure.
+
+```bash
+/code:cleanup
+```
+
+**What happens:**
+
+1. Finds all CLAUDE.md and LESSONS.md files
+2. Detects contradictions (asks you to resolve)
+3. Categorizes instructions (Essential, TypeScript, Testing, Git, etc.)
+4. Flags redundant/stale/obvious items (asks you to confirm)
+5. Creates `.claude/rules/` structure
+6. Writes minimal root CLAUDE.md (< 50 lines)
+7. Archives LESSONS.md content
+
 ## Typical Flow
 
 ### Day 1: Start Feature

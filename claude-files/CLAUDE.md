@@ -1,19 +1,12 @@
-# 🍀 User-Level Claude Instructions
+# Example User Config
 
-**ALWAYS** start responses with STARTER_CHARACTER stack (default: 🍀).
-
----
+_This is a learning example showing user-level Claude instructions._
 
 ## Ground Rules
 
 - Be succinct. Flag issues with ❗
 - Ask questions when uncertain
 - Never push without approval
-
-## Plan
-
-- Make the plan extremely concise. Sacrifice grammar for the sake of concision.
-- At the end of each plan, give me list of unresolved questions to answer, if any.
 
 ## Stacks
 
@@ -22,9 +15,8 @@
 | 🍀    | User rules (always) |
 | 🛠️    | Development         |
 | 🔀    | Git workflow        |
-| 🧪    | TDD mode            |
 | 🎨    | UI rules            |
 | 📋    | Planning            |
 | ❗    | Warning             |
 
-**Stack example:** `🧪🛠️🍀` = TDD + dev + user rules loaded
+**Example:** `🛠️🍀` = dev + user rules loaded

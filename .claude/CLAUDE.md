@@ -1,25 +1,22 @@
 # Project: innovation-basement
 
+Claude Code plugin for task-driven development workflow.
+
 **Repo:** https://github.com/NOGIT007/innovation-basement
 
 ## Structure
 
-- `coding-plugin/` - Main Claude Code plugin
+- `coding-plugin/` - Main plugin (commands, agents, hooks)
 - `.claude-plugin/` - Plugin configuration
-- `claude-files/` - Example user config (for learning)
+- `claude-files/` - Example user config
 
-## Versioning
+## Critical Rules
 
-**⛔ CANNOT push without version bump.** Before any `git push`:
+- **Never push without version bump** - See `.claude/rules/versioning.md`
+- **Never push without approval** - Ask user first
 
-1. Determine version type:
-   - Patch (x.x.X): Bug fixes, small changes
-   - Minor (x.X.0): New features
-   - Major (X.0.0): Breaking changes
+## Detailed Rules
 
-2. Update ALL version locations:
-   - `coding-plugin/.claude-plugin/plugin.json` (source of truth)
-   - `README.md` (root) - title
-   - `.claude-plugin/marketplace.json` (metadata.version)
+See `.claude/rules/` for context-specific rules:
 
-3. Include version in commit: `🔖 v1.2.3: description`
+- `versioning.md` - Version bump locations & format

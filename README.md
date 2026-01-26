@@ -206,6 +206,28 @@ Analyze recent commits and update LESSONS.md with patterns.
 
 ---
 
+### `/code:cleanup`
+
+Refactor CLAUDE.md and LESSONS.md for progressive disclosure. Keeps context files lean and contradiction-free.
+
+```bash
+/code:cleanup
+```
+
+**What happens:**
+
+1. Finds all CLAUDE.md and LESSONS.md files
+2. Detects contradictions (asks you to resolve)
+3. Categorizes instructions (Essential, TypeScript, Testing, Git, etc.)
+4. Flags redundant/stale/obvious items (asks you to confirm)
+5. Creates `.claude/rules/` structure for detailed rules
+6. Writes minimal root CLAUDE.md (target: <50 lines)
+7. Archives LESSONS.md content (never deletes)
+
+**Output:** Summary showing before/after line counts and changes made.
+
+---
+
 ## Architecture
 
 ```

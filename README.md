@@ -1,4 +1,4 @@
-# Coding Plugin v2.3.0
+# Coding Plugin v2.4.0
 
 **Build apps with AI, even if you can't code.**
 
@@ -9,19 +9,31 @@ A Claude Code plugin that turns your ideas into working software through a task-
 ## The Flow
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                                                                     │
-│   /plan  →  /code:plan-issue  →  /clear  →  /code:implement  →  /code:finalizer
-│     │            │                              │                    │
-│     ▼            ▼                              ▼                    ▼
-│   Explore     Create issue              Orchestrator runs      Merge or PR
-│   the idea    + native tasks            all tasks              + cleanup
-│                     │                         │                      │
-│                     ▼                         ▼                      ▼
-│               Output: #42              Auto-compact at 70%     Close issue
-│               (ctrl+t to view)         No manual handover      Delete branch
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                      │
+│   /plan  →  /code:interview  →  /code:plan-issue  →  /clear  →  /code:implement  →  /code:finalizer
+│     │            │                    │                              │                    │
+│     ▼            ▼                    ▼                              ▼                    ▼
+│   Explore     Clarify             Create issue              Orchestrator runs      Merge or PR
+│   the idea    requirements        + native tasks            all tasks              + cleanup
+│               (optional)                │                         │                      │
+│                                         ▼                         ▼                      ▼
+│                                   Output: #42              Auto-compact at 70%     Close issue
+│                                   (ctrl+t to view)         No manual handover      Delete branch
+│                                                                                         │
+├──────────────────────────────────────────────────────────────────────────────────────┤
+│   Maintenance (run periodically):                                                    │
+│                                                                                      │
+│   /code:lessons  →  /code:cleanup                                                    │
+│        │                 │                                                           │
+│        ▼                 ▼                                                           │
+│   Analyze commits    Refactor CLAUDE.md                                              │
+│   Update LESSONS.md  Progressive disclosure                                          │
+│        │                                                                             │
+│        └──────────────────────────► LESSONS.md read by /code:plan-issue              │
+│                                     (informs future feature planning)                │
+│                                                                                      │
+└──────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Example
@@ -30,21 +42,29 @@ A Claude Code plugin that turns your ideas into working software through a task-
 # 1. Explore your idea
 /plan (shift-tab) add dark mode toggle to the app
 
-# 2. Create GitHub issue with tasks
+# 2. (Optional) Clarify requirements
+/code:interview
+# → Answers questions, updates plan with details
+
+# 3. Create GitHub issue with tasks
 /code:plan-issue add dark mode toggle
 # → Issue #42 created
 
-# 3. Clear context before implementing
+# 4. Clear context before implementing
 /clear
 
-# 4. Run implementation (orchestrator handles everything)
+# 5. Run implementation (orchestrator handles everything)
 /code:implement #42
 
-# 5. Finalize when complete
+# 6. Finalize when complete
 
 /code:finalizer         # Merge directly to main
 # or
 /code:finalizer --pr    # Create PR for review
+
+# 7. (Periodic) Update project knowledge
+/code:lessons           # Analyze commits, update LESSONS.md
+/code:cleanup           # Refactor context files
 ```
 
 **Interrupted?** Just run `/code:implement #42` again. Native tasks track progress (`ctrl+t` to view).
@@ -109,6 +129,27 @@ Restart Claude Code after installation.
 ---
 
 ## Commands
+
+### `/code:interview [plan-file]`
+
+Deep requirement clarification through structured questioning. Use between `/plan` and `/code:plan-issue`.
+
+```bash
+/code:interview              # Uses most recent plan
+/code:interview plans/my.md  # Specific plan file
+```
+
+**What happens:**
+
+- Finds most recent plan in `plans/` folder
+- Analyzes plan for ambiguous areas (breadth-first)
+- Asks 2-3 related questions per round
+- Continues until you say `done`, `stop`, or `enough`
+- Merges answers into `## Details` section of plan
+
+**Note:** Interview is optional. Skip directly to `/code:plan-issue` if requirements are clear.
+
+---
 
 ### `/code:plan-issue <feature>`
 

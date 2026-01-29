@@ -1,0 +1,13 @@
+{
+  "name": "bun-nextjs-shadcn-gcp-scripts",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "init": "bun run init-project.ts",
+    "test": "bun run run-tests.ts",
+    "test:watch": "bun run run-tests.ts --watch",
+    "test:coverage": "bun run run-tests.ts --coverage",
+    "deploy:staging": "bun run deploy-staging.ts",
+    "deploy:production": "bun run deploy-production.ts"
+  }
+}

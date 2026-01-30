@@ -67,7 +67,6 @@ A Claude Code plugin that turns your ideas into working software through a task-
 # → Creates Bun + Next.js + Shadcn + Docker setup
 
 # 2. Generate permissions
-cd my-saas-app
 /code:settings-audit
 # → Creates .claude/settings.json with detected tools
 

@@ -269,6 +269,106 @@ Refactor CLAUDE.md and LESSONS.md for progressive disclosure. Keeps context file
 
 ---
 
+### `/code:bun-init <project-name>`
+
+Initialize a new Bun + Next.js + Shadcn/UI project with GCP Cloud Run deployment setup.
+
+```bash
+/code:bun-init my-app
+```
+
+**Creates:**
+
+- Bun 1.3.8 runtime with Next.js 14+ App Router
+- Shadcn/UI components (button, card, input, form, dialog, toast, table)
+- TypeScript + Tailwind CSS
+- Dockerfile optimized for GCP Cloud Run
+- docker-compose.yml for local development
+- Bun test runner setup
+
+---
+
+### `/code:bun-deploy-staging`
+
+Deploy current project to GCP Cloud Run staging environment.
+
+```bash
+/code:bun-deploy-staging
+```
+
+**Requires `.env.example` or `.env.staging` with:**
+
+- `GCP_PROJECT_STAGING` - GCP project ID
+- `GCP_REGION` - Deployment region (default: europe-west1)
+- `SERVICE_NAME` - Cloud Run service name
+
+**Staging config:** 1 CPU, 512Mi memory, 0-3 instances, unauthenticated access.
+
+---
+
+### `/code:bun-deploy-production yes`
+
+Deploy to GCP Cloud Run production. Requires explicit "yes" confirmation.
+
+```bash
+/code:bun-deploy-production yes
+```
+
+**Safety checks:**
+
+- Staging must be deployed first
+- Tests must pass
+- Explicit "yes" argument required
+
+**Production config:** 2 CPU, 1Gi memory, 1-10 instances, authenticated access, CPU boost.
+
+---
+
+### `/code:settings-audit`
+
+Analyze project and generate appropriate `.claude/settings.json` permissions.
+
+```bash
+/code:settings-audit
+```
+
+**Detects and recommends permissions for:**
+
+- Bun/Node projects (`bun:*`, `bunx:*`, `npm:*`)
+- Docker projects (`docker:*`, `docker-compose:*`)
+- GCP projects (`gcloud:*`, `gsutil:*`)
+- Python projects (`uv:*`, `pip:*`, `python:*`)
+
+**Also flags:** Sensitive files that should be in `.gitignore` and `.claudeignore`.
+
+---
+
+## Rules
+
+The plugin includes rules that provide patterns and guardrails.
+
+### `bun-native.md`
+
+Bun 1.3+ native API patterns. Prefer these over npm packages:
+
+| Instead of            | Use Bun Native                      |
+| --------------------- | ----------------------------------- |
+| `pg` / `postgres`     | `import { sql } from "bun:sql"`     |
+| `ioredis` / `redis`   | `import { redis } from "bun:redis"` |
+| `@aws-sdk/client-s3`  | `import { S3 } from "bun:s3"`       |
+| `express` / `fastify` | `Bun.serve()`                       |
+
+### `gcp-safety.md`
+
+GCP resource protection rules:
+
+- **Never delete** Cloud Run services, SQL instances, GCS buckets without explicit approval
+- **Require "yes"** for production deployments
+- **Start small** with resource sizing (staging: 1 CPU/512Mi, production: 2 CPU/1Gi)
+- **Separate environments** by project ID (`*-staging` vs `*-prod`)
+
+---
+
 ## Architecture
 
 ```

@@ -10,6 +10,16 @@ A Claude Code plugin that turns your ideas into working software through a task-
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────┐
+│   Project Setup (once per project):                                                  │
+│                                                                                      │
+│   /code:bun-init my-app  →  /code:settings-audit                                     │
+│         │                         │                                                  │
+│         ▼                         ▼                                                  │
+│   Create Bun + Next.js       Generate .claude/settings.json                          │
+│   + Shadcn + Docker          with detected permissions                               │
+│                                                                                      │
+├──────────────────────────────────────────────────────────────────────────────────────┤
+│   Feature Development (repeat per feature):                                          │
 │                                                                                      │
 │   /plan  →  /code:interview  →  /code:plan-issue  →  /clear  →  /code:implement  →  /code:finalizer
 │     │            │                    │                              │                    │
@@ -20,7 +30,16 @@ A Claude Code plugin that turns your ideas into working software through a task-
 │                                         ▼                         ▼                      ▼
 │                                   Output: #42              Auto-compact at 70%     Close issue
 │                                   (ctrl+t to view)         No manual handover      Delete branch
-│                                                                                         │
+│                                                                                      │
+├──────────────────────────────────────────────────────────────────────────────────────┤
+│   Deployment (after features merged):                                                │
+│                                                                                      │
+│   /code:bun-deploy-staging  →  test  →  /code:bun-deploy-production yes              │
+│            │                              │                                          │
+│            ▼                              ▼                                          │
+│   Deploy to GCP staging            Deploy to production                              │
+│   (1 CPU, 512Mi, 0-3 inst)         (requires "yes", tests must pass)                 │
+│                                                                                      │
 ├──────────────────────────────────────────────────────────────────────────────────────┤
 │   Maintenance (run periodically):                                                    │
 │                                                                                      │
@@ -36,33 +55,65 @@ A Claude Code plugin that turns your ideas into working software through a task-
 └──────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Example
+### Example: Full Lifecycle
 
 ```bash
-# 1. Explore your idea
+# ══════════════════════════════════════════════════════════
+# PROJECT SETUP (once)
+# ══════════════════════════════════════════════════════════
+
+# 1. Create new project
+/code:bun-init my-saas-app
+# → Creates Bun + Next.js + Shadcn + Docker setup
+
+# 2. Generate permissions
+cd my-saas-app
+/code:settings-audit
+# → Creates .claude/settings.json with detected tools
+
+# ══════════════════════════════════════════════════════════
+# FEATURE DEVELOPMENT (repeat per feature)
+# ══════════════════════════════════════════════════════════
+
+# 3. Explore your idea
 /plan (shift-tab) add dark mode toggle to the app
 
-# 2. (Optional) Clarify requirements
+# 4. (Optional) Clarify requirements
 /code:interview
 # → Answers questions, updates plan with details
 
-# 3. Create GitHub issue with tasks
+# 5. Create GitHub issue with tasks
 /code:plan-issue add dark mode toggle
 # → Issue #42 created
 
-# 4. Clear context before implementing
+# 6. Clear context before implementing
 /clear
 
-# 5. Run implementation (orchestrator handles everything)
+# 7. Run implementation (orchestrator handles everything)
 /code:implement #42
 
-# 6. Finalize when complete
-
+# 8. Finalize when complete
 /code:finalizer         # Merge directly to main
 # or
 /code:finalizer --pr    # Create PR for review
 
-# 7. (Periodic) Update project knowledge
+# ══════════════════════════════════════════════════════════
+# DEPLOYMENT (after features merged)
+# ══════════════════════════════════════════════════════════
+
+# 9. Deploy to staging
+/code:bun-deploy-staging
+# → Builds and deploys to GCP Cloud Run staging
+
+# 10. Test staging, then deploy to production
+/code:bun-deploy-production yes
+# → Requires "yes", verifies tests pass first
+
+# ══════════════════════════════════════════════════════════
+# MAINTENANCE (periodic)
+# ══════════════════════════════════════════════════════════
+
+# 11. Update project knowledge
 /code:lessons           # Analyze commits, update LESSONS.md
 /code:cleanup           # Refactor context files
 ```
@@ -130,7 +181,35 @@ Restart Claude Code after installation.
 
 ## Commands
 
-### `/code:interview [plan-file]`
+### Project Setup
+
+#### `/code:bun-init <project-name>`
+
+Initialize a new Bun + Next.js + Shadcn/UI project with GCP Cloud Run deployment setup.
+
+```bash
+/code:bun-init my-app
+```
+
+**Creates:** Bun 1.3.8 + Next.js 14+ + Shadcn/UI + TypeScript + Tailwind + Docker + Bun test runner.
+
+---
+
+#### `/code:settings-audit`
+
+Analyze project and generate `.claude/settings.json` permissions.
+
+```bash
+/code:settings-audit
+```
+
+**Detects:** Bun/Node, Docker, GCP, Python projects and recommends appropriate tool permissions.
+
+---
+
+### Feature Development
+
+#### `/code:interview [plan-file]`
 
 Deep requirement clarification through structured questioning. Use between `/plan` and `/code:plan-issue`.
 
@@ -151,7 +230,7 @@ Deep requirement clarification through structured questioning. Use between `/pla
 
 ---
 
-### `/code:plan-issue <feature>`
+#### `/code:plan-issue <feature>`
 
 Research codebase and create GitHub issue with task manifest.
 
@@ -164,7 +243,7 @@ Research codebase and create GitHub issue with task manifest.
 
 ---
 
-### `/code:implement #<issue-number>`
+#### `/code:implement #<issue-number>`
 
 Launch orchestrator to execute all tasks from the issue.
 
@@ -186,7 +265,7 @@ Launch orchestrator to execute all tasks from the issue.
 
 ---
 
-### `/code:finalizer [--pr] [issue-number]`
+#### `/code:finalizer [--pr] [issue-number]`
 
 Finalize feature: merge or create PR, close issue, cleanup.
 
@@ -205,7 +284,36 @@ Finalize feature: merge or create PR, close issue, cleanup.
 
 ---
 
-### `/code:commit`
+### Deployment
+
+#### `/code:bun-deploy-staging`
+
+Deploy to GCP Cloud Run staging environment.
+
+```bash
+/code:bun-deploy-staging
+```
+
+**Config:** 1 CPU, 512Mi, 0-3 instances, unauthenticated. Requires `GCP_PROJECT_STAGING`, `GCP_REGION`, `SERVICE_NAME` in `.env`.
+
+---
+
+#### `/code:bun-deploy-production yes`
+
+Deploy to GCP Cloud Run production. Requires explicit "yes" confirmation.
+
+```bash
+/code:bun-deploy-production yes
+```
+
+**Safety:** Staging must exist, tests must pass, explicit "yes" required.
+**Config:** 2 CPU, 1Gi, 1-10 instances, authenticated, CPU boost.
+
+---
+
+### Utility
+
+#### `/code:commit`
 
 Generate conventional commit from staged changes.
 
@@ -215,7 +323,7 @@ Generate conventional commit from staged changes.
 
 ---
 
-### `/code:pr`
+#### `/code:pr`
 
 Create GitHub PR with auto-generated description.
 
@@ -225,7 +333,7 @@ Create GitHub PR with auto-generated description.
 
 ---
 
-### `/code:simplify`
+#### `/code:simplify`
 
 Analyze code for simplification opportunities and bugs.
 
@@ -236,7 +344,9 @@ Analyze code for simplification opportunities and bugs.
 
 ---
 
-### `/code:lessons [N]`
+### Maintenance
+
+#### `/code:lessons [N]`
 
 Analyze recent commits and update LESSONS.md with patterns.
 
@@ -247,7 +357,7 @@ Analyze recent commits and update LESSONS.md with patterns.
 
 ---
 
-### `/code:cleanup`
+#### `/code:cleanup`
 
 Refactor CLAUDE.md and LESSONS.md for progressive disclosure. Keeps context files lean and contradiction-free.
 
@@ -266,80 +376,6 @@ Refactor CLAUDE.md and LESSONS.md for progressive disclosure. Keeps context file
 7. Archives LESSONS.md content (never deletes)
 
 **Output:** Summary showing before/after line counts and changes made.
-
----
-
-### `/code:bun-init <project-name>`
-
-Initialize a new Bun + Next.js + Shadcn/UI project with GCP Cloud Run deployment setup.
-
-```bash
-/code:bun-init my-app
-```
-
-**Creates:**
-
-- Bun 1.3.8 runtime with Next.js 14+ App Router
-- Shadcn/UI components (button, card, input, form, dialog, toast, table)
-- TypeScript + Tailwind CSS
-- Dockerfile optimized for GCP Cloud Run
-- docker-compose.yml for local development
-- Bun test runner setup
-
----
-
-### `/code:bun-deploy-staging`
-
-Deploy current project to GCP Cloud Run staging environment.
-
-```bash
-/code:bun-deploy-staging
-```
-
-**Requires `.env.example` or `.env.staging` with:**
-
-- `GCP_PROJECT_STAGING` - GCP project ID
-- `GCP_REGION` - Deployment region (default: europe-west1)
-- `SERVICE_NAME` - Cloud Run service name
-
-**Staging config:** 1 CPU, 512Mi memory, 0-3 instances, unauthenticated access.
-
----
-
-### `/code:bun-deploy-production yes`
-
-Deploy to GCP Cloud Run production. Requires explicit "yes" confirmation.
-
-```bash
-/code:bun-deploy-production yes
-```
-
-**Safety checks:**
-
-- Staging must be deployed first
-- Tests must pass
-- Explicit "yes" argument required
-
-**Production config:** 2 CPU, 1Gi memory, 1-10 instances, authenticated access, CPU boost.
-
----
-
-### `/code:settings-audit`
-
-Analyze project and generate appropriate `.claude/settings.json` permissions.
-
-```bash
-/code:settings-audit
-```
-
-**Detects and recommends permissions for:**
-
-- Bun/Node projects (`bun:*`, `bunx:*`, `npm:*`)
-- Docker projects (`docker:*`, `docker-compose:*`)
-- GCP projects (`gcloud:*`, `gsutil:*`)
-- Python projects (`uv:*`, `pip:*`, `python:*`)
-
-**Also flags:** Sensitive files that should be in `.gitignore` and `.claudeignore`.
 
 ---
 
@@ -410,7 +446,8 @@ Tasks without dependencies run in parallel. Blocked tasks wait for their depende
 - **Keep scope small** — One feature at a time
 - **Trust the process** — Tests run automatically, failures get fixed
 - **Run `/code:lessons` periodically** — Builds project knowledge
-- **Use `/init` in new projects** — Creates CLAUDE.md with project context
+- **Use `/code:bun-init` for new projects** — Creates full Bun + Next.js + GCP setup
+- **Use `/code:settings-audit`** — Auto-generates permissions for your project
 
 ---
 

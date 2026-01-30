@@ -1,4 +1,4 @@
-# Coding Plugin v2.5.2
+# Coding Plugin v2.6.0
 
 **Build apps with AI, even if you can't code.**
 
@@ -12,11 +12,11 @@ A Claude Code plugin that turns your ideas into working software through a task-
 ┌──────────────────────────────────────────────────────────────────────────────────────┐
 │   Project Setup (once per project):                                                  │
 │                                                                                      │
-│   /code:bun-init my-app  →  /code:settings-audit                                     │
-│         │                         │                                                  │
-│         ▼                         ▼                                                  │
-│   Create Bun + Next.js       Generate .claude/settings.json                          │
-│   + Shadcn + Docker          with detected permissions                               │
+│   /code:bun-init my-app  →  /code:settings-audit  →  /code:init-deployment           │
+│         │                         │                         │                        │
+│         ▼                         ▼                         ▼                        │
+│   Create Bun + Next.js       Generate permissions      Generate deployment           │
+│   + Shadcn + Docker                                    scripts (staging/prod)        │
 │                                                                                      │
 ├──────────────────────────────────────────────────────────────────────────────────────┤
 │   Feature Development (repeat per feature):                                          │
@@ -71,28 +71,32 @@ cd my-saas-app
 /code:settings-audit
 # → Creates .claude/settings.json with detected tools
 
+# 3. Generate deployment scripts
+/code:init-deployment
+# → Creates scripts/dev.sh, deploy-staging.sh, deploy-production.sh
+
 # ══════════════════════════════════════════════════════════
 # FEATURE DEVELOPMENT (repeat per feature)
 # ══════════════════════════════════════════════════════════
 
-# 3. Explore your idea
+# 4. Explore your idea
 /plan (shift-tab) add dark mode toggle to the app
 
-# 4. (Optional) Clarify requirements
+# 5. (Optional) Clarify requirements
 /code:interview
 # → Answers questions, updates plan with details
 
-# 5. Create GitHub issue with tasks
+# 6. Create GitHub issue with tasks
 /code:plan-issue add dark mode toggle
 # → Issue #42 created
 
-# 6. Clear context before implementing
+# 7. Clear context before implementing
 /clear
 
-# 7. Run implementation (orchestrator handles everything)
+# 8. Run implementation (orchestrator handles everything)
 /code:implement #42
 
-# 8. Finalize when complete
+# 9. Finalize when complete
 /code:finalizer         # Merge directly to main
 # or
 /code:finalizer --pr    # Create PR for review
@@ -101,11 +105,11 @@ cd my-saas-app
 # DEPLOYMENT (after features merged)
 # ══════════════════════════════════════════════════════════
 
-# 9. Deploy to staging
+# 10. Deploy to staging
 /code:bun-deploy-staging
 # → Builds and deploys to GCP Cloud Run staging
 
-# 10. Test staging, then deploy to production
+# 11. Test staging, then deploy to production
 /code:bun-deploy-production yes
 # → Requires "yes", verifies tests pass first
 
@@ -113,7 +117,7 @@ cd my-saas-app
 # MAINTENANCE (periodic)
 # ══════════════════════════════════════════════════════════
 
-# 11. Update project knowledge
+# 12. Update project knowledge
 /code:lessons           # Analyze commits, update LESSONS.md
 /code:cleanup           # Refactor context files
 ```
@@ -204,6 +208,24 @@ Analyze project and generate `.claude/settings.json` permissions.
 ```
 
 **Detects:** Bun/Node, Docker, GCP, Python projects and recommends appropriate tool permissions.
+
+---
+
+#### `/code:init-deployment`
+
+Generate deployment scripts based on detected project stack (Firebase Hosting or GCP Cloud Run).
+
+```bash
+/code:init-deployment
+```
+
+**Detects:** Bun/npm/pnpm, Next.js/Vite, Firebase/Docker and generates appropriate deployment scripts.
+
+**Creates:**
+
+- `scripts/dev.sh` - Local development
+- `scripts/deploy-staging.sh` - Staging deployment
+- `scripts/deploy-production.sh` - Production (requires "yes" confirmation)
 
 ---
 

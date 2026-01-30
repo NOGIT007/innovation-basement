@@ -1,150 +1,92 @@
 ---
-allowed-tools: Read, Write, Bash(git:*)
-description: Generate .claude/settings.json permissions from project analysis
+context: fork
+allowed-tools: Bash(ls:*), Bash(cat:*), Bash(find:*), Bash(grep:*), Read, Write
+description: Audit repository and generate Claude Code settings.json for Bun + Firebase stack
 ---
 
 # Settings Audit
 
-Analyze project and generate appropriate `.claude/settings.json` permissions.
+Analyze repository and generate recommended `.claude/settings.json` permissions.
 
-## Step 1: Analyze Project
-
-Detect project type and required tools:
+## Phase 1: Detect Stack
 
 ```bash
-# Check for package managers and tools
-ls -la package.json bun.lock yarn.lock pnpm-lock.yaml Cargo.toml pyproject.toml go.mod 2>/dev/null
+echo "🔍 Detecting stack..."
 
-# Check for Docker
-ls -la Dockerfile docker-compose.yml 2>/dev/null
+# Bun
+ls bun.lock 2>/dev/null && echo "✅ Bun detected"
 
-# Check for cloud configs
-ls -la .gcloudignore cloudbuild.yaml fly.toml vercel.json 2>/dev/null
+# Firebase
+ls firebase.json 2>/dev/null && echo "🔥 Firebase detected"
+
+# Vite
+ls vite.config.ts 2>/dev/null && echo "⚡ Vite detected"
+
+# TypeScript
+ls tsconfig.json 2>/dev/null && echo "📘 TypeScript detected"
 ```
 
-## Step 2: Read Existing Settings
+## Phase 2: Detect Services
 
 ```bash
-if [ -f ".claude/settings.json" ]; then
-  cat .claude/settings.json
-else
-  echo "No existing settings found"
-fi
+echo ""
+echo "🔍 Detecting services..."
+
+# Firestore
+grep -l "firestore" firebase.json 2>/dev/null && echo "🗄️ Firestore detected"
+
+# Cloud Functions
+ls functions/package.json 2>/dev/null && echo "⚙️ Cloud Functions detected"
+
+# Stripe
+grep -rl "stripe" functions/src/ 2>/dev/null && echo "💳 Stripe integration detected"
 ```
 
-## Step 3: Generate Permissions
+## Phase 3: Check Existing Settings
 
-Based on project analysis, recommend permissions:
-
-### Base Permissions (All Projects)
-
-```json
-{
-  "permissions": {
-    "allow": ["Bash(git:*)", "Read", "Write", "Edit"]
-  }
-}
+```bash
+echo ""
+echo "📋 Current settings.json:"
+cat .claude/settings.json 2>/dev/null || echo "No settings.json found"
 ```
 
-### Bun/Node Projects
+## Phase 4: Generate Recommendations
 
-Add if `package.json` or `bun.lock` exists:
-
-```json
-{
-  "permissions": {
-    "allow": ["Bash(bun:*)", "Bash(bunx:*)", "Bash(npm:*)", "Bash(npx:*)"]
-  }
-}
-```
-
-### Docker Projects
-
-Add if `Dockerfile` exists:
-
-```json
-{
-  "permissions": {
-    "allow": ["Bash(docker:*)", "Bash(docker-compose:*)"]
-  }
-}
-```
-
-### GCP Projects
-
-Add if `.gcloudignore` or `cloudbuild.yaml` exists:
-
-```json
-{
-  "permissions": {
-    "allow": ["Bash(gcloud:*)", "Bash(gsutil:*)"]
-  }
-}
-```
-
-### Python Projects
-
-Add if `pyproject.toml` or `requirements.txt` exists:
-
-```json
-{
-  "permissions": {
-    "allow": ["Bash(uv:*)", "Bash(pip:*)", "Bash(python:*)", "Bash(pytest:*)"]
-  }
-}
-```
-
-## Step 4: Check for Sensitive Patterns
-
-Flag if found:
-
-- `.env` files with secrets
-- `credentials.json` or service account keys
-- API keys in source files
-
-Recommend adding to `.gitignore` and `.claudeignore`.
-
-## Step 5: Generate Settings File
-
-Write `.claude/settings.json` with:
-
-1. Detected permissions
-2. Plans directory (if not set)
-3. Environment variables for task management
-
-Example output:
+Based on your Firebase + Bun stack, recommended `.claude/settings.json`:
 
 ```json
 {
   "permissions": {
     "allow": [
-      "Bash(git:*)",
       "Bash(bun:*)",
       "Bash(bunx:*)",
-      "Bash(docker:*)",
-      "Bash(gcloud:*)"
+      "Bash(bun test:*)",
+      "Bash(bun run:*)",
+      "Bash(firebase:*)",
+      "Bash(firebase deploy:*)",
+      "Bash(firebase emulators:*)",
+      "Bash(tsc:*)",
+      "Bash(vite:*)",
+      "Bash(git:*)",
+      "Bash(gh:*)"
     ],
-    "deny": []
-  },
-  "plansDirectory": "plans",
-  "env": {
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70"
+    "deny": ["Bash(firebase projects:delete:*)", "Bash(rm -rf:*)"]
   }
 }
 ```
 
 ## Output
 
-Report:
+```
+✅ Settings audit complete
 
-- 📁 Project type detected
-- ✅ Permissions recommended
-- ⚠️ Security warnings (if any)
-- 📝 Settings file written/updated
+Stack detected:
+  - Bun (runtime)
+  - Firebase (backend)
+  - Vite (frontend)
+  - TypeScript
 
-## Rules
-
-- Start with minimal permissions
-- Add only what's detected as needed
-- Flag any security concerns
-- Don't overwrite existing custom settings without confirmation
+Recommendations:
+  - Allow: bun, firebase, vite, tsc, git
+  - Deny: destructive firebase commands, rm -rf
+```

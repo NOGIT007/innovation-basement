@@ -161,33 +161,9 @@ Show plan to user. Ask: **"Create issue in [repo-name]?"**
 
 Wait for confirmation.
 
-## Phase 4: Create Issue & Native Tasks
+## Phase 4: Create Native Tasks & GitHub Issue
 
-### Step 4.1: Write Issue Body File
-
-Use **Write tool** to create `.claude-issue-body.md` (see format below).
-
-**Do NOT use heredocs or `cat <<EOF`** — they fail silently.
-
-### Step 4.2: Validate Body (REQUIRED)
-
-```bash
-if [ ! -s .claude-issue-body.md ]; then
-  echo "ERROR: .claude-issue-body.md is empty or missing."
-  exit 1
-fi
-echo "Body validated ($(wc -l < .claude-issue-body.md) lines)"
-```
-
-### Step 4.3: Create Issue with Body File
-
-```bash
-gh issue create --title "[Feature] $ARGUMENTS" --body-file .claude-issue-body.md
-```
-
-Extract issue number from output for task creation.
-
-### Step 4.4: Create Native Tasks
+### Step 4.1: Create Native Tasks First
 
 For each planned task, use **TaskCreate**:
 
@@ -197,7 +173,6 @@ TaskCreate(
   description: "<detailed steps with file:line refs>",
   activeForm: "<present continuous form>",
   metadata: {
-    "issueNumber": <issue-number>,
     "verification": "<test command>",
     "files": ["file.ts:15-30"]
   }
@@ -206,7 +181,7 @@ TaskCreate(
 
 **Important:** Create ALL tasks before setting dependencies.
 
-### Step 4.5: Set Task Dependencies
+### Step 4.2: Set Task Dependencies
 
 After all tasks are created, use **TaskUpdate** to set blockedBy relationships:
 
@@ -218,6 +193,43 @@ TaskUpdate(
 ```
 
 Tasks will appear in `ctrl+t` task view immediately.
+
+### Step 4.3: Write Issue Body File
+
+Use **Write tool** to create `.claude-issue-body.md` (see format below).
+
+Pull task subjects from the tasks just created to build the summary table.
+
+**Do NOT use heredocs or `cat <<EOF`** — they fail silently.
+
+### Step 4.4: Validate Body (REQUIRED)
+
+```bash
+if [ ! -s .claude-issue-body.md ]; then
+  echo "ERROR: .claude-issue-body.md is empty or missing."
+  exit 1
+fi
+echo "Body validated ($(wc -l < .claude-issue-body.md) lines)"
+```
+
+### Step 4.5: Create Issue with Body File
+
+```bash
+gh issue create --title "[Feature] $ARGUMENTS" --body-file .claude-issue-body.md
+```
+
+Extract issue number from output.
+
+### Step 4.6: Link Tasks to Issue
+
+Update all tasks with the issue number:
+
+```
+TaskUpdate(
+  taskId: "<id>",
+  metadata: { "issueNumber": <issue-number> }
+)
+```
 
 ## Issue Format (Task Headlines)
 

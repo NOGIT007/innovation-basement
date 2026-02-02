@@ -26,7 +26,8 @@ A Claude Code plugin that turns your ideas into working software through a task-
 │     ▼              ▼                  ▼                                              │
 │   Explore      LSP research      Implements directly                                 │
 │   the idea     + native tasks    (no GitHub issue, no command switching)             │
-│                (ctrl+t to view)                                                      │
+│                (ctrl+t to view)        │                                             │
+│                                        └── /code:run-tasks (resume if interrupted)   │
 │                                                                                      │
 ├──────────────────────────────────────────────────────────────────────────────────────┤
 │   Feature Development - FULL PATH (larger features, team visibility):                │

@@ -1,4 +1,5 @@
 ---
+context: fork
 allowed-tools: Bash(git log:*), Bash(git branch:*), Read, Write, Grep, Glob, Task, TaskCreate, TaskUpdate, mcp__typescript-lsp__*
 description: LSP-precise research → native tasks (no GitHub issue)
 argument-hint: [feature-description] [@spec-file]

@@ -1,4 +1,4 @@
-# Coding Plugin v2.6.0
+# Coding Plugin v2.6.1
 
 **Build apps with AI, even if you can't code.**
 
@@ -19,17 +19,27 @@ A Claude Code plugin that turns your ideas into working software through a task-
 │   + Shadcn + Docker                                    scripts (staging/prod)        │
 │                                                                                      │
 ├──────────────────────────────────────────────────────────────────────────────────────┤
-│   Feature Development (repeat per feature):                                          │
+│   Feature Development - FAST PATH (small features, solo work):                       │
 │                                                                                      │
-│   /plan  →  /code:interview  →  /code:plan-issue  →  /clear  →  /code:implement  →  /code:finalizer
-│     │            │                    │                              │                    │
-│     ▼            ▼                    ▼                              ▼                    ▼
-│   Explore     Clarify             Create issue              Orchestrator runs      Merge or PR
-│   the idea    requirements        + native tasks            all tasks              + cleanup
-│               (optional)                │                         │                      │
-│                                         ▼                         ▼                      ▼
-│                                   Output: #42              Auto-compact at 70%     Close issue
-│                                   (ctrl+t to view)         No manual handover      Delete branch
+│   /plan  →  /code:quick-tasks  →  "start"  →  done                                   │
+│     │              │                  │                                              │
+│     ▼              ▼                  ▼                                              │
+│   Explore      LSP research      Implements directly                                 │
+│   the idea     + native tasks    (no GitHub issue, no command switching)             │
+│                (ctrl+t to view)                                                      │
+│                                                                                      │
+├──────────────────────────────────────────────────────────────────────────────────────┤
+│   Feature Development - FULL PATH (larger features, team visibility):                │
+│                                                                                      │
+│   /plan  →  /code:plan-issue  →  /clear  →  /code:implement  →  /code:finalizer      │
+│     │            │                              │                    │               │
+│     ▼            ▼                              ▼                    ▼               │
+│   Explore     Create issue              Orchestrator runs      Merge or PR           │
+│   the idea    + native tasks            all tasks              + cleanup             │
+│                     │                         │                      │               │
+│                     ▼                         ▼                      ▼               │
+│               Output: #42              Auto-compact at 70%     Close issue           │
+│               (ctrl+t to view)         No manual handover      Delete branch         │
 │                                                                                      │
 ├──────────────────────────────────────────────────────────────────────────────────────┤
 │   Deployment (after features merged):                                                │
@@ -55,7 +65,34 @@ A Claude Code plugin that turns your ideas into working software through a task-
 └──────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Example: Full Lifecycle
+### Example: Fast Path (Quick Iterations)
+
+```bash
+# ══════════════════════════════════════════════════════════
+# FAST PATH - for small features, solo work
+# ══════════════════════════════════════════════════════════
+
+# 1. Explore your idea
+/plan add dark mode toggle
+
+# 2. Create tasks with LSP research, then implement directly
+/code:quick-tasks add dark mode toggle
+# → LSP researches codebase for precise references
+# → Creates native tasks (ctrl+t to view)
+# → Asks: "Start implementing now?"
+# → Say "start" and Claude implements everything
+
+# 3. Merge or create PR when done
+git checkout main && git merge feature/dark-mode --no-ff
+# or
+/code:pr
+```
+
+**That's it!** No GitHub issue, no command switching. Just plan → tasks → done.
+
+---
+
+### Example: Full Path (Team Visibility)
 
 ```bash
 # ══════════════════════════════════════════════════════════
@@ -75,7 +112,7 @@ A Claude Code plugin that turns your ideas into working software through a task-
 # → Creates scripts/dev.sh, deploy-staging.sh, deploy-production.sh
 
 # ══════════════════════════════════════════════════════════
-# FEATURE DEVELOPMENT (repeat per feature)
+# FULL PATH - for larger features, team visibility
 # ══════════════════════════════════════════════════════════
 
 # 4. Explore your idea
@@ -247,13 +284,35 @@ Deep requirement clarification through structured questioning. Use between `/pla
 - Continues until you say `done`, `stop`, or `enough`
 - Merges answers into `## Details` section of plan
 
-**Note:** Interview is optional. Skip directly to `/code:plan-issue` if requirements are clear.
+**Note:** Interview is optional. Skip directly to `/code:plan-issue` or `/code:quick-tasks` if requirements are clear.
+
+---
+
+#### `/code:quick-tasks <feature>` ⚡ NEW
+
+**Fast path:** LSP-precise research → native tasks → implement directly. No GitHub issue.
+
+```bash
+/code:quick-tasks add dark mode toggle
+```
+
+**What happens:**
+
+1. LSP researches codebase for precise file:line references
+2. Creates native tasks (view with `ctrl+t`)
+3. Asks: "Start implementing now?"
+4. If yes → Claude implements directly, commits after each task
+5. Runs `/simplify` when complete
+
+**Best for:** Solo work, small-medium features, quick iterations.
+
+**Resume:** Run `/code:run-tasks` to continue interrupted work.
 
 ---
 
 #### `/code:plan-issue <feature>`
 
-Research codebase and create GitHub issue with task manifest.
+**Full path:** Research codebase and create GitHub issue with task manifest.
 
 ```bash
 /code:plan-issue add user authentication
@@ -283,6 +342,19 @@ Launch orchestrator to execute all tasks from the issue.
 - Runs `/simplify` when complete
 
 **Resume:** Run the same command again. Orchestrator reads native tasks and continues.
+
+---
+
+#### `/code:run-tasks [feature-name]`
+
+Resume or run pending tasks from native task manager (no GitHub issue required).
+
+```bash
+/code:run-tasks dark-mode     # Resume tasks for this feature
+/code:run-tasks               # Run all pending tasks
+```
+
+**Use after:** `/code:quick-tasks` if you chose "just create tasks" instead of immediate implementation.
 
 ---
 

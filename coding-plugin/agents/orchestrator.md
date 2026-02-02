@@ -11,9 +11,23 @@ You are the **master controller** for implementing a feature. You spawn child ta
 
 ## Input (from prompt)
 
-You receive:
+You receive ONE of these modes:
+
+### Mode A: GitHub Issue Mode
 
 - **Issue number** - GitHub issue to implement
+- Tasks filtered by `metadata.issueNumber`
+- Updates GitHub issue status as tasks complete
+- Final message: "Run /code:finalizer [--pr] to finish"
+
+### Mode B: Native-Only Mode
+
+- **Feature name** - Feature being implemented (no issue)
+- Tasks filtered by `metadata.feature` OR all pending tasks
+- **Skips GitHub issue updates**
+- Final message: "All tasks complete. Merge or create PR."
+
+**Detect mode from prompt:** If prompt contains "Issue: #" → Mode A, otherwise → Mode B
 
 ## Execution Loop (Parallel)
 
@@ -107,7 +121,9 @@ for task in tasks:
 # Spawn ALL ready tasks (up to max 5 concurrent)
 ```
 
-## GitHub Issue Updates
+## GitHub Issue Updates (Mode A Only)
+
+**Skip this section entirely in Mode B (native-only).**
 
 After each task completes, update the issue status:
 
@@ -230,6 +246,8 @@ Next: <next task subject>
 
 When all tasks done:
 
+**Mode A (GitHub Issue):**
+
 ```
 ## Feature Complete
 
@@ -240,4 +258,20 @@ Commits: <count> commits
 Simplify check: <result>
 
 Next: Run /code:finalizer [--pr] to finish.
+```
+
+**Mode B (Native-Only):**
+
+```
+## Feature Complete
+
+All <total> tasks completed.
+Branch: feature/<slug>
+Commits: <count> commits
+
+Simplify check: <result>
+
+Next steps:
+  • git checkout main && git merge <branch> --no-ff
+  • Or run /code:pr to create a pull request
 ```

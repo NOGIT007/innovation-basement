@@ -1,4 +1,4 @@
-# Coding Plugin v2.6.1
+# Coding Plugin v2.7.0
 
 **Build apps with AI, even if you can't code.**
 
@@ -19,18 +19,7 @@ A Claude Code plugin that turns your ideas into working software through a task-
 │   + Shadcn + Docker                                    scripts (staging/prod)        │
 │                                                                                      │
 ├──────────────────────────────────────────────────────────────────────────────────────┤
-│   Feature Development - FAST PATH (small features, solo work):                       │
-│                                                                                      │
-│   /plan  →  /code:quick-tasks  →  "start"  →  done                                   │
-│     │              │                  │                                              │
-│     ▼              ▼                  ▼                                              │
-│   Explore      LSP research      Implements directly                                 │
-│   the idea     + native tasks    (no GitHub issue, no command switching)             │
-│                (ctrl+t to view)        │                                             │
-│                                        └── /code:run-tasks (resume if interrupted)   │
-│                                                                                      │
-├──────────────────────────────────────────────────────────────────────────────────────┤
-│   Feature Development - FULL PATH (larger features, team visibility):                │
+│   Feature Development:                                                               │
 │                                                                                      │
 │   /plan  →  /code:plan-issue  →  /clear  →  /code:implement  →  /code:finalizer      │
 │     │            │                              │                    │               │
@@ -52,48 +41,12 @@ A Claude Code plugin that turns your ideas into working software through a task-
 │   (1 CPU, 512Mi, 0-3 inst)         (requires "yes", tests must pass)                 │
 │                                                                                      │
 ├──────────────────────────────────────────────────────────────────────────────────────┤
-│   Maintenance (run periodically):                                                    │
-│                                                                                      │
-│   /code:lessons  →  /code:cleanup                                                    │
-│        │                 │                                                           │
-│        ▼                 ▼                                                           │
-│   Analyze commits    Refactor CLAUDE.md                                              │
-│   Update LESSONS.md  Progressive disclosure                                          │
-│        │                                                                             │
-│        └──────────────────────────► LESSONS.md read by /code:plan-issue              │
-│                                     (informs future feature planning)                │
+│   Maintenance: /code:cleanup (refactor CLAUDE.md + organize auto-memory)             │
 │                                                                                      │
 └──────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Example: Fast Path (Quick Iterations)
-
-```bash
-# ══════════════════════════════════════════════════════════
-# FAST PATH - for small features, solo work
-# ══════════════════════════════════════════════════════════
-
-# 1. Explore your idea
-/plan add dark mode toggle
-
-# 2. Create tasks with LSP research, then implement directly
-/code:quick-tasks add dark mode toggle
-# → LSP researches codebase for precise references
-# → Creates native tasks (ctrl+t to view)
-# → Asks: "Start implementing now?"
-# → Say "start" and Claude implements everything
-
-# 3. Merge or create PR when done
-git checkout main && git merge feature/dark-mode --no-ff
-# or
-/code:pr
-```
-
-**That's it!** No GitHub issue, no command switching. Just plan → tasks → done.
-
----
-
-### Example: Full Path (Team Visibility)
+### Example: Feature Development
 
 ```bash
 # ══════════════════════════════════════════════════════════
@@ -113,27 +66,23 @@ git checkout main && git merge feature/dark-mode --no-ff
 # → Creates scripts/dev.sh, deploy-staging.sh, deploy-production.sh
 
 # ══════════════════════════════════════════════════════════
-# FULL PATH - for larger features, team visibility
+# FEATURE DEVELOPMENT
 # ══════════════════════════════════════════════════════════
 
 # 4. Explore your idea
 /plan (shift-tab) add dark mode toggle to the app
 
-# 5. (Optional) Clarify requirements
-/code:interview
-# → Answers questions, updates plan with details
-
-# 6. Create GitHub issue with tasks
+# 5. Create GitHub issue with tasks
 /code:plan-issue add dark mode toggle
 # → Issue #42 created
 
-# 7. Clear context before implementing
+# 6. Clear context before implementing
 /clear
 
-# 8. Run implementation (orchestrator handles everything)
+# 7. Run implementation (orchestrator handles everything)
 /code:implement #42
 
-# 9. Finalize when complete
+# 8. Finalize when complete
 /code:finalizer         # Merge directly to main
 # or
 /code:finalizer --pr    # Create PR for review
@@ -142,21 +91,14 @@ git checkout main && git merge feature/dark-mode --no-ff
 # DEPLOYMENT (after features merged)
 # ══════════════════════════════════════════════════════════
 
-# 10. Deploy to staging
+# 9. Deploy to staging
 /code:bun-deploy-staging
 # → Builds and deploys to GCP Cloud Run staging
 
-# 11. Test staging, then deploy to production
+# 10. Test staging, then deploy to production
 /code:bun-deploy-production yes
 # → Requires "yes", verifies tests pass first
 
-# ══════════════════════════════════════════════════════════
-# MAINTENANCE (periodic)
-# ══════════════════════════════════════════════════════════
-
-# 12. Update project knowledge
-/code:lessons           # Analyze commits, update LESSONS.md
-/code:cleanup           # Refactor context files
 ```
 
 **Interrupted?** Just run `/code:implement #42` again. Native tasks track progress (`ctrl+t` to view).
@@ -268,49 +210,6 @@ Generate deployment scripts based on detected project stack (Firebase Hosting or
 
 ### Feature Development
 
-#### `/code:interview [plan-file]`
-
-Deep requirement clarification through structured questioning. Use between `/plan` and `/code:plan-issue`.
-
-```bash
-/code:interview              # Uses most recent plan
-/code:interview plans/my.md  # Specific plan file
-```
-
-**What happens:**
-
-- Finds most recent plan in `plans/` folder
-- Analyzes plan for ambiguous areas (breadth-first)
-- Asks 2-3 related questions per round
-- Continues until you say `done`, `stop`, or `enough`
-- Merges answers into `## Details` section of plan
-
-**Note:** Interview is optional. Skip directly to `/code:plan-issue` or `/code:quick-tasks` if requirements are clear.
-
----
-
-#### `/code:quick-tasks <feature>` ⚡ NEW
-
-**Fast path:** LSP-precise research → native tasks → implement directly. No GitHub issue.
-
-```bash
-/code:quick-tasks add dark mode toggle
-```
-
-**What happens:**
-
-1. LSP researches codebase for precise file:line references
-2. Creates native tasks (view with `ctrl+t`)
-3. Asks: "Start implementing now?"
-4. If yes → Claude implements directly, commits after each task
-5. Runs `/simplify` when complete
-
-**Best for:** Solo work, small-medium features, quick iterations.
-
-**Resume:** Run `/code:run-tasks` to continue interrupted work.
-
----
-
 #### `/code:plan-issue <feature>`
 
 **Full path:** Research codebase and create GitHub issue with task manifest.
@@ -343,19 +242,6 @@ Launch orchestrator to execute all tasks from the issue.
 - Runs `/simplify` when complete
 
 **Resume:** Run the same command again. Orchestrator reads native tasks and continues.
-
----
-
-#### `/code:run-tasks [feature-name]`
-
-Resume or run pending tasks from native task manager (no GitHub issue required).
-
-```bash
-/code:run-tasks dark-mode     # Resume tasks for this feature
-/code:run-tasks               # Run all pending tasks
-```
-
-**Use after:** `/code:quick-tasks` if you chose "just create tasks" instead of immediate implementation.
 
 ---
 
@@ -440,20 +326,9 @@ Analyze code for simplification opportunities and bugs.
 
 ### Maintenance
 
-#### `/code:lessons [N]`
-
-Analyze recent commits and update LESSONS.md with patterns.
-
-```bash
-/code:lessons        # Last 5 commits
-/code:lessons 10     # Last 10 commits
-```
-
----
-
 #### `/code:cleanup`
 
-Refactor CLAUDE.md and LESSONS.md for progressive disclosure. Keeps context files lean and contradiction-free.
+Refactor CLAUDE.md and organize auto-memory for progressive disclosure. Keeps context files lean and contradiction-free.
 
 ```bash
 /code:cleanup
@@ -461,13 +336,13 @@ Refactor CLAUDE.md and LESSONS.md for progressive disclosure. Keeps context file
 
 **What happens:**
 
-1. Finds all CLAUDE.md and LESSONS.md files
+1. Finds all CLAUDE.md files
 2. Detects contradictions (asks you to resolve)
 3. Categorizes instructions (Essential, TypeScript, Testing, Git, etc.)
 4. Flags redundant/stale/obvious items (asks you to confirm)
 5. Creates `.claude/rules/` structure for detailed rules
 6. Writes minimal root CLAUDE.md (target: <50 lines)
-7. Archives LESSONS.md content (never deletes)
+7. Organizes auto-memory (deduplicates, removes stale entries)
 
 **Output:** Summary showing before/after line counts and changes made.
 
@@ -539,7 +414,7 @@ Tasks without dependencies run in parallel. Blocked tasks wait for their depende
 
 - **Keep scope small** — One feature at a time
 - **Trust the process** — Tests run automatically, failures get fixed
-- **Run `/code:lessons` periodically** — Builds project knowledge
+- **Claude Code auto-memory captures learnings automatically** — No manual lesson tracking needed
 - **Use `/code:bun-init` for new projects** — Creates full Bun + Next.js + GCP setup
 - **Use `/code:settings-audit`** — Auto-generates permissions for your project
 

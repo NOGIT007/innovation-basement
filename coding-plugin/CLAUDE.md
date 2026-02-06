@@ -7,10 +7,9 @@
 ```
 coding-plugin/
 ├── agents/        # orchestrator, implementer
-├── commands/      # plan-issue, implement, finalizer, lessons, etc.
-├── hooks/         # PostToolUse, Stop, SessionEnd, SubagentStop, PreCompact
-├── scripts/       # log-error, check-context, verify-gate, etc.
-└── templates/     # lessons-learned, rules/
+├── commands/      # plan-issue, implement, finalizer, cleanup, etc.
+├── hooks/         # Stop, SessionEnd, SubagentStop, PreCompact
+└── scripts/       # check-context, verify-gate, session-end, pre-compact
 ```
 
 ## Task Storage
@@ -41,7 +40,6 @@ Project `.claude/settings.json`:
 
 | Hook         | Trigger           | Script           |
 | ------------ | ----------------- | ---------------- |
-| PostToolUse  | After Bash        | log-error.sh     |
 | Stop         | Session pause     | check-context.sh |
 | SessionEnd   | Session ends      | session-end.sh   |
 | SubagentStop | Agent done        | verify-gate.sh   |
@@ -50,5 +48,5 @@ Project `.claude/settings.json`:
 ## File Conventions
 
 - `.handover.md` - Session state (gitignored, overwritten)
-- `LESSONS.md` - Learning from commits (project root)
+- Auto-memory at `~/.claude/projects/*/memory/` - Persistent learnings
 - Commands in `commands/` - One file per command

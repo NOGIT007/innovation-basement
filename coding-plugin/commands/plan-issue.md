@@ -58,31 +58,7 @@ If found:
 - Proceed to Phase 1 research (explore codebase)
 - Generate plan from scratch based on `$ARGUMENTS`
 
-## Step 0.6: Read Project Lessons
-
-Check for LESSONS.md in project root:
-
-```bash
-cat LESSONS.md 2>/dev/null
-```
-
-If exists:
-
-- Note patterns to follow
-- Note mistakes to avoid
-- Include relevant lessons in issue context
-
-## Step 0.7: Check Lessons Age
-
-If LESSONS.md older than 30 days:
-
-```bash
-stat -f "%Sm" LESSONS.md 2>/dev/null
-```
-
-Suggest: "LESSONS.md is stale. Run `/code:lessons` to refresh."
-
-## Step 0.8: Load Code Quality Rules
+## Step 0.6: Load Code Quality Rules
 
 Apply these rules during planning:
 

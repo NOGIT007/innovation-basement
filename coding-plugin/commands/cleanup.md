@@ -1,19 +1,18 @@
 ---
 allowed-tools: Read, Write, Glob, Grep, Edit, AskUserQuestion, Bash(mkdir:*)
-description: Refactor CLAUDE.md and LESSONS.md for progressive disclosure
+description: Refactor CLAUDE.md and auto-memory for progressive disclosure
 ---
 
 # Cleanup Context Files
 
-Refactor CLAUDE.md and LESSONS.md using progressive disclosure. Keep root files lean, move detailed rules to `.claude/rules/`.
+Refactor CLAUDE.md and auto-memory using progressive disclosure. Keep root files lean, move detailed rules to `.claude/rules/`.
 
 ## Step 1: Find Context Files
 
-Find all CLAUDE.md and LESSONS.md files in the project:
+Find all CLAUDE.md files in the project:
 
 ```
 Glob: **/CLAUDE.md
-Glob: **/LESSONS.md
 ```
 
 Read each file found.
@@ -121,28 +120,20 @@ See `.claude/rules/` for context-specific rules:
 - `git.md` - Commit/branch rules
 ```
 
-## Step 7: Archive LESSONS.md
+## Step 7: Organize Auto-Memory
 
-Don't delete LESSONS.md content - archive it:
+Review and organize auto-memory files:
 
-```bash
-mkdir -p .claude/archive
+1. Read all files in `~/.claude/projects/*/memory/`
+2. Deduplicate entries across topic files
+3. Remove stale entries (>30 days old unless recurring)
+4. Ensure MEMORY.md index is under 200 lines
+
 ```
-
-Move to: `.claude/archive/lessons-YYYY-MM-DD.md`
-
-Create fresh LESSONS.md with:
-
-```markdown
-# Project Lessons
-
-_Last updated: [date]_
-
-## Active Lessons
-
-(migrated from cleanup - [date])
-
-[Keep only lessons still relevant]
+AskUserQuestion: "Found the following auto-memory entries to clean up:
+[list entries]
+Should I proceed with cleanup?"
+Options: [Yes, clean up, No, keep as-is, Let me review first]
 ```
 
 ## Step 8: Report Summary
@@ -154,14 +145,14 @@ Output statistics:
 
 **Before:**
 - CLAUDE.md: [X] lines
-- LESSONS.md: [Y] lines
-- Total instructions: [Z]
+- Auto-memory files: [Y] files, [Z] total entries
+- Total instructions: [N]
 
 **After:**
 - CLAUDE.md: [X'] lines (target: <50)
 - Rules files created: [N]
 - Items deleted: [M]
-- LESSONS.md archived to: [path]
+- Auto-memory entries deduplicated/removed: [K]
 
 **Created:**
 - .claude/rules/typescript.md
@@ -176,7 +167,7 @@ Output statistics:
 ## Rules
 
 - **Never delete without asking** - Always get user confirmation
-- **Archive, don't destroy** - LESSONS.md content is preserved
 - **Progressive disclosure** - Root file is entry point, details in rules/
 - **Keep it lean** - Root CLAUDE.md under 50 lines
 - **Be specific** - Each rule file has clear scope
+- **Auto-memory hygiene** - Keep MEMORY.md under 200 lines

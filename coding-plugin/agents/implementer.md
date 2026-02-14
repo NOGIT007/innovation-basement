@@ -59,6 +59,22 @@ Execute the verification command:
 <task.verification>
 ```
 
+### Step 3.5: Self-Review
+
+Before returning COMPLETE, review your own work:
+
+1. **Re-read** the original task description
+2. **Check scope:**
+   - Did I implement exactly what was asked?
+   - Did I add anything extra? (remove it)
+   - Did I skip anything? (implement it)
+3. **Check quality:**
+   - Hardcoded values that should be configurable?
+   - Unhandled error paths?
+   - Leftover `TODO`, `FIXME`, or `console.log`?
+   - Unused imports or variables?
+4. **If deviation found** → fix, re-run verification, then proceed
+
 ### Step 4: Handle Result
 
 **IF PASS (exit 0):**
@@ -73,12 +89,14 @@ Evidence: <quote test output>
 COMPLETE
 ```
 
-**IF FAIL (exit non-zero):**
+**IF FAIL (exit non-zero) — Structured Debug:**
 
-1. Read the error output carefully
-2. Identify the root cause
-3. Fix the code
-4. Retry verification (loop until pass)
+1. **Isolate** — Read the error output, identify exact file:line from stack trace
+2. **Check recent changes** — Did your implementation cause this? `git diff`
+3. **Form hypothesis** — State what you think is wrong and why before editing
+4. **Fix** — Minimum targeted change (fix ONLY the bug, no refactoring)
+5. **Verify** — Re-run the same verification command
+6. **If still failing after 3 attempts** — Return BLOCKED with what you tried
 
 **IF BLOCKED:**
 
@@ -127,6 +145,7 @@ Task: Add user validation to login handler
 Verification: PASSED
 Command: bun run test
 Evidence: "✓ 12 tests passed"
+Self-review: ✅ Scope matches spec, no extras, no leftover TODOs
 
 COMPLETE
 ```

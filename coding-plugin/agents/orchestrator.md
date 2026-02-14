@@ -161,9 +161,24 @@ This auto-generates a conventional commit message.
 
 ### Implementer Returns BLOCKED
 
-1. Keep task status as "in_progress"
-2. Report to user with reason
-3. Ask: "How should I proceed?"
+Categorize the blocker and take appropriate action:
+
+| Category           | Example                   | Recovery                                       |
+| ------------------ | ------------------------- | ---------------------------------------------- |
+| Missing dependency | "Package X not installed" | Auto-install, re-dispatch task                 |
+| Ambiguous spec     | "Unclear whether A or B"  | Ask user, update task description, re-dispatch |
+| External blocker   | "API not available"       | Skip task, continue with others, revisit last  |
+| Technical dead-end | "Approach won't work"     | Present 2-3 options to user, let them choose   |
+
+**Recovery flow:**
+
+1. Parse the BLOCKED reason
+2. Match to category above
+3. **If auto-recoverable** (missing dependency): fix it, re-dispatch (max 1 auto-retry per task)
+4. **If needs user input** (ambiguous spec, dead-end): present specific options, not open-ended "How should I proceed?"
+5. **If external**: skip and continue, flag for user at end
+
+**Max 1 auto-retry per task** — if auto-recovery fails, escalate to user with options.
 
 ### Implementer Fails Unexpectedly
 

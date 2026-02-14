@@ -55,8 +55,33 @@ If found:
 
 **If NONE found:**
 
-- Proceed to Phase 1 research (explore codebase)
+- Proceed to Phase 0.7 (Explore Approaches)
+- Then Phase 1 research (explore codebase)
 - Generate plan from scratch based on `$ARGUMENTS`
+
+## Phase 0.7: Explore Approaches
+
+> **Skip this phase** when: SPEC.md exists, `@file` was provided, or a plan file was found.
+
+Before deep research, present 2-3 approaches ranked by simplicity:
+
+1. **Identify approaches** — What are 2-3 ways to implement this?
+2. **Rank by simplicity** — Simplest first (fewest files, least risk)
+3. **Present to user:**
+
+```
+## Approaches
+
+1. **[Simplest]** — [1 sentence]. Files: ~N, Risk: low
+2. **[Alternative]** — [1 sentence]. Files: ~N, Risk: medium
+3. **[Most flexible]** — [1 sentence]. Files: ~N, Risk: higher
+
+Which approach? (default: 1)
+```
+
+4. **Wait for user choice** before proceeding to Phase 1
+
+**Why:** There might be a simpler way. This is a gentle nudge, not a gate.
 
 ## Step 0.6: Load Code Quality Rules
 
@@ -130,6 +155,45 @@ Break into **tasks** (not phases):
 - Order by dependency (use blockedBy)
 - List specific files per task
 - Include verification command for each task
+
+## Phase 2.5: Task Quality Gate
+
+Before confirming, validate every task against these rules:
+
+### Quality Checks
+
+| Check            | Rule                                     | Fix                                         |
+| ---------------- | ---------------------------------------- | ------------------------------------------- |
+| File count       | Max 3 files per task                     | Split into sub-tasks                        |
+| File references  | Every task has `file:line` refs          | Add precise locations                       |
+| Verification     | Must be specific command                 | Replace vague "bun test" with targeted test |
+| Success criteria | Each task states what success looks like | Add `expected_outcome`                      |
+
+### Anti-Patterns (reject these)
+
+- **Vague task:** "Improve the API" → Split into specific changes
+- **Umbrella task:** "Set up auth + database + UI" → One concern per task
+- **Missing verification:** "Update styles" with no way to check → Add visual/test check
+- **No file refs:** "Change the handler" → Which handler? What file? What line?
+
+### Enriched TaskCreate
+
+Add `expected_outcome` to metadata:
+
+```
+TaskCreate(
+  subject: "<imperative task title>",
+  description: "<detailed steps with file:line refs>",
+  activeForm: "<present continuous form>",
+  metadata: {
+    "verification": "<specific test command>",
+    "expected_outcome": "<what success looks like>",
+    "files": ["file.ts:15-30"]
+  }
+)
+```
+
+**Loop:** If any task fails quality checks → rewrite it before proceeding.
 
 ## Phase 3: Confirm
 

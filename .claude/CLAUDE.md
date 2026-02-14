@@ -19,4 +19,4 @@ Claude Code plugin for task-driven development workflow.
 
 See `.claude/rules/` for context-specific rules:
 
-- `versioning.md` - Version bump locations & format
+- `versioning.md` - Version bump locations, format & changelog

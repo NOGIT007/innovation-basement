@@ -1,4 +1,4 @@
-# Coding Plugin v2.8.0
+# Coding Plugin v2.9.0
 
 **Build apps with AI, even if you can't code.**
 
@@ -12,11 +12,11 @@ A Claude Code plugin that turns your ideas into working software through a task-
 ┌──────────────────────────────────────────────────────────────────────────────────────┐
 │   Project Setup (once per project):                                                  │
 │                                                                                      │
-│   /code:bun-init my-app  →  /code:settings-audit  →  /code:init-deployment           │
-│         │                         │                         │                        │
-│         ▼                         ▼                         ▼                        │
-│   Create Bun + Next.js       Generate permissions      Generate deployment           │
-│   + Shadcn + Docker                                    scripts (staging/prod)        │
+│   /code:bun-init my-app  →  /code:setup                                              │
+│         │                       │                                                    │
+│         ▼                       ▼                                                    │
+│   Create Bun + Next.js     Detect stack, generate permissions                        │
+│   + Shadcn + Docker        + deployment scripts                                      │
 │                                                                                      │
 ├──────────────────────────────────────────────────────────────────────────────────────┤
 │   Feature Development:                                                               │
@@ -57,13 +57,9 @@ A Claude Code plugin that turns your ideas into working software through a task-
 /code:bun-init my-saas-app
 # → Creates Bun + Next.js + Shadcn + Docker setup
 
-# 2. Generate permissions
-/code:settings-audit
-# → Creates .claude/settings.json with detected tools
-
-# 3. Generate deployment scripts
-/code:init-deployment
-# → Creates scripts/dev.sh, deploy-staging.sh, deploy-production.sh
+# 2. Configure project (settings + deployment)
+/code:setup
+# → Detects stack, generates .claude/settings.json + deployment scripts
 
 # ══════════════════════════════════════════════════════════
 # FEATURE DEVELOPMENT
@@ -178,33 +174,20 @@ Initialize a new Bun + Next.js + Shadcn/UI project with GCP Cloud Run deployment
 
 ---
 
-#### `/code:settings-audit`
+#### `/code:setup`
 
-Analyze project and generate `.claude/settings.json` permissions.
-
-```bash
-/code:settings-audit
-```
-
-**Detects:** Bun/Node, Docker, GCP, Python projects and recommends appropriate tool permissions.
-
----
-
-#### `/code:init-deployment`
-
-Generate deployment scripts based on detected project stack (Firebase Hosting or GCP Cloud Run).
+Detect project stack and configure Claude Code settings + deployment scripts.
 
 ```bash
-/code:init-deployment
+/code:setup
 ```
 
-**Detects:** Bun/npm/pnpm, Next.js/Vite, Firebase/Docker and generates appropriate deployment scripts.
+**Detects:** Bun/npm/pnpm, Python, Rust, Go, Next.js/Vite, Firebase/Docker and generates:
 
-**Creates:**
-
-- `scripts/dev.sh` - Local development
-- `scripts/deploy-staging.sh` - Staging deployment
-- `scripts/deploy-production.sh` - Production (requires "yes" confirmation)
+- `.claude/settings.json` — Permissions tailored to your stack
+- `scripts/dev.sh` — Local development
+- `scripts/deploy-staging.sh` — Staging deployment
+- `scripts/deploy-production.sh` — Production (requires "yes" confirmation)
 
 ---
 
@@ -416,7 +399,7 @@ Tasks without dependencies run in parallel. Blocked tasks wait for their depende
 - **Trust the process** — Tests run automatically, failures get fixed
 - **Claude Code auto-memory captures learnings automatically** — No manual lesson tracking needed
 - **Use `/code:bun-init` for new projects** — Creates full Bun + Next.js + GCP setup
-- **Use `/code:settings-audit`** — Auto-generates permissions for your project
+- **Use `/code:setup`** — Auto-generates permissions and deployment scripts for your project
 
 ---
 

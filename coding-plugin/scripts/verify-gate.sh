@@ -1,6 +1,7 @@
 #!/bin/bash
 # Verification gate check after implementer agent phases
 # Called on SubagentStop hook (matcher: implementer)
+# Actually runs detected test command and exits non-zero on failure
 
 # Detect test command
 detect_test_cmd() {
@@ -40,11 +41,29 @@ detect_test_cmd() {
 TEST_CMD=$(detect_test_cmd)
 
 if [ -z "$TEST_CMD" ]; then
-  echo '{"warning": "No test command detected - verification gate cannot auto-check"}'
+  echo '{"warning": "No test command detected - verification gate skipped"}'
   exit 0
 fi
 
-# Output verification reminder
-echo "{\"verification\": \"Test command: $TEST_CMD\", \"reminder\": \"Ensure tests pass before marking tasks complete\"}"
+echo "{\"verification\": \"Running: $TEST_CMD\"}"
 
+# Run tests with 120s timeout
+if command -v timeout &> /dev/null; then
+  timeout 120 $TEST_CMD
+else
+  # macOS fallback: use perl for timeout
+  perl -e "alarm 120; exec @ARGV" $TEST_CMD
+fi
+
+EXIT_CODE=$?
+
+if [ $EXIT_CODE -eq 124 ]; then
+  echo '{"error": "Tests timed out after 120 seconds"}'
+  exit 1
+elif [ $EXIT_CODE -ne 0 ]; then
+  echo "{\"error\": \"Tests failed with exit code $EXIT_CODE\"}"
+  exit $EXIT_CODE
+fi
+
+echo '{"verification": "Tests passed"}'
 exit 0

@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.9.0] - 2026-02-15
+
+### Fixed
+
+- `verify-gate.sh` now actually runs detected test command and exits non-zero on failure (was a no-op)
+- `session-end.sh` and `pre-compact.sh` — removed dead `/handover` references (command removed in v2.7.0)
+- `check-context.sh` — removed reference to non-existent `/workflow status` command
+
+### Changed
+
+- Consolidated `settings-audit` + `init-deployment` into single `/code:setup` command (12 → 11 commands)
+- `/code:setup` detects any project stack (Bun, npm, Python, Rust, Go) and generates both settings and deployment scripts
+
+### Removed
+
+- `settings-audit` command (merged into `/code:setup`)
+- `init-deployment` command (merged into `/code:setup`)
+
 ## [2.8.0] - 2026-02-14
 
 ### Added
@@ -48,6 +66,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Expanded orchestrator agent with improved task delegation and status tracking
 
+[2.9.0]: https://github.com/NOGIT007/innovation-basement/compare/e855fbb...HEAD
 [2.8.0]: https://github.com/NOGIT007/innovation-basement/compare/3dd7f52...59444a2
 [2.7.0]: https://github.com/NOGIT007/innovation-basement/compare/e5a45d6...3dd7f52
 [2.6.1]: https://github.com/NOGIT007/innovation-basement/compare/57d9a32...e5a45d6

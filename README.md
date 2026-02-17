@@ -1,4 +1,4 @@
-# Coding Plugin v2.9.0
+# Coding Plugin v2.10.0
 
 **Build apps with AI, even if you can't code.**
 
@@ -125,6 +125,76 @@ Without these settings, the Task-based workflow may not work correctly.
 
 ---
 
+### Agent Teams Setup (Optional)
+
+Agent Teams let `/code:implement` use multiple independent Claude Code sessions instead of subagents. This is experimental and opt-in.
+
+#### Prerequisites
+
+- Claude Code with Agent Teams support (experimental feature)
+- **macOS recommended** for split-pane display (requires tmux or iTerm2)
+- In-process mode works on any platform (no split panes)
+
+#### Enable Agent Teams
+
+Add to your project's `.claude/settings.json`:
+
+```json
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  }
+}
+```
+
+#### Optional: Split-Pane Display
+
+For the best experience on macOS, install tmux:
+
+```bash
+brew install tmux
+```
+
+Or use iTerm2 with the `it2` CLI and enable Python API in iTerm2 Settings.
+
+Without tmux/iTerm2, teammates run in-process (same terminal, use Shift+Up/Down to navigate).
+
+#### When Does Team Mode Activate?
+
+| Scenario                                      | Mode                            |
+| --------------------------------------------- | ------------------------------- |
+| Env var not set                               | Always subagent (default)       |
+| Env var set + < 4 tasks                       | Subagent (auto-detected)        |
+| Env var set + 4+ tasks with 60%+ independence | Team (auto-detected)            |
+| `--team` flag                                 | Team (forced, requires env var) |
+| `--no-team` flag                              | Subagent (forced, always works) |
+
+#### Using Team Mode
+
+```bash
+# Let auto-detection decide
+/code:implement #42
+
+# Force team mode for a complex cross-layer feature
+/code:implement #42 --team
+
+# Force subagent mode when you want lower token usage
+/code:implement #42 --no-team
+```
+
+**In team mode:**
+
+- The main session becomes the team lead (coordinator)
+- Teammates are full Claude Code sessions that claim tasks independently
+- Each teammate reads project rules, claims tasks, implements, verifies, and commits
+- The lead monitors progress and updates the GitHub issue
+- Use `Shift+Up/Down` to select a teammate and message them directly
+- Press `Ctrl+T` to view the shared task list
+
+**Token usage:** Team mode uses significantly more tokens than subagent mode. Each teammate is a separate Claude instance. Use it for complex features where parallel independent work justifies the cost.
+
+---
+
 ## Installation
 
 ### Prerequisites
@@ -206,25 +276,37 @@ Detect project stack and configure Claude Code settings + deployment scripts.
 
 ---
 
-#### `/code:implement #<issue-number>`
+#### `/code:implement #<issue-number> [--team | --no-team]`
 
-Launch orchestrator to execute all tasks from the issue.
+Launch task execution for all tasks from the issue.
 
 ```bash
-/code:implement #42
+/code:implement #42             # Auto-detect execution mode
+/code:implement #42 --team      # Force Agent Teams (experimental)
+/code:implement #42 --no-team   # Force subagent orchestrator
 ```
 
-**What happens:**
+**Execution Modes:**
+
+| Mode                    | When                                   | How It Works                                                              |
+| ----------------------- | -------------------------------------- | ------------------------------------------------------------------------- |
+| **Subagent** (default)  | < 4 tasks, or many dependencies        | Orchestrator spawns implementer per task (proven, lower token cost)       |
+| **Team** (experimental) | 4+ independent tasks, or `--team` flag | Main session leads an Agent Team — each teammate is a full Claude session |
+
+Auto-detection picks team mode when 4+ tasks exist with 60%+ independence. Override with flags.
+
+**Team mode requires setup** — see [Agent Teams Setup](#agent-teams-setup-optional) below.
+
+**What happens (both modes):**
 
 - Validates issue is open
 - Creates feature branch
-- Spawns orchestrator agent
-- Orchestrator runs tasks in parallel (up to 5 concurrent)
+- Runs tasks in parallel (up to 5 concurrent)
 - Commits after each task
 - Updates GitHub issue status
 - Runs `/simplify` when complete
 
-**Resume:** Run the same command again. Orchestrator reads native tasks and continues.
+**Resume:** Run the same command again. Both modes reconstruct state from TaskList.
 
 ---
 
@@ -360,36 +442,32 @@ GCP resource protection rules:
 ## Architecture
 
 ```
-User
-  │
-  ▼
-/implement #42           ← Thin launcher
-  │
-  ▼
-Task(orchestrator)       ← Master controller
-  │
-  ├─┬─ Task(implementer)  ← Task 1 ─┐
-  │ ├─ Task(implementer)  ← Task 2 ─┼→ parallel
-  │ └─ Task(implementer)  ← Task 3 ─┘
-  │
-  ├── Task(implementer)  ← Task 4 (blocked by 1,2,3)
-  └── Task(simplifier)   ← Cleanup
-  │
-  ▼
-"Run /finalizer [--pr]"
+Subagent Mode (default)                Team Mode (experimental)
+
+User                                   User
+  │                                      │
+  ▼                                      ▼
+/implement #42                         /implement #42 --team
+  │                                      │
+  ▼                                      ▼
+Task(orchestrator) ← subagent          Main session = team lead
+  │                                      │
+  ├─┬─ Task(implementer) ← Task 1 ─┐    ├─ Teammate 1 (claims tasks)
+  │ ├─ Task(implementer) ← Task 2 ─┼→   ├─ Teammate 2 (claims tasks)
+  │ └─ Task(implementer) ← Task 3 ─┘    └─ Teammate N (max 5)
+  │                                      │
+  ├── Task(implementer) ← Task 4        Teammates self-coordinate via
+  └── Task(simplifier)                   shared TaskList
+  │                                      │
+  ▼                                      ▼
+"Run /finalizer [--pr]"               "Run /finalizer [--pr]"
 ```
 
 **Key principle:** Intelligence lives in agents, not commands.
 
-### Parallel Execution
+**Subagent mode** — Orchestrator controls all execution. Implementers report back to orchestrator only. Lower token cost, proven workflow.
 
-```
-Task 1 ─┐
-Task 2 ─┼→ all complete → Task 4 (blocked by 1,2,3)
-Task 3 ─┘
-```
-
-Tasks without dependencies run in parallel. Blocked tasks wait for their dependencies to complete.
+**Team mode** — Main session leads. Teammates are independent sessions that communicate with each other and self-coordinate through the shared task list. Higher token cost, best for complex features with many independent tasks.
 
 ---
 

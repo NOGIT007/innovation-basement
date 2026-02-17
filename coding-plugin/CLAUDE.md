@@ -8,8 +8,8 @@
 coding-plugin/
 ├── agents/        # orchestrator, implementer
 ├── commands/      # plan-issue, implement, finalizer, cleanup, etc.
-├── hooks/         # Stop, SessionEnd, SubagentStop, PreCompact
-└── scripts/       # check-context, verify-gate, session-end, pre-compact
+├── hooks/         # Stop, SessionEnd, SubagentStop, PreCompact, TeammateIdle, TaskCompleted
+└── scripts/       # check-context, verify-gate, session-end, pre-compact, teammate-idle, team-task-complete
 ```
 
 ## Task Storage
@@ -21,6 +21,18 @@ Tasks use Claude Code's **native Task tools**:
 - **TaskUpdate** - Update status (pending → in_progress → completed)
 
 View tasks with `ctrl+t` in Claude Code terminal.
+
+## Execution Modes
+
+`/code:implement` supports two execution modes:
+
+| Mode                | Trigger             | Flow                                    | Token Cost |
+| ------------------- | ------------------- | --------------------------------------- | ---------- |
+| Subagent (default)  | Auto or `--no-team` | implement → orchestrator → implementers | Lower      |
+| Team (experimental) | Auto or `--team`    | implement = lead → teammates            | Higher     |
+
+Team mode requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in settings.json env.
+Auto-detection uses team mode when 4+ tasks exist with 60%+ having no blockers.
 
 ## Required Environment
 
@@ -38,12 +50,14 @@ Project `.claude/settings.json`:
 
 ## Hooks
 
-| Hook         | Trigger           | Script           |
-| ------------ | ----------------- | ---------------- |
-| Stop         | Session pause     | check-context.sh |
-| SessionEnd   | Session ends      | session-end.sh   |
-| SubagentStop | Agent done        | verify-gate.sh   |
-| PreCompact   | Before compaction | pre-compact.sh   |
+| Hook          | Trigger                    | Script                |
+| ------------- | -------------------------- | --------------------- |
+| Stop          | Session pause              | check-context.sh      |
+| SessionEnd    | Session ends               | session-end.sh        |
+| SubagentStop  | Agent done                 | verify-gate.sh        |
+| PreCompact    | Before compaction          | pre-compact.sh        |
+| TeammateIdle  | Teammate idle (team mode)  | teammate-idle.sh      |
+| TaskCompleted | Task completed (team mode) | team-task-complete.sh |
 
 ## File Conventions
 

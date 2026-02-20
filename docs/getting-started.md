@@ -103,6 +103,14 @@ Output:
 
 Press `ctrl+t` to see the tasks and their status.
 
+> **Tip:** Already have a GitHub issue (e.g. from `@claude` investigation)? Enrich it directly:
+>
+> ```bash
+> /code:plan-issue #33
+> ```
+>
+> This fetches the issue body + comments, creates native tasks, and updates the issue in-place.
+
 ---
 
 ## Step 5: Implement

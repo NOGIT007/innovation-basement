@@ -118,11 +118,13 @@ Task(
 The orchestrator now controls execution:
 
 1. Uses TaskList to find pending tasks
-2. Spawns implementer for each task
-3. Commits after each task
+2. Spawns implementer for each task (each in its own git worktree for isolation)
+3. Commits after each task (worktree changes merge back automatically)
 4. Updates GitHub issue status
 5. Runs simplify when complete
 6. Reports: "Run /code:finalizer [--pr] to finish"
+
+> **Worktree isolation:** Each implementer runs in a separate git worktree, preventing file conflicts when multiple tasks execute in parallel. If a merge conflict occurs when merging back, the task is marked BLOCKED with conflict details.
 
 You will see progress as tasks complete. Press `ctrl+t` to view task progress.
 

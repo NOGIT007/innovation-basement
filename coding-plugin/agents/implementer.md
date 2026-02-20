@@ -2,6 +2,7 @@
 name: implementer
 description: Implements a single task with verification gate
 context: fork
+isolation: worktree
 allowed-tools: Bash, Read, Grep, Glob, Edit, Write
 ---
 

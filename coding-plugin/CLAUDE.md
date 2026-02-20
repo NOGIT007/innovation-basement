@@ -8,9 +8,20 @@
 coding-plugin/
 ├── agents/        # orchestrator, implementer
 ├── commands/      # plan-issue, implement, finalizer, cleanup, etc.
-├── hooks/         # Stop, SessionEnd, SubagentStop, PreCompact, TeammateIdle, TaskCompleted
-└── scripts/       # check-context, verify-gate, session-end, pre-compact, teammate-idle, team-task-complete
+├── hooks/         # Stop, SessionEnd, SubagentStop, PreCompact, TeammateIdle, TaskCompleted, ConfigChange
+└── scripts/       # check-context, verify-gate, session-end, pre-compact, teammate-idle, team-task-complete, config-validate
 ```
+
+## Base Settings
+
+The plugin ships default settings via `coding-plugin/.claude-plugin/settings.json`:
+
+- `plansDirectory: "plans"` — store plans in plans/ folder
+- `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE: "70"` — auto-compact at 70% context
+- `Bash(git:*)`, `Bash(gh:*)` — git and GitHub CLI permissions
+- Custom spinner tips for plugin workflow guidance
+
+Users only need to add project-specific settings (like `CLAUDE_CODE_TASK_LIST_ID`) to their `.claude/settings.json`.
 
 ## Task Storage
 
@@ -34,15 +45,15 @@ View tasks with `ctrl+t` in Claude Code terminal.
 Team mode requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in settings.json env.
 Auto-detection uses team mode when 4+ tasks exist with 60%+ having no blockers.
 
+**Worktree isolation:** Implementers run in separate git worktrees (`isolation: worktree`), preventing file conflicts during parallel execution.
+
 ## Required Environment
 
-Project `.claude/settings.json`:
+Project `.claude/settings.json` (only project-specific settings needed):
 
 ```json
 {
-  "plansDirectory": "plans",
   "env": {
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",
     "CLAUDE_CODE_TASK_LIST_ID": "<your-project-name>-tasks"
   }
 }
@@ -58,6 +69,7 @@ Project `.claude/settings.json`:
 | PreCompact    | Before compaction          | pre-compact.sh        |
 | TeammateIdle  | Teammate idle (team mode)  | teammate-idle.sh      |
 | TaskCompleted | Task completed (team mode) | team-task-complete.sh |
+| ConfigChange  | Settings modified          | config-validate.sh    |
 
 ## File Conventions
 

@@ -3,6 +3,21 @@
 # Exit code 2 = reject completion (tests failed, task stays in_progress)
 # Exit code 0 = accept completion
 
+# Read hook input from stdin (JSON with last_assistant_message)
+HOOK_INPUT=""
+if [ ! -t 0 ]; then
+  HOOK_INPUT=$(cat)
+fi
+
+# Check if teammate reported BLOCKED — skip tests
+if [ -n "$HOOK_INPUT" ]; then
+  LAST_MSG=$(echo "$HOOK_INPUT" | grep -o '"last_assistant_message":"[^"]*"' | head -1 | sed 's/"last_assistant_message":"//;s/"$//')
+  if echo "$LAST_MSG" | grep -qi "BLOCKED:"; then
+    echo "{\"info\": \"Teammate reported BLOCKED — skipping verification\", \"claim\": \"$LAST_MSG\"}"
+    exit 0
+  fi
+fi
+
 # Detect test command
 detect_test_cmd() {
   if [ -f "package.json" ]; then

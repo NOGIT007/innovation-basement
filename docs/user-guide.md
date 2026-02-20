@@ -41,10 +41,20 @@ The spec file gives Claude structured context — acceptance criteria, constrain
 ### The Plan-Issue Command
 
 ```bash
+# Create new issue from a description
 /code:plan-issue add dark mode toggle
+
+# Enrich an existing issue (e.g. from @claude investigation)
+/code:plan-issue #33
+
+# Enrich existing issue with extra context
+/code:plan-issue #33 focus on the storage layer
+
+# Use a spec file
+/code:plan-issue @SPEC.md
 ```
 
-This researches your codebase, creates a GitHub issue, and registers native tasks. Each task includes:
+This researches your codebase, creates or updates a GitHub issue, and registers native tasks. Each task includes:
 
 | Field            | Purpose                                               |
 | ---------------- | ----------------------------------------------------- |
@@ -52,6 +62,14 @@ This researches your codebase, creates a GitHub issue, and registers native task
 | **Description**  | Detailed steps with `file:line` references            |
 | **Metadata**     | `issueNumber`, `verification` command, `feature` name |
 | **Dependencies** | `blockedBy` relationships to other tasks              |
+
+### Existing Issue Mode
+
+When you pass `#<number>`, plan-issue fetches the issue body and all comments, uses them as primary context (like a spec file), creates native tasks from the findings, and updates the issue in-place. This is ideal for bridging GitHub's `@claude` agent mode with `/code:implement`:
+
+1. `@claude` investigates an issue and posts findings as comments
+2. `/code:plan-issue #33` reads those findings, creates native tasks
+3. `/code:implement #33` executes the tasks
 
 ### Viewing Tasks
 

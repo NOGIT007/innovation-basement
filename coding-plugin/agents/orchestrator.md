@@ -2,6 +2,7 @@
 name: orchestrator
 description: Controls task execution lifecycle for a feature
 context: fork
+background: true
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob, Task, Skill, TaskList, TaskUpdate, TaskGet
 ---
 
@@ -64,6 +65,8 @@ LOOP until all tasks completed:
     result = TaskOutput(task_id: agent_id, block: false)
 
     if result contains "COMPLETE":
+      # Worktree merge-back: Claude Code auto-merges implementer worktree.
+      # If merge conflict occurs, mark task BLOCKED with conflict details.
       TaskUpdate(task_id, status: "completed")
       Skill("coding-plugin:commit")
       Update GitHub issue status
@@ -71,6 +74,11 @@ LOOP until all tasks completed:
 
     elif result contains "BLOCKED":
       Report to user
+      Remove from in_flight
+
+    elif result contains "MERGE CONFLICT":
+      TaskUpdate(task_id, status: "blocked")
+      Report conflicting files to user
       Remove from in_flight
 
   # PHASE 3: CHECK FOR NEWLY UNBLOCKED TASKS

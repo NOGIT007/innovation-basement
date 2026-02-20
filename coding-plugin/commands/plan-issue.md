@@ -1,7 +1,7 @@
 ---
-allowed-tools: Bash(gh issue create:*), Bash(gh issue list:*), Bash(git log:*), Bash(git branch:*), Bash(git remote:*), Read, Write, Grep, Glob, Task, AskUserQuestion, TaskCreate, TaskUpdate, mcp__typescript-lsp__*
+allowed-tools: Bash(gh issue create:*), Bash(gh issue list:*), Bash(gh issue view:*), Bash(gh issue edit:*), Bash(git log:*), Bash(git branch:*), Bash(git remote:*), Read, Write, Grep, Glob, Task, AskUserQuestion, TaskCreate, TaskUpdate, mcp__typescript-lsp__*
 description: Research codebase with LSP precision, plan feature with phases, create GitHub issue
-argument-hint: [feature-description] [@spec-file]
+argument-hint: [#issue-number | feature-description] [@spec-file]
 ---
 
 # Feature Planning & GitHub Issue Creation
@@ -17,6 +17,26 @@ Check current project repo (issue will be created here):
 ```bash
 git remote -v
 ```
+
+## Step 0.3: Detect Existing Issue
+
+Check if `$ARGUMENTS` contains a GitHub issue reference (`#<number>`):
+
+**If `#<number>` found:**
+
+1. Extract issue number (strip `#` prefix)
+2. Fetch issue content:
+   ```bash
+   gh issue view <number> --json title,body,comments --jq '{title, body, comments: [.comments[].body]}'
+   ```
+3. Store as `EXISTING_ISSUE_NUMBER` and `EXISTING_ISSUE_CONTENT`
+4. Use the issue body + comments as primary context (same as a spec file)
+5. Remaining text in `$ARGUMENTS` (after removing `#<number>`) becomes additional context
+6. **Skip to Phase 1** (research) — the issue content replaces the plan source
+
+**If no `#<number>` found:**
+
+- Continue to Step 0.5 (current behavior)
 
 ## Step 0.5: Load Existing Plan
 
@@ -252,7 +272,17 @@ fi
 echo "Body validated ($(wc -l < .claude-issue-body.md) lines)"
 ```
 
-### Step 4.5: Create Issue with Body File
+### Step 4.5: Create or Update Issue
+
+**If enriching existing issue (`EXISTING_ISSUE_NUMBER` set):**
+
+```bash
+gh issue edit <EXISTING_ISSUE_NUMBER> --body-file .claude-issue-body.md
+```
+
+Use the existing issue number for task linking. Do NOT create a new issue.
+
+**If creating new issue (current behavior):**
 
 ```bash
 gh issue create --title "[Feature] $ARGUMENTS" --body-file .claude-issue-body.md
@@ -262,7 +292,7 @@ Extract issue number from output.
 
 ### Step 4.6: Link Tasks to Issue
 
-Update all tasks with the issue number:
+Update all tasks with the issue number (use `EXISTING_ISSUE_NUMBER` if set, otherwise the newly created number):
 
 ```
 TaskUpdate(
@@ -335,9 +365,20 @@ When creating tasks, aim for ~55% context usage per task:
 
 ## Next Steps
 
-Issue created with native tasks.
+Issue created or updated with native tasks.
 
 Output:
+
+**If enriching existing issue (`EXISTING_ISSUE_NUMBER` set):**
+
+```
+Issue #<number> updated with task breakdown
+Tasks: <count> tasks in native task list (view with ctrl+t)
+
+Run `/code:implement #<number>` to start.
+```
+
+**If creating new issue:**
 
 ```
 Issue #<number> created

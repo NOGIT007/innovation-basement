@@ -1,4 +1,4 @@
-# Coding Plugin v2.11.0
+# Coding Plugin v2.11.0 🔌
 
 **Build apps with AI, even if you can't code.**
 
@@ -34,8 +34,8 @@ A Claude Code plugin that turns your ideas into working software through a task-
 │   /plan  →  /code:plan-issue  →  /clear  →  /code:implement  →  /code:finalizer      │
 │     │            │                              │                    │               │
 │     ▼            ▼                              ▼                    ▼               │
-│   Explore     Create issue              Orchestrator runs      Merge or PR           │
-│   the idea    + native tasks            all tasks              + cleanup             │
+│   Explore     Create new issue          Orchestrator runs      Merge or PR           │
+│   the idea    OR enrich existing #33    all tasks              + cleanup             │
 │                     │                         │                      │               │
 │                     ▼                         ▼                      ▼               │
 │               Output: #42              Auto-compact at 70%     Close issue           │
@@ -78,9 +78,13 @@ A Claude Code plugin that turns your ideas into working software through a task-
 # 4. Explore your idea
 /plan (shift-tab) add dark mode toggle to the app
 
-# 5. Create GitHub issue with tasks
+# 5a. Create NEW GitHub issue with tasks
 /code:plan-issue add dark mode toggle
 # → Issue #42 created
+
+# 5b. OR enrich EXISTING issue (e.g. from @claude investigation)
+/code:plan-issue #33
+# → Issue #33 updated with task breakdown
 
 # 6. Clear context before implementing
 /clear
@@ -129,13 +133,19 @@ Each task has:
 
 ### How Tasks Are Created
 
-`/code:plan-issue` researches your codebase, creates a GitHub issue, and registers native tasks with metadata:
+`/code:plan-issue` researches your codebase, creates or updates a GitHub issue, and registers native tasks with metadata:
 
-```
+```bash
+# From scratch — creates new issue
 /code:plan-issue add dark mode toggle
 # → Creates GitHub issue #42
 # → Creates native tasks with metadata.issueNumber = 42
-# → Each task has a verification command (test to run)
+
+# From existing issue — enriches in-place
+/code:plan-issue #33
+# → Fetches issue #33 body + comments
+# → Creates native tasks with metadata.issueNumber = 33
+# → Updates issue #33 with task breakdown
 ```
 
 ### How Tasks Are Executed
@@ -477,16 +487,29 @@ Detect project stack and configure Claude Code settings + deployment scripts.
 
 ### Feature Development
 
-#### `/code:plan-issue <feature>`
+#### `/code:plan-issue [#issue | feature] [@spec-file]`
 
-**Full path:** Research codebase and create GitHub issue with task manifest.
+Research codebase, create native tasks, and create or update a GitHub issue.
 
 ```bash
+# Create new issue from description
 /code:plan-issue add user authentication
-/code:plan-issue @SPEC.md              # Use spec file as input
+
+# Enrich existing issue (e.g. from @claude investigation)
+/code:plan-issue #33
+
+# Enrich existing issue with extra context
+/code:plan-issue #33 focus on the storage layer
+
+# Use spec file as input
+/code:plan-issue @SPEC.md
 ```
 
-**Output:** GitHub issue URL + task manifest created
+**Existing issue mode (`#<number>`):** Fetches issue body + comments, creates native tasks from the findings, and updates the issue in-place with a task breakdown. Bridges GitHub's `@claude` agent mode with `/code:implement`.
+
+**New issue mode (default):** Researches codebase, creates a new GitHub issue with task manifest.
+
+**Output:** Issue URL + native tasks created (`ctrl+t` to view)
 
 ---
 

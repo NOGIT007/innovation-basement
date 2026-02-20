@@ -66,6 +66,17 @@
           }
         ]
       }
+    ],
+    "ConfigChange": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/config-validate.sh",
+            "timeout": 5000
+          }
+        ]
+      }
     ]
   }
 }

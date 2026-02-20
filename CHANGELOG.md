@@ -4,6 +4,56 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.11.0] - 2026-02-20
+
+### Added
+
+- **Default `settings.json` ships with plugin** — zero-config onboarding. New users get
+  `plansDirectory`, `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`, git/gh permissions, and custom spinner
+  tips automatically. Only project-specific settings (like `CLAUDE_CODE_TASK_LIST_ID`) need
+  to be added manually.
+
+- **Custom spinner tips** — plugin-specific tips shown during loading (e.g., "Press ctrl+t
+  to view task progress", "Use --team flag for Agent Swarm mode").
+
+- **Worktree isolation for implementers** — each implementer agent runs in its own git worktree
+  (`isolation: worktree`), preventing file conflicts when multiple tasks execute in parallel.
+  Orchestrator handles merge-back conflicts by marking tasks as BLOCKED.
+
+- **Background orchestrator** — orchestrator agent uses `background: true` frontmatter, running
+  explicitly as a background task.
+
+- **`last_assistant_message` parsing in hooks** — `verify-gate.sh` and `team-task-complete.sh`
+  now read hook input from stdin. When an implementer/teammate reports BLOCKED, tests are
+  skipped instead of running unnecessarily.
+
+- **`ConfigChange` hook** — validates `.claude/settings.json` when modified mid-session. Warns
+  if `plansDirectory` or `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` are missing.
+
+- **`/code:plan-issue #<number>` accepts existing GitHub issues** — instead of always creating
+  a new issue, you can now pass `#33` to fetch an existing issue's body + comments, create
+  native tasks from the investigation findings, and update the issue in-place. This bridges
+  GitHub's `@claude` agent mode findings with `/code:implement` — run
+  `/code:plan-issue #33` then `/code:implement #33` without losing context. Mixed usage
+  supported: `/code:plan-issue #33 focus on storage` adds extra context alongside the issue.
+
+- **Agent Swarm documentation** — comprehensive README section covering: what it is, how it
+  works, display modes, tmux setup, keyboard shortcuts, agent interaction, quality gates,
+  token usage, and limitations.
+
+- **Task Workflow documentation** — new README section explaining task lifecycle, creation,
+  execution, dependencies, and verification gates.
+
+### Changed
+
+- Renamed "Agent Teams" → "Agent Swarm" throughout README for consistent branding
+- README Required Configuration split into "Base Settings (ships with plugin)" and
+  "Project-Specific Settings (you add)"
+- Architecture diagram updated to show worktree isolation and background orchestrator
+- `coding-plugin/CLAUDE.md` updated with base settings info, ConfigChange hook, and
+  worktree isolation note
+- `/code:implement` Done section notes worktree isolation behavior
+
 ## [2.10.0] - 2026-02-17
 
 ### Added
@@ -102,7 +152,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Expanded orchestrator agent with improved task delegation and status tracking
 
-[2.10.0]: https://github.com/NOGIT007/innovation-basement/compare/v2.9.0...HEAD
+[2.11.0]: https://github.com/NOGIT007/innovation-basement/compare/v2.10.0...HEAD
+[2.10.0]: https://github.com/NOGIT007/innovation-basement/compare/v2.9.0...v2.10.0
 [2.9.0]: https://github.com/NOGIT007/innovation-basement/compare/e855fbb...v2.9.0
 [2.8.0]: https://github.com/NOGIT007/innovation-basement/compare/3dd7f52...59444a2
 [2.7.0]: https://github.com/NOGIT007/innovation-basement/compare/e5a45d6...3dd7f52

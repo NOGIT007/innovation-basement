@@ -19,6 +19,7 @@ By the end of this guide, you'll have:
 - [Claude Code](https://claude.ai/code) installed
 - [GitHub CLI](https://cli.github.com/) (`gh`) installed and authenticated
 - Git configured with a remote repository
+- **Recommended:** `typescript-lsp` and/or `python-lsp` MCP servers (`/mcp add typescript-lsp`)
 
 ---
 

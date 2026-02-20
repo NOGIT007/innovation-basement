@@ -1,7 +1,6 @@
 #!/bin/bash
-# TeammateIdle hook — guide idle teammate to pick up next task
-# Exit code 2 = send feedback to teammate (keeps them working)
-# Exit code 0 = let teammate decide what to do
+# TeammateIdle hook — guide idle teammate to pick up next task or exit
+# Exit code 2 = send feedback to teammate
 
-echo "Check TaskList for pending tasks with completed blockers. Claim and implement the next one. If no tasks remain, notify the lead that you are done."
+echo "Check TaskList for pending tasks with completed blockers. If a pending task exists, claim and implement it. If NO pending tasks remain (all tasks are completed or blocked), exit your session immediately with /exit."
 exit 2

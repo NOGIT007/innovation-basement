@@ -1,6 +1,6 @@
 ---
 context: fork
-allowed-tools: Bash(gh issue view:*), Bash(git:*), Read, Task, TaskList, TaskGet, TaskUpdate
+allowed-tools: Bash(gh issue view:*), Bash(git:*), Bash(tmux:*), Read, Task, TaskList, TaskGet, TaskUpdate
 description: Start implementation from a GitHub issue
 argument-hint: #<issue-number> [--team | --no-team]
 ---
@@ -196,10 +196,22 @@ END LOOP
 
 ### After All Tasks Complete
 
-1. Ask teammates to shut down (via team lead messaging)
-2. Clean up the team
-3. Run `/simplify` on recently changed files
-4. Report: "All {total} tasks complete. Run /code:finalizer [--pr] to finish."
+1. Message each teammate: "All tasks for issue #<number> are complete. Please exit your session now."
+2. Wait 10 seconds for teammates to exit gracefully:
+   ```bash
+   sleep 10
+   ```
+3. Clean up remaining tmux panes (safety net for teammates that didn't exit):
+   ```bash
+   if [ -n "$TMUX" ]; then
+     LEAD_PANE=$(tmux display-message -p '#{pane_id}')
+     tmux list-panes -F '#{pane_id}' | while read pane; do
+       [ "$pane" != "$LEAD_PANE" ] && tmux kill-pane -t "$pane" 2>/dev/null
+     done
+   fi
+   ```
+4. Run `/simplify` on recently changed files
+5. Report: "All {total} tasks complete. Run /code:finalizer [--pr] to finish."
 
 ## Resuming Work
 

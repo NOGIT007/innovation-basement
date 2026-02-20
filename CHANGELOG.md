@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.12.0] - 2026-02-20
+
+### Added
+
+- **Auto-close tmux teammates** — when teammates finish all tasks and go idle, the `TeammateIdle`
+  hook now instructs them to `/exit` their session instead of just notifying the lead. This
+  automatically closes tmux panes without manual cleanup.
+
+- **Tmux pane cleanup safety net** — after all tasks complete in team mode, the lead waits 10
+  seconds for graceful exits, then force-kills any remaining tmux panes (preserving the lead pane).
+  Guarded by `$TMUX` check so it's a no-op in in-process mode.
+
+- **`Bash(tmux:*)` permission** for `/code:implement` — enables the lead to run tmux cleanup
+  commands after team completion.
+
+- **LSP MCP server prerequisites** — README and Getting Started guide now recommend installing
+  `typescript-lsp` and `python-lsp` MCP servers for LSP-powered codebase research in
+  `/code:plan-issue`.
+
 ## [2.11.0] - 2026-02-20
 
 ### Added
@@ -152,7 +171,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Expanded orchestrator agent with improved task delegation and status tracking
 
-[2.11.0]: https://github.com/NOGIT007/innovation-basement/compare/v2.10.0...HEAD
+[2.12.0]: https://github.com/NOGIT007/innovation-basement/compare/v2.11.0...HEAD
+[2.11.0]: https://github.com/NOGIT007/innovation-basement/compare/v2.10.0...v2.11.0
 [2.10.0]: https://github.com/NOGIT007/innovation-basement/compare/v2.9.0...v2.10.0
 [2.9.0]: https://github.com/NOGIT007/innovation-basement/compare/e855fbb...v2.9.0
 [2.8.0]: https://github.com/NOGIT007/innovation-basement/compare/3dd7f52...59444a2

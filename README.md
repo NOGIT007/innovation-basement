@@ -1,4 +1,4 @@
-# Coding Plugin v2.11.0 🔌
+# Coding Plugin v2.12.0 🔌
 
 **Build apps with AI, even if you can't code.**
 
@@ -426,6 +426,17 @@ Each teammate is a separate Claude instance. Agent Swarm uses significantly more
 - [Claude Code](https://claude.ai/code) installed
 - [GitHub CLI](https://cli.github.com/) (`gh`) installed and authenticated
 - Git configured
+
+### Recommended MCP Servers
+
+Install these MCP servers for LSP-powered codebase research in `/code:plan-issue`:
+
+```
+/mcp add typescript-lsp
+/mcp add python-lsp
+```
+
+The `typescript-lsp` server enables go-to-definition, find-references, and type lookups during planning. The `python-lsp` server provides equivalent capabilities for Python projects.
 
 ### Option A: Marketplace (Recommended)
 

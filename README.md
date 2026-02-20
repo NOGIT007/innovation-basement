@@ -1,8 +1,18 @@
-# Coding Plugin v2.10.0
+# Coding Plugin v2.11.0
 
 **Build apps with AI, even if you can't code.**
 
 A Claude Code plugin that turns your ideas into working software through a task-driven workflow.
+
+---
+
+## Guides
+
+| Guide           | For                                                       | Link                                                     |
+| --------------- | --------------------------------------------------------- | -------------------------------------------------------- |
+| Getting Started | First-time users — install to first feature in 10 minutes | [docs/getting-started.md](docs/getting-started.md)       |
+| User Guide      | Active users — workflows, tips, and troubleshooting       | [docs/user-guide.md](docs/user-guide.md)                 |
+| Git Workflow    | When to commit, PR, or merge                              | [docs/git-workflow-guide.md](docs/git-workflow-guide.md) |
 
 ---
 
@@ -101,97 +111,301 @@ A Claude Code plugin that turns your ideas into working software through a task-
 
 ---
 
+## Task Workflow
+
+Tasks are at the heart of this plugin. They use Claude Code's native task tracking system.
+
+### What Are Tasks?
+
+Tasks are work items tracked by Claude Code's built-in TaskCreate/TaskList/TaskUpdate tools. Press `ctrl+t` to view them in the terminal.
+
+Each task has:
+
+- **Subject** — what to implement (imperative form)
+- **Description** — detailed steps with file:line references
+- **Metadata** — `issueNumber`, `verification` command, `feature` name
+- **Status** — pending, in_progress, completed, or blocked
+- **Dependencies** — `blockedBy` relationships to other tasks
+
+### How Tasks Are Created
+
+`/code:plan-issue` researches your codebase, creates a GitHub issue, and registers native tasks with metadata:
+
+```
+/code:plan-issue add dark mode toggle
+# → Creates GitHub issue #42
+# → Creates native tasks with metadata.issueNumber = 42
+# → Each task has a verification command (test to run)
+```
+
+### How Tasks Are Executed
+
+When you run `/code:implement #42`:
+
+- **Subagent mode (default):** Orchestrator spawns implementer agents per task. Each implementer runs in its own git worktree for isolation.
+- **Agent Swarm mode:** Your session becomes the lead. Teammate sessions claim tasks from the shared list independently.
+
+### Task Lifecycle
+
+```
+pending → in_progress → completed
+                ↘ blocked (needs help)
+```
+
+- **pending** — waiting to be picked up
+- **in_progress** — being implemented by an agent/teammate
+- **completed** — implementation done, verification passed
+- **blocked** — cannot proceed, needs user intervention
+
+### Dependencies
+
+Tasks can have `blockedBy` relationships. A task won't start until all its blockers are completed:
+
+```
+Task 3: "Add API routes" (blockedBy: [Task 1, Task 2])
+  → Stays pending until Task 1 AND Task 2 are completed
+  → Then auto-unblocks and gets picked up
+```
+
+### Verification Gates
+
+Every task has a verification command that must pass (exit 0) before completion:
+
+- **Subagent mode:** `SubagentStop` hook runs `verify-gate.sh` — detects test framework and runs tests
+- **Swarm mode:** `TaskCompleted` hook runs `team-task-complete.sh` — same pattern
+- Both hooks skip tests when an agent reports `BLOCKED` (uses `last_assistant_message`)
+
+---
+
 ## Required Configuration
+
+### Base Settings (ships with plugin)
+
+The plugin ships default settings that apply automatically:
+
+- `plansDirectory: "plans"` — plans saved to plans/ folder
+- `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE: "70"` — auto-compact at 70% context
+- `Bash(git:*)`, `Bash(gh:*)` — git and GitHub CLI permissions
+- Custom spinner tips for workflow guidance
+
+### Project-Specific Settings (you add)
 
 Add to your project's `.claude/settings.json`:
 
 ```json
 {
-  "plansDirectory": "plans",
   "env": {
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",
     "CLAUDE_CODE_TASK_LIST_ID": "<your-project-name>-tasks"
   }
 }
 ```
 
-| Setting                           | Purpose                                                  |
-| --------------------------------- | -------------------------------------------------------- |
-| `plansDirectory`                  | Store plans in `plans/` folder                           |
-| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | Auto-compact at 70% context (agents run indefinitely)    |
-| `CLAUDE_CODE_TASK_LIST_ID`        | Unique per project to avoid conflicts (`ctrl+t` to view) |
+| Setting                    | Purpose                                                  |
+| -------------------------- | -------------------------------------------------------- |
+| `CLAUDE_CODE_TASK_LIST_ID` | Unique per project to avoid conflicts (`ctrl+t` to view) |
 
-Without these settings, the Task-based workflow may not work correctly.
+`/code:setup` adds stack-specific permissions (e.g., `Bash(bun:*)`) and deployment scripts on top of the base settings.
 
 ---
 
-### Agent Teams Setup (Optional)
+## Agent Swarm
 
-Agent Teams let `/code:implement` use multiple independent Claude Code sessions instead of subagents. This is experimental and opt-in.
+Agent Swarm lets `/code:implement` use multiple independent Claude Code sessions instead of subagents. **One developer, many agents** — you become the lead, Claude spawns a swarm of coding agents that parallelize your work.
 
-#### Prerequisites
+### What Is Agent Swarm?
 
-- Claude Code with Agent Teams support (experimental feature)
-- **macOS recommended** for split-pane display (requires tmux or iTerm2)
-- In-process mode works on any platform (no split panes)
+You (single user) run one Claude Code session that becomes the **lead** (coordinator). Claude spawns multiple independent sessions (agents) that claim tasks from a shared task list, implement them in parallel, and self-coordinate. Think of it as your personal swarm of coding agents.
 
-#### Enable Agent Teams
+This is NOT a multi-user team feature. It's one person leveraging multiple parallel Claude instances to move faster on complex features.
+
+### How It Works
+
+```
+You (lead session)
+  │
+  ├─ Teammate 1 → claims Task A → implements → verifies → commits
+  ├─ Teammate 2 → claims Task B → implements → verifies → commits
+  ├─ Teammate 3 → claims Task C → implements → verifies → commits
+  └─ ...up to 5 teammates
+  │
+  Shared TaskList ← self-coordination
+  │
+  Teammates message each other directly when needed
+```
+
+- **Your session** = lead (monitors progress, updates GitHub issue)
+- **Teammate sessions** = workers (claim tasks, implement, verify, commit)
+- **Shared TaskList** = coordination layer (tasks auto-unblock as dependencies complete)
+- **Direct messaging** = teammates can message each other for cross-task coordination
+
+### Display Modes
+
+Agent Swarm supports two display modes:
+
+**In-process (default)** — works in any terminal. All agents run in the same terminal window.
+
+```json
+{ "teammateMode": "in-process" }
+```
+
+Or via CLI: `claude --teammate-mode in-process`
+
+Use `Shift+Down` to cycle between agents and view/message them.
+
+**Split-pane** — each agent gets its own terminal pane. Requires tmux or iTerm2.
+
+```json
+{ "teammateMode": "tmux" }
+```
+
+Or via CLI: `claude --teammate-mode tmux`
+
+### Configure tmux for Split-Pane Mode (macOS)
+
+Install tmux:
+
+```bash
+brew install tmux
+```
+
+Create `~/.tmux.conf`:
+
+```bash
+# Mouse support
+set -g mouse on
+
+# Scrollback buffer
+set -g history-limit 10000
+
+# Start windows and panes at 1
+set -g base-index 1
+setw -g pane-base-index 1
+
+# Pane navigation with Alt+Arrow
+bind -n M-Left select-pane -L
+bind -n M-Right select-pane -R
+bind -n M-Up select-pane -U
+bind -n M-Down select-pane -D
+
+# Status bar theme
+set -g status-style 'bg=#1a1a2e fg=#e0e0e0'
+set -g status-left '#[fg=#00d4aa,bold] #S '
+set -g status-right '#[fg=#666]%H:%M'
+
+# Split shortcuts
+bind | split-window -h
+bind - split-window -v
+
+# Reload config
+bind r source-file ~/.tmux.conf \; display "Config reloaded"
+
+# Cheat sheet
+bind h run-shell "~/.tmux/cheatsheet.sh"
+```
+
+Create `~/.tmux/cheatsheet.sh`:
+
+```bash
+#!/bin/bash
+tmux display-popup -w 60 -h 20 -E "echo '
+  tmux Cheat Sheet
+  ════════════════════════════
+  Alt+Arrow    Navigate panes
+  Prefix + |   Vertical split
+  Prefix + -   Horizontal split
+  Prefix + r   Reload config
+  Prefix + h   This cheat sheet
+  Prefix + z   Toggle zoom pane
+  Scroll       Mouse wheel
+  ════════════════════════════
+  Prefix = Ctrl+B (default)
+' && read -n 1"
+```
+
+```bash
+chmod +x ~/.tmux/cheatsheet.sh
+```
+
+Start Agent Swarm in tmux mode:
+
+```bash
+claude --teammate-mode tmux
+```
+
+> **Note:** Split-pane works best on macOS. Linux may need adjustments to the tmux config.
+
+### Enable Agent Swarm
 
 Add to your project's `.claude/settings.json`:
 
 ```json
 {
   "env": {
+    "CLAUDE_CODE_TASK_LIST_ID": "<your-project-name>-tasks",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   }
 }
 ```
 
-#### Optional: Split-Pane Display
+### When Does Agent Swarm Activate?
 
-For the best experience on macOS, install tmux:
+| Scenario                                      | Mode                             |
+| --------------------------------------------- | -------------------------------- |
+| Env var not set                               | Always subagent (default)        |
+| Env var set + < 4 tasks                       | Subagent (auto-detected)         |
+| Env var set + 4+ tasks with 60%+ independence | Swarm (auto-detected)            |
+| `--team` flag                                 | Swarm (forced, requires env var) |
+| `--no-team` flag                              | Subagent (forced, always works)  |
 
-```bash
-brew install tmux
-```
-
-Or use iTerm2 with the `it2` CLI and enable Python API in iTerm2 Settings.
-
-Without tmux/iTerm2, teammates run in-process (same terminal, use Shift+Up/Down to navigate).
-
-#### When Does Team Mode Activate?
-
-| Scenario                                      | Mode                            |
-| --------------------------------------------- | ------------------------------- |
-| Env var not set                               | Always subagent (default)       |
-| Env var set + < 4 tasks                       | Subagent (auto-detected)        |
-| Env var set + 4+ tasks with 60%+ independence | Team (auto-detected)            |
-| `--team` flag                                 | Team (forced, requires env var) |
-| `--no-team` flag                              | Subagent (forced, always works) |
-
-#### Using Team Mode
+### Using Agent Swarm
 
 ```bash
 # Let auto-detection decide
 /code:implement #42
 
-# Force team mode for a complex cross-layer feature
+# Force swarm mode for a complex cross-layer feature
 /code:implement #42 --team
 
 # Force subagent mode when you want lower token usage
 /code:implement #42 --no-team
 ```
 
-**In team mode:**
+### Keyboard Shortcuts
 
-- The main session becomes the team lead (coordinator)
-- Teammates are full Claude Code sessions that claim tasks independently
-- Each teammate reads project rules, claims tasks, implements, verifies, and commits
-- The lead monitors progress and updates the GitHub issue
-- Use `Shift+Up/Down` to select a teammate and message them directly
-- Press `Ctrl+T` to view the shared task list
+| Shortcut     | Action                  |
+| ------------ | ----------------------- |
+| `Shift+Down` | Cycle to next agent     |
+| `Shift+Up`   | Cycle to previous agent |
+| `Ctrl+T`     | View shared task list   |
+| `Escape`     | Interrupt current agent |
 
-**Token usage:** Team mode uses significantly more tokens than subagent mode. Each teammate is a separate Claude instance. Use it for complex features where parallel independent work justifies the cost.
+### Interacting with Agents
+
+You can message any agent directly:
+
+1. Press `Shift+Down` to select the agent you want to talk to
+2. Type your message — redirect their approach, give additional instructions, or ask for status
+3. Each agent maintains its own context and continues where it left off
+
+### Quality Gates
+
+The plugin ships hooks that enforce verification in swarm mode:
+
+- **`TeammateIdle` hook** — when a teammate finishes a task and goes idle, the hook directs them to pick up the next available task from TaskList
+- **`TaskCompleted` hook** — runs the detected test command before accepting task completion. Uses exit code 2 to reject if tests fail (task stays in_progress for retry)
+
+Agents cannot skip verification. The hooks run automatically.
+
+### Token Usage
+
+Each teammate is a separate Claude instance. Agent Swarm uses significantly more tokens than subagent mode. Use it for complex features with 4+ independent tasks where parallel work justifies the cost.
+
+### Limitations
+
+- **No session resumption** — if a teammate crashes, it cannot be resumed. The lead will detect the stalled task and can re-dispatch
+- **One swarm per session** — you can only run one Agent Swarm at a time
+- **No nested swarms** — teammates cannot spawn their own swarms
+- **Lead is fixed** — the session that starts the swarm is always the lead, cannot be transferred
 
 ---
 
@@ -282,20 +496,20 @@ Launch task execution for all tasks from the issue.
 
 ```bash
 /code:implement #42             # Auto-detect execution mode
-/code:implement #42 --team      # Force Agent Teams (experimental)
+/code:implement #42 --team      # Force Agent Swarm (experimental)
 /code:implement #42 --no-team   # Force subagent orchestrator
 ```
 
 **Execution Modes:**
 
-| Mode                    | When                                   | How It Works                                                              |
-| ----------------------- | -------------------------------------- | ------------------------------------------------------------------------- |
-| **Subagent** (default)  | < 4 tasks, or many dependencies        | Orchestrator spawns implementer per task (proven, lower token cost)       |
-| **Team** (experimental) | 4+ independent tasks, or `--team` flag | Main session leads an Agent Team — each teammate is a full Claude session |
+| Mode                     | When                                   | How It Works                                                               |
+| ------------------------ | -------------------------------------- | -------------------------------------------------------------------------- |
+| **Subagent** (default)   | < 4 tasks, or many dependencies        | Orchestrator spawns implementer per task (proven, lower token cost)        |
+| **Swarm** (experimental) | 4+ independent tasks, or `--team` flag | Main session leads an Agent Swarm — each teammate is a full Claude session |
 
-Auto-detection picks team mode when 4+ tasks exist with 60%+ independence. Override with flags.
+Auto-detection picks swarm mode when 4+ tasks exist with 60%+ independence. Override with flags.
 
-**Team mode requires setup** — see [Agent Teams Setup](#agent-teams-setup-optional) below.
+**Swarm mode requires setup** — see [Agent Swarm](#agent-swarm) section.
 
 **What happens (both modes):**
 
@@ -442,7 +656,7 @@ GCP resource protection rules:
 ## Architecture
 
 ```
-Subagent Mode (default)                Team Mode (experimental)
+Subagent Mode (default)                Agent Swarm (experimental)
 
 User                                   User
   │                                      │
@@ -450,11 +664,11 @@ User                                   User
 /implement #42                         /implement #42 --team
   │                                      │
   ▼                                      ▼
-Task(orchestrator) ← subagent          Main session = team lead
+Task(orchestrator) ← background        Main session = swarm lead
   │                                      │
-  ├─┬─ Task(implementer) ← Task 1 ─┐    ├─ Teammate 1 (claims tasks)
-  │ ├─ Task(implementer) ← Task 2 ─┼→   ├─ Teammate 2 (claims tasks)
-  │ └─ Task(implementer) ← Task 3 ─┘    └─ Teammate N (max 5)
+  ├─┬─ Task(implementer) ← worktree ─┐  ├─ Teammate 1 (claims tasks)
+  │ ├─ Task(implementer) ← worktree ─┼→ ├─ Teammate 2 (claims tasks)
+  │ └─ Task(implementer) ← worktree ─┘  └─ Teammate N (max 5)
   │                                      │
   ├── Task(implementer) ← Task 4        Teammates self-coordinate via
   └── Task(simplifier)                   shared TaskList
@@ -465,9 +679,9 @@ Task(orchestrator) ← subagent          Main session = team lead
 
 **Key principle:** Intelligence lives in agents, not commands.
 
-**Subagent mode** — Orchestrator controls all execution. Implementers report back to orchestrator only. Lower token cost, proven workflow.
+**Subagent mode** — Orchestrator runs as a background task, spawning implementers in isolated git worktrees. Lower token cost, proven workflow.
 
-**Team mode** — Main session leads. Teammates are independent sessions that communicate with each other and self-coordinate through the shared task list. Higher token cost, best for complex features with many independent tasks.
+**Agent Swarm** — Main session leads. Teammates are independent sessions that communicate with each other and self-coordinate through the shared task list. Higher token cost, best for complex features with many independent tasks.
 
 ---
 

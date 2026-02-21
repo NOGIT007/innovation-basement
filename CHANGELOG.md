@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.12.2] - 2026-02-21
+
+### Fixed
+
+- **Orchestrator Bash permission denial** — the orchestrator declared unrestricted `Bash` in
+  `allowed-tools`, but the plugin's `settings.json` only permits `Bash(git:*)` and `Bash(gh:*)`.
+  This mismatch caused Claude Code to deny Bash access entirely. Changed to
+  `Bash(gh:*), Bash(git:*)` to match the proven pattern from the implementer agent.
+
+### Added
+
+- **Claude Code Essential Shortcuts** — new README section with the most useful keyboard shortcuts
+  and commands for navigating Claude Code: task list (`Ctrl+T`), plan mode (`Shift+Tab`), agent
+  cycling (`Shift+Down/Up`), context management (`/clear`, `/compact`), and common workflow patterns.
+
 ## [2.12.1] - 2026-02-21
 
 ### Added
@@ -184,7 +199,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Expanded orchestrator agent with improved task delegation and status tracking
 
-[2.12.0]: https://github.com/NOGIT007/innovation-basement/compare/v2.11.0...HEAD
+[2.12.2]: https://github.com/NOGIT007/innovation-basement/compare/v2.12.1...HEAD
+[2.12.1]: https://github.com/NOGIT007/innovation-basement/compare/v2.12.0...v2.12.1
+[2.12.0]: https://github.com/NOGIT007/innovation-basement/compare/v2.11.0...v2.12.0
 [2.11.0]: https://github.com/NOGIT007/innovation-basement/compare/v2.10.0...v2.11.0
 [2.10.0]: https://github.com/NOGIT007/innovation-basement/compare/v2.9.0...v2.10.0
 [2.9.0]: https://github.com/NOGIT007/innovation-basement/compare/e855fbb...v2.9.0

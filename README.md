@@ -1,4 +1,4 @@
-# Coding Plugin v2.12.1 🔌
+# Coding Plugin v2.12.2 🔌
 
 **Build apps with AI, even if you can't code.**
 
@@ -719,6 +719,51 @@ Task(orchestrator) ← background        Main session = swarm lead
 **Subagent mode** — Orchestrator runs as a background task, spawning implementers in isolated git worktrees. Lower token cost, proven workflow.
 
 **Agent Swarm** — Main session leads. Teammates are independent sessions that communicate with each other and self-coordinate through the shared task list. Higher token cost, best for complex features with many independent tasks.
+
+---
+
+## Claude Code Essential Shortcuts
+
+Quick reference for the most useful Claude Code keyboard shortcuts and commands.
+
+### Navigation & Control
+
+| Shortcut    | Action                                          |
+| ----------- | ----------------------------------------------- |
+| `Ctrl+T`    | View task list (see progress during /implement) |
+| `Shift+Tab` | Toggle plan mode (explore before coding)        |
+| `Escape`    | Interrupt current generation                    |
+| `Ctrl+C`    | Cancel and return to input                      |
+| `/clear`    | Clear conversation context (fresh start)        |
+| `/compact`  | Manually compact context to free up space       |
+| `/cost`     | View token usage for the session                |
+| `Up Arrow`  | Recall previous message                         |
+
+### Agent Swarm Navigation
+
+| Shortcut     | Action                                |
+| ------------ | ------------------------------------- |
+| `Shift+Down` | Cycle to next agent (in-process mode) |
+| `Shift+Up`   | Cycle to previous agent               |
+
+### Common Workflows
+
+```bash
+# Start planning → exploring the idea
+Shift+Tab → describe your feature → Shift+Tab to exit plan mode
+
+# Check progress mid-implementation
+Ctrl+T → see task statuses → Escape to dismiss
+
+# Running out of context
+/compact → continue working with compressed history
+
+# Starting fresh after a feature
+/clear → begin next feature with clean context
+
+# Check what you've spent
+/cost → see input/output tokens and cost
+```
 
 ---
 

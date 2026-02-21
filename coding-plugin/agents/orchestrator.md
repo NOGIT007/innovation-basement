@@ -3,7 +3,7 @@ name: orchestrator
 description: Controls task execution lifecycle for a feature
 context: fork
 background: true
-allowed-tools: Bash, Read, Write, Edit, Grep, Glob, Task, Skill, TaskList, TaskUpdate, TaskGet
+allowed-tools: Bash(gh:*), Bash(git:*), Read, Write, Edit, Grep, Glob, Task, Skill, TaskList, TaskUpdate, TaskGet
 ---
 
 # Orchestrator Agent

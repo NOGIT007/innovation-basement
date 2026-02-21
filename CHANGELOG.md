@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.12.1] - 2026-02-21
+
+### Added
+
+- **Desktop Guide** — new `docs/desktop-guide.md` covering Desktop vs CLI decision table, three
+  concrete Desktop+CLI workflows (Feature Dev, Design-First, PR Fix Cycle), setup, preview mode,
+  diff review, CI monitoring, SSH, useful commands, and custom agent features.
+
+- **Claude Code version tracking** — README now shows compatibility note linking to Claude Code
+  v2.1.50 changelog, so users know which features are supported.
+
+- **Desktop Guide in README Guides table** — fourth row linking to the new guide.
+
 ## [2.12.0] - 2026-02-20
 
 ### Added

@@ -1,8 +1,10 @@
-# Coding Plugin v2.12.0 🔌
+# Coding Plugin v2.12.1 🔌
 
 **Build apps with AI, even if you can't code.**
 
 A Claude Code plugin that turns your ideas into working software through a task-driven workflow.
+
+> **Claude Code compatibility:** Follows features up to [v2.1.50](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md). See the [Claude Code Docs](https://code.claude.com/docs/en/) for the latest features.
 
 ---
 
@@ -13,6 +15,7 @@ A Claude Code plugin that turns your ideas into working software through a task-
 | Getting Started | First-time users — install to first feature in 10 minutes | [docs/getting-started.md](docs/getting-started.md)       |
 | User Guide      | Active users — workflows, tips, and troubleshooting       | [docs/user-guide.md](docs/user-guide.md)                 |
 | Git Workflow    | When to commit, PR, or merge                              | [docs/git-workflow-guide.md](docs/git-workflow-guide.md) |
+| Desktop Guide   | Using the plugin with Claude Code Desktop                 | [docs/desktop-guide.md](docs/desktop-guide.md)           |
 
 ---
 

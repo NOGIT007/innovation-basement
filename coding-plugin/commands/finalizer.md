@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(gh:*), Bash(git:*), Read, Write, TaskList
+allowed-tools: Bash(gh:*), Bash(git:*), Read, Write, TaskList, TaskUpdate
 description: Finalize feature: close issue, merge or create PR, cleanup
 argument-hint: [--pr] [issue-number]
 ---
@@ -188,4 +188,16 @@ After successful completion, cleanup is automatic:
 
 - Local feature branch deleted
 - Remote feature branch deleted
-- Native tasks remain in task list (visible via `ctrl+t`)
+- Completed tasks deleted from native task list
+
+### Delete Completed Tasks
+
+After merge or PR creation, clean up all tasks for this issue:
+
+```
+tasks = TaskList() → filter by metadata.issueNumber = <issue>
+for each task:
+  TaskUpdate(task.id, status: "deleted")
+```
+
+This removes completed (and any remaining) tasks from `ctrl+t` so they don't pile up across sessions.

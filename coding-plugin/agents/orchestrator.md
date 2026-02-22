@@ -100,7 +100,13 @@ END LOOP
      prompt: "Run /simplify on recently changed files. Report any bugs found."
    )
 
-2. Report to user:
+2. Clean up completed tasks:
+   tasks = TaskList()
+   for task in tasks where metadata.issueNumber == issueNumber:
+     if task.status == "completed":
+       TaskUpdate(task.id, status: "deleted")
+
+3. Report to user:
    "All tasks complete. Run /code:finalizer [--pr] to finish."
 ```
 

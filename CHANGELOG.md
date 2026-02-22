@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.12.3] - 2026-02-22
+
+### Fixed
+
+- **Completed tasks not auto-cleaned** — tasks created by `/code:plan-issue` piled up in `Ctrl+T`
+  across sessions. Now the orchestrator deletes completed tasks after the simplifier runs, the
+  team lead deletes them after swarm completion, and the finalizer deletes any remaining tasks
+  as a safety net. Added `TaskUpdate` to finalizer's `allowed-tools`.
+
 ## [2.12.2] - 2026-02-21
 
 ### Fixed
@@ -199,7 +208,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Expanded orchestrator agent with improved task delegation and status tracking
 
-[2.12.2]: https://github.com/NOGIT007/innovation-basement/compare/v2.12.1...HEAD
+[2.12.3]: https://github.com/NOGIT007/innovation-basement/compare/v2.12.2...HEAD
+[2.12.2]: https://github.com/NOGIT007/innovation-basement/compare/v2.12.1...v2.12.2
 [2.12.1]: https://github.com/NOGIT007/innovation-basement/compare/v2.12.0...v2.12.1
 [2.12.0]: https://github.com/NOGIT007/innovation-basement/compare/v2.11.0...v2.12.0
 [2.11.0]: https://github.com/NOGIT007/innovation-basement/compare/v2.10.0...v2.11.0

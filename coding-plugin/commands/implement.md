@@ -211,7 +211,13 @@ END LOOP
    fi
    ```
 4. Run `/simplify` on recently changed files
-5. Report: "All {total} tasks complete. Run /code:finalizer [--pr] to finish."
+5. Clean up completed tasks:
+   ```
+   tasks = TaskList() filtered by metadata.issueNumber = <number>
+   for each task where status == "completed":
+     TaskUpdate(task.id, status: "deleted")
+   ```
+6. Report: "All {total} tasks complete. Run /code:finalizer [--pr] to finish."
 
 ## Resuming Work
 

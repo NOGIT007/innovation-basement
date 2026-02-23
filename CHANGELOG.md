@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.13.2] - 2026-02-23
+
+### Fixed
+
+- **Orchestrator permission denial** — `implement.md` command had restrictive `allowed-tools` that
+  blocked the orchestrator from using `Skill`, `Write`, `Edit`, `Grep`, `Glob`, and broad `Bash(gh:*)`.
+  Subagents inherit the parent command's tool restrictions, so the orchestrator couldn't run
+  `Skill("coding-plugin:commit")` or perform file operations. Aligned `implement.md` allowed-tools
+  with what the orchestrator actually needs.
+
 ## [2.13.1] - 2026-02-23
 
 ### Added

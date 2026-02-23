@@ -4,6 +4,34 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.13.0] - 2026-02-23
+
+### Changed
+
+- **README reorganized for reader-friendly flow** — restructured from understand → install → use → master.
+  Installation moved from line 425 to near the top, Commands moved before Agent Swarm, Guides moved
+  to bottom. New section order: What is IB → Installation → Quick Start → Commands → Task System →
+  Architecture → Agent Swarm → Best Practices → Guides → License.
+
+- **Fixed LSP install instructions** — replaced incorrect `/mcp add typescript-lsp` with correct
+  `/plugin install vtsls@claude-code-lsps` + `npm install -g` commands for both TypeScript and Python.
+
+### Added
+
+- **"What is Innovation Basement" intro** — 5-bullet summary at top of README for quick orientation.
+
+- **Recommended Plugins section** — unified section listing LSP servers (`vtsls`, `pyright`) and
+  companion plugins (`frontend-design`, `code-review`, `agent-sdk-dev`) with install commands
+  and descriptions.
+
+- **Experimental callout on Agent Swarm** — blockquote noting it's an advanced feature, most users
+  should start with default subagent mode.
+
+### Removed
+
+- **"Common Workflows" code block** — removed from shortcuts section (duplicated Quick Start content).
+- **Standalone "Required Configuration" section** — merged into Installation.
+
 ## [2.12.3] - 2026-02-22
 
 ### Fixed

@@ -1,4 +1,4 @@
-# Coding Plugin v2.13.0 🔌
+# Coding Plugin v2.13.1 🔌
 
 **Build apps with AI, even if you can't code.**
 
@@ -38,19 +38,23 @@ npm install -g @vtsls/language-server typescript
 /plugin install pyright@claude-code-lsps
 npm install -g pyright   # or: pip install pyright / brew install pyright
 
+/plugin install rust-analyzer-lsp@claude-plugins-official
+rustup component add rust-analyzer
+
 # Companion plugins
 /plugin install frontend-design@claude-plugins-official
 /plugin install code-review@claude-plugins-official
 /plugin install agent-sdk-dev@claude-plugins-official
 ```
 
-| Plugin            | Marketplace               | What it does                                                     |
-| ----------------- | ------------------------- | ---------------------------------------------------------------- |
-| `vtsls`           | `claude-code-lsps`        | Go-to-definition, find-references, type lookups for JS/TS        |
-| `pyright`         | `claude-code-lsps`        | Same capabilities for Python projects                            |
-| `frontend-design` | `claude-plugins-official` | Generate production-grade UI components with high design quality |
-| `code-review`     | `claude-plugins-official` | Review pull requests with structured feedback                    |
-| `agent-sdk-dev`   | `claude-plugins-official` | Scaffold and verify Claude Agent SDK applications                |
+| Plugin              | Marketplace               | What it does                                                     |
+| ------------------- | ------------------------- | ---------------------------------------------------------------- |
+| `vtsls`             | `claude-code-lsps`        | Go-to-definition, find-references, type lookups for JS/TS        |
+| `pyright`           | `claude-code-lsps`        | Same capabilities for Python projects                            |
+| `rust-analyzer-lsp` | `claude-plugins-official` | Go-to-definition, find-references, type lookups for Rust         |
+| `frontend-design`   | `claude-plugins-official` | Generate production-grade UI components with high design quality |
+| `code-review`       | `claude-plugins-official` | Review pull requests with structured feedback                    |
+| `agent-sdk-dev`     | `claude-plugins-official` | Scaffold and verify Claude Agent SDK applications                |
 
 ### Option A: Marketplace (Recommended)
 

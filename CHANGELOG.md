@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.14.0] - 2026-02-26
+
+### Changed
+
+- **Deep verbosity cut across entire plugin** — reduced ~1,050 lines of prose without changing any
+  behavior. Scripts, commands, agents, README, and docs all trimmed. Same logic, same tool calls,
+  same exit codes — just less text for faster context loading.
+
+- **Script deduplication** — extracted shared test logic from `verify-gate.sh` and
+  `team-task-complete.sh` into `run-tests.sh`. Both scripts are now 5-line wrappers.
+
+- **README overhaul** (787 → ~395 lines) — progressive disclosure: quick-start + reference in README,
+  deep-dives moved to docs/. Agent Swarm section replaced with 10-line summary linking to new
+  `docs/agent-swarm.md`.
+
+- **Command optimization** — `plan-issue`, `implement`, `finalizer`, `setup`, and `cleanup` commands
+  trimmed by removing inlined rules (now referenced from `rules/`), duplicate templates, and verbose
+  prose.
+
+- **Agent trimming** — implementer and orchestrator agents condensed. Added `maxTurns: 50` safety
+  net to implementer.
+
+### Added
+
+- **`docs/agent-swarm.md`** — full Agent Swarm reference (tmux config, display modes, keyboard
+  shortcuts, quality gates, token usage, limitations) moved from README.
+
 ## [2.13.3] - 2026-02-26
 
 ### Fixed
@@ -267,7 +294,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Expanded orchestrator agent with improved task delegation and status tracking
 
-[2.13.3]: https://github.com/NOGIT007/innovation-basement/compare/v2.13.2...HEAD
+[2.14.0]: https://github.com/NOGIT007/innovation-basement/compare/v2.13.3...HEAD
+[2.13.3]: https://github.com/NOGIT007/innovation-basement/compare/v2.13.2...v2.13.3
 [2.13.2]: https://github.com/NOGIT007/innovation-basement/compare/v2.13.1...v2.13.2
 [2.13.1]: https://github.com/NOGIT007/innovation-basement/compare/v2.13.0...v2.13.1
 [2.13.0]: https://github.com/NOGIT007/innovation-basement/compare/v2.12.3...v2.13.0

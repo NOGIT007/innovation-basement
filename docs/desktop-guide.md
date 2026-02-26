@@ -2,8 +2,6 @@
 
 **Using the Coding Plugin with Claude Code Desktop — previews, diffs, CI monitoring, and seamless CLI handoff.**
 
-See the official [Desktop docs](https://code.claude.com/docs/en/desktop) and [Desktop quickstart](https://code.claude.com/docs/en/desktop-quickstart) for general Desktop features.
-
 ---
 
 ## When to Use Desktop vs CLI
@@ -48,8 +46,6 @@ Desktop: /code:finalizer --pr → CI monitoring → auto-fix → merge
 
 ### Workflow B: Design-First (Frontend)
 
-Start in Desktop when the work is primarily visual.
-
 ```
 Desktop: Open project → Preview → Element picker → iterate visually
                                               ↓ need heavy implementation
@@ -57,10 +53,6 @@ CLI: /code:implement #42 --team    ← Agent Swarm for parallel tasks
                                               ↓ tasks complete
 CLI: /desktop                      ← back to Desktop for review
 ```
-
-- Start in Desktop for rapid visual iteration
-- Switch to CLI when you need Agent Swarm or tmux split-panes
-- Return to Desktop for final visual sign-off
 
 ### Workflow C: PR Fix Cycle
 
@@ -153,28 +145,6 @@ Brief reference — see the full [CLI reference](https://code.claude.com/docs/en
 | `/rewind`     | Rollback or summarize from a point in session |
 | `/from-pr`    | Resume a session linked to a PR               |
 | `Ctrl+F` (x2) | Kill all background agents                    |
-
----
-
-## Custom Agent Features
-
-For users extending the plugin with their own agents:
-
-| Feature               | What it does                                                    |
-| --------------------- | --------------------------------------------------------------- |
-| `background: true`    | Agent always runs in background                                 |
-| `memory: project`     | Agent remembers across runs (stored in `.claude/agent-memory/`) |
-| `isolation: worktree` | Agent runs in isolated worktree (used by implementer)           |
-
-See the [Agent Teams docs](https://code.claude.com/docs/en/agent-teams) for full details.
-
----
-
-## What's Next?
-
-- **[Getting Started](getting-started.md)** — First-time setup in 10 minutes
-- **[User Guide](user-guide.md)** — Workflow reference for active users
-- **[Git Workflow Guide](git-workflow-guide.md)** — When to commit, PR, or merge
 
 ---
 

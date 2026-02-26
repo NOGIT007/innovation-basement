@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Claude Code plugin for task-driven development workflow",
-    "version": "2.13.3"
+    "version": "2.14.0"
   },
   "plugins": [
     {

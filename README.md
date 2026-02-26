@@ -1,4 +1,4 @@
-# Coding Plugin v2.13.3 🔌
+# Coding Plugin v2.14.0 🔌
 
 **Build apps with AI, even if you can't code.**
 
@@ -27,25 +27,6 @@ A Claude Code plugin that turns your ideas into working software through a task-
 - Git configured
 
 ### Recommended Plugins
-
-These companion plugins enhance the workflow:
-
-```bash
-# LSP servers — codebase intelligence for /code:plan-issue
-/plugin install vtsls@claude-code-lsps
-npm install -g @vtsls/language-server typescript
-
-/plugin install pyright@claude-code-lsps
-npm install -g pyright   # or: pip install pyright / brew install pyright
-
-/plugin install rust-analyzer-lsp@claude-plugins-official
-rustup component add rust-analyzer
-
-# Companion plugins
-/plugin install frontend-design@claude-plugins-official
-/plugin install code-review@claude-plugins-official
-/plugin install agent-sdk-dev@claude-plugins-official
-```
 
 | Plugin              | Marketplace               | What it does                                                     |
 | ------------------- | ------------------------- | ---------------------------------------------------------------- |
@@ -98,10 +79,6 @@ Add a unique task list ID to your project's `.claude/settings.json`:
 }
 ```
 
-| Setting                    | Purpose                                                  |
-| -------------------------- | -------------------------------------------------------- |
-| `CLAUDE_CODE_TASK_LIST_ID` | Unique per project to avoid conflicts (`ctrl+t` to view) |
-
 `/code:setup` adds stack-specific permissions (e.g., `Bash(bun:*)`) and deployment scripts on top of the base settings.
 
 ---
@@ -149,56 +126,22 @@ Add a unique task list ID to your project's `.claude/settings.json`:
 ### Your First Feature
 
 ```bash
-# ══════════════════════════════════════════════════════════
-# PROJECT SETUP (once)
-# ══════════════════════════════════════════════════════════
+# Project setup (once)
+/code:bun-init my-saas-app       # Bun + Next.js + Shadcn + Docker
+/code:setup                       # Detect stack, generate permissions + scripts
 
-# 1. Create new project
-/code:bun-init my-saas-app
-# → Creates Bun + Next.js + Shadcn + Docker setup
+# Feature development
+/plan (shift-tab) add dark mode toggle      # Explore the idea
+/code:plan-issue add dark mode toggle       # → Issue #42 created
+# OR enrich existing: /code:plan-issue #33
+/clear                                       # Free context before implementing
+/code:implement #42                          # Orchestrator handles everything
+/code:finalizer --pr                         # Create PR for review
+# OR: /code:finalizer                        # Merge directly to main
 
-# 2. Configure project (settings + deployment)
-/code:setup
-# → Detects stack, generates .claude/settings.json + deployment scripts
-
-# ══════════════════════════════════════════════════════════
-# FEATURE DEVELOPMENT
-# ══════════════════════════════════════════════════════════
-
-# 4. Explore your idea
-/plan (shift-tab) add dark mode toggle to the app
-
-# 5a. Create NEW GitHub issue with tasks
-/code:plan-issue add dark mode toggle
-# → Issue #42 created
-
-# 5b. OR enrich EXISTING issue (e.g. from @claude investigation)
-/code:plan-issue #33
-# → Issue #33 updated with task breakdown
-
-# 6. Clear context before implementing
-/clear
-
-# 7. Run implementation (orchestrator handles everything)
-/code:implement #42
-
-# 8. Finalize when complete
-/code:finalizer         # Merge directly to main
-# or
-/code:finalizer --pr    # Create PR for review
-
-# ══════════════════════════════════════════════════════════
-# DEPLOYMENT (after features merged)
-# ══════════════════════════════════════════════════════════
-
-# 9. Deploy to staging
-/code:bun-deploy-staging
-# → Builds and deploys to GCP Cloud Run staging
-
-# 10. Test staging, then deploy to production
-/code:bun-deploy-production yes
-# → Requires "yes", verifies tests pass first
-
+# Deployment
+/code:bun-deploy-staging                     # Deploy to GCP staging
+/code:bun-deploy-production yes              # Deploy to production (requires "yes")
 ```
 
 **Interrupted?** Just run `/code:implement #42` again. Native tasks track progress (`ctrl+t` to view).
@@ -405,73 +348,16 @@ Refactor CLAUDE.md and organize auto-memory for progressive disclosure. Keeps co
 
 ## Task System
 
-Tasks are at the heart of this plugin. They use Claude Code's native task tracking system.
+Tasks use Claude Code's native task tracking (`ctrl+t` to view). Each task has a subject, description with file:line references, metadata (`issueNumber`, `verification`), status, and `blockedBy` dependencies.
 
-### What Are Tasks?
-
-Tasks are work items tracked by Claude Code's built-in TaskCreate/TaskList/TaskUpdate tools. Press `ctrl+t` to view them in the terminal.
-
-Each task has:
-
-- **Subject** — what to implement (imperative form)
-- **Description** — detailed steps with file:line references
-- **Metadata** — `issueNumber`, `verification` command, `feature` name
-- **Status** — pending, in_progress, completed, or blocked
-- **Dependencies** — `blockedBy` relationships to other tasks
-
-### How Tasks Are Created
-
-`/code:plan-issue` researches your codebase, creates or updates a GitHub issue, and registers native tasks with metadata:
-
-```bash
-# From scratch — creates new issue
-/code:plan-issue add dark mode toggle
-# → Creates GitHub issue #42
-# → Creates native tasks with metadata.issueNumber = 42
-
-# From existing issue — enriches in-place
-/code:plan-issue #33
-# → Fetches issue #33 body + comments
-# → Creates native tasks with metadata.issueNumber = 33
-# → Updates issue #33 with task breakdown
-```
-
-### How Tasks Are Executed
-
-When you run `/code:implement #42`:
-
-- **Subagent mode (default):** Orchestrator spawns implementer agents per task. Each implementer runs in its own git worktree for isolation.
-- **Agent Swarm mode:** Your session becomes the lead. Teammate sessions claim tasks from the shared list independently.
-
-### Task Lifecycle
+`/code:plan-issue` creates tasks from codebase research. `/code:implement` executes them — subagent mode spawns implementer agents in isolated worktrees, swarm mode uses independent Claude sessions.
 
 ```
 pending → in_progress → completed
                 ↘ blocked (needs help)
 ```
 
-- **pending** — waiting to be picked up
-- **in_progress** — being implemented by an agent/teammate
-- **completed** — implementation done, verification passed
-- **blocked** — cannot proceed, needs user intervention
-
-### Dependencies
-
-Tasks can have `blockedBy` relationships. A task won't start until all its blockers are completed:
-
-```
-Task 3: "Add API routes" (blockedBy: [Task 1, Task 2])
-  → Stays pending until Task 1 AND Task 2 are completed
-  → Then auto-unblocks and gets picked up
-```
-
-### Verification Gates
-
-Every task has a verification command that must pass (exit 0) before completion:
-
-- **Subagent mode:** `SubagentStop` hook runs `verify-gate.sh` — detects test framework and runs tests
-- **Swarm mode:** `TaskCompleted` hook runs `team-task-complete.sh` — same pattern
-- Both hooks skip tests when an agent reports `BLOCKED` (uses `last_assistant_message`)
+Verification gates run automatically: `SubagentStop` hook (subagent mode) and `TaskCompleted` hook (swarm mode) detect and run your test command. Tasks cannot complete without passing tests.
 
 ---
 
@@ -499,214 +385,25 @@ Task(orchestrator) ← background        Main session = swarm lead
 "Run /finalizer [--pr]"               "Run /finalizer [--pr]"
 ```
 
-**Key principle:** Intelligence lives in agents, not commands.
-
-**Subagent mode** — Orchestrator runs as a background task, spawning implementers in isolated git worktrees. Lower token cost, proven workflow.
-
-**Agent Swarm** — Main session leads. Teammates are independent sessions that communicate with each other and self-coordinate through the shared task list. Higher token cost, best for complex features with many independent tasks.
-
 ---
 
 ## Agent Swarm
 
-> **Experimental** — Agent Swarm is an advanced feature for complex, multi-task features. Most users should start with the default subagent mode.
+> **Experimental** — multiple independent Claude sessions instead of subagents. Best for complex features with 4+ independent tasks.
 
-Agent Swarm lets `/code:implement` use multiple independent Claude Code sessions instead of subagents. **One developer, many agents** — you become the lead, Claude spawns a swarm of coding agents that parallelize your work.
-
-### What Is Agent Swarm?
-
-You (single user) run one Claude Code session that becomes the **lead** (coordinator). Claude spawns multiple independent sessions (agents) that claim tasks from a shared task list, implement them in parallel, and self-coordinate. Think of it as your personal swarm of coding agents.
-
-This is NOT a multi-user team feature. It's one person leveraging multiple parallel Claude instances to move faster on complex features.
-
-### How It Works
-
-```
-You (lead session)
-  │
-  ├─ Teammate 1 → claims Task A → implements → verifies → commits
-  ├─ Teammate 2 → claims Task B → implements → verifies → commits
-  ├─ Teammate 3 → claims Task C → implements → verifies → commits
-  └─ ...up to 5 teammates
-  │
-  Shared TaskList ← self-coordination
-  │
-  Teammates message each other directly when needed
-```
-
-- **Your session** = lead (monitors progress, updates GitHub issue)
-- **Teammate sessions** = workers (claim tasks, implement, verify, commit)
-- **Shared TaskList** = coordination layer (tasks auto-unblock as dependencies complete)
-- **Direct messaging** = teammates can message each other for cross-task coordination
-
-### Display Modes
-
-Agent Swarm supports two display modes:
-
-**In-process (default)** — works in any terminal. All agents run in the same terminal window.
-
-```json
-{ "teammateMode": "in-process" }
-```
-
-Or via CLI: `claude --teammate-mode in-process`
-
-Use `Shift+Down` to cycle between agents and view/message them.
-
-**Split-pane** — each agent gets its own terminal pane. Requires tmux or iTerm2.
-
-```json
-{ "teammateMode": "tmux" }
-```
-
-Or via CLI: `claude --teammate-mode tmux`
-
-### Configure tmux for Split-Pane Mode (macOS)
-
-Install tmux:
-
-```bash
-brew install tmux
-```
-
-Create `~/.tmux.conf`:
-
-```bash
-# Mouse support
-set -g mouse on
-
-# Scrollback buffer
-set -g history-limit 10000
-
-# Start windows and panes at 1
-set -g base-index 1
-setw -g pane-base-index 1
-
-# Pane navigation with Alt+Arrow
-bind -n M-Left select-pane -L
-bind -n M-Right select-pane -R
-bind -n M-Up select-pane -U
-bind -n M-Down select-pane -D
-
-# Status bar theme
-set -g status-style 'bg=#1a1a2e fg=#e0e0e0'
-set -g status-left '#[fg=#00d4aa,bold] #S '
-set -g status-right '#[fg=#666]%H:%M'
-
-# Split shortcuts
-bind | split-window -h
-bind - split-window -v
-
-# Reload config
-bind r source-file ~/.tmux.conf \; display "Config reloaded"
-
-# Cheat sheet
-bind h run-shell "~/.tmux/cheatsheet.sh"
-```
-
-Create `~/.tmux/cheatsheet.sh`:
-
-```bash
-#!/bin/bash
-tmux display-popup -w 60 -h 20 -E "echo '
-  tmux Cheat Sheet
-  ════════════════════════════
-  Alt+Arrow    Navigate panes
-  Prefix + |   Vertical split
-  Prefix + -   Horizontal split
-  Prefix + r   Reload config
-  Prefix + h   This cheat sheet
-  Prefix + z   Toggle zoom pane
-  Scroll       Mouse wheel
-  ════════════════════════════
-  Prefix = Ctrl+B (default)
-' && read -n 1"
-```
-
-```bash
-chmod +x ~/.tmux/cheatsheet.sh
-```
-
-Start Agent Swarm in tmux mode:
-
-```bash
-claude --teammate-mode tmux
-```
-
-> **Note:** Split-pane works best on macOS. Linux may need adjustments to the tmux config.
-
-### Enable Agent Swarm
-
-Add to your project's `.claude/settings.json`:
+Enable in `.claude/settings.json`:
 
 ```json
 {
   "env": {
-    "CLAUDE_CODE_TASK_LIST_ID": "<your-project-name>-tasks",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   }
 }
 ```
 
-### When Does Agent Swarm Activate?
+Use flags: `--team` (force swarm), `--no-team` (force subagent). Auto-detection picks swarm when 4+ tasks exist with 60%+ independence.
 
-| Scenario                                      | Mode                             |
-| --------------------------------------------- | -------------------------------- |
-| Env var not set                               | Always subagent (default)        |
-| Env var set + < 4 tasks                       | Subagent (auto-detected)         |
-| Env var set + 4+ tasks with 60%+ independence | Swarm (auto-detected)            |
-| `--team` flag                                 | Swarm (forced, requires env var) |
-| `--no-team` flag                              | Subagent (forced, always works)  |
-
-### Using Agent Swarm
-
-```bash
-# Let auto-detection decide
-/code:implement #42
-
-# Force swarm mode for a complex cross-layer feature
-/code:implement #42 --team
-
-# Force subagent mode when you want lower token usage
-/code:implement #42 --no-team
-```
-
-### Keyboard Shortcuts
-
-| Shortcut     | Action                  |
-| ------------ | ----------------------- |
-| `Shift+Down` | Cycle to next agent     |
-| `Shift+Up`   | Cycle to previous agent |
-| `Ctrl+T`     | View shared task list   |
-| `Escape`     | Interrupt current agent |
-
-### Interacting with Agents
-
-You can message any agent directly:
-
-1. Press `Shift+Down` to select the agent you want to talk to
-2. Type your message — redirect their approach, give additional instructions, or ask for status
-3. Each agent maintains its own context and continues where it left off
-
-### Quality Gates
-
-The plugin ships hooks that enforce verification in swarm mode:
-
-- **`TeammateIdle` hook** — when a teammate finishes a task and goes idle, the hook directs them to pick up the next available task from TaskList
-- **`TaskCompleted` hook** — runs the detected test command before accepting task completion. Uses exit code 2 to reject if tests fail (task stays in_progress for retry)
-
-Agents cannot skip verification. The hooks run automatically.
-
-### Token Usage
-
-Each teammate is a separate Claude instance. Agent Swarm uses significantly more tokens than subagent mode. Use it for complex features with 4+ independent tasks where parallel work justifies the cost.
-
-### Limitations
-
-- **No session resumption** — if a teammate crashes, it cannot be resumed. The lead will detect the stalled task and can re-dispatch
-- **One swarm per session** — you can only run one Agent Swarm at a time
-- **No nested swarms** — teammates cannot spawn their own swarms
-- **Lead is fixed** — the session that starts the swarm is always the lead, cannot be transferred
+See [docs/agent-swarm.md](docs/agent-swarm.md) for full setup including tmux config, display modes, keyboard shortcuts, and limitations.
 
 ---
 
@@ -722,8 +419,6 @@ Each teammate is a separate Claude instance. Agent Swarm uses significantly more
 
 ### Keyboard Shortcuts
 
-#### Navigation & Control
-
 | Shortcut    | Action                                          |
 | ----------- | ----------------------------------------------- |
 | `Ctrl+T`    | View task list (see progress during /implement) |
@@ -735,49 +430,11 @@ Each teammate is a separate Claude instance. Agent Swarm uses significantly more
 | `/cost`     | View token usage for the session                |
 | `Up Arrow`  | Recall previous message                         |
 
-#### Agent Swarm Navigation
-
-| Shortcut     | Action                                |
-| ------------ | ------------------------------------- |
-| `Shift+Down` | Cycle to next agent (in-process mode) |
-| `Shift+Up`   | Cycle to previous agent               |
-
-### Rules
-
-The plugin includes rules that provide patterns and guardrails.
-
-#### `bun-native.md`
-
-Bun 1.3+ native API patterns. Prefer these over npm packages:
-
-| Instead of            | Use Bun Native                      |
-| --------------------- | ----------------------------------- |
-| `pg` / `postgres`     | `import { sql } from "bun:sql"`     |
-| `ioredis` / `redis`   | `import { redis } from "bun:redis"` |
-| `@aws-sdk/client-s3`  | `import { S3 } from "bun:s3"`       |
-| `express` / `fastify` | `Bun.serve()`                       |
-
-#### `gcp-safety.md`
-
-GCP resource protection rules:
-
-- **Never delete** Cloud Run services, SQL instances, GCS buckets without explicit approval
-- **Require "yes"** for production deployments
-- **Start small** with resource sizing (staging: 1 CPU/512Mi, production: 2 CPU/1Gi)
-- **Separate environments** by project ID (`*-staging` vs `*-prod`)
-
 ---
 
 ## Guides
 
-Detailed walkthroughs for specific workflows:
-
-| Guide           | For                                                       | Link                                                     |
-| --------------- | --------------------------------------------------------- | -------------------------------------------------------- |
-| Getting Started | First-time users — install to first feature in 10 minutes | [docs/getting-started.md](docs/getting-started.md)       |
-| User Guide      | Active users — workflows, tips, and troubleshooting       | [docs/user-guide.md](docs/user-guide.md)                 |
-| Git Workflow    | When to commit, PR, or merge                              | [docs/git-workflow-guide.md](docs/git-workflow-guide.md) |
-| Desktop Guide   | Using the plugin with Claude Code Desktop                 | [docs/desktop-guide.md](docs/desktop-guide.md)           |
+See [docs/](docs/) for guides: [getting-started](docs/getting-started.md), [user-guide](docs/user-guide.md), [git-workflow](docs/git-workflow-guide.md), [desktop](docs/desktop-guide.md), [agent-swarm](docs/agent-swarm.md).
 
 ---
 

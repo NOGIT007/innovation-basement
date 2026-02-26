@@ -11,13 +11,10 @@ Arguments: $ARGUMENTS
 
 ## Step 1: Parse Arguments
 
-Parse `$ARGUMENTS` to extract:
+Extract from `$ARGUMENTS`:
 
-- **Issue number**: strip `#` prefix (e.g. `#42` → `42`)
-- **`--team` flag**: force team mode
-- **`--no-team` flag**: force subagent mode
-
-Examples: `#42`, `#42 --team`, `--team #42`, `#42 --no-team`
+- **Issue number** (strip `#` prefix)
+- **`--team`** or **`--no-team`** flag (optional)
 
 ## Step 2: Validate Issue
 
@@ -44,59 +41,25 @@ fi
 
 ## Step 4: Verify Tasks Exist
 
-Check for tasks in native task list:
-
 ```
 TaskList() → filter by metadata.issueNumber = <number>
 ```
 
-**If tasks exist:**
-
-- Count tasks with matching issueNumber
-- Continue to Step 5
-
-**If no tasks found:**
-
-Error: "No tasks found for issue #<number>. Run `/code:plan-issue` first to create the issue with tasks."
-
-> **Note:** For backwards compatibility with old issues (without native tasks), you may fall back to parsing GitHub issue checkboxes. However, the native Task workflow is preferred.
+If tasks exist → continue to Step 5.
+If no tasks found → error: "No tasks found for issue #<number>. Run `/code:plan-issue` first."
 
 ## Step 5: Detect Execution Mode
 
-Parse flags from arguments:
-
-- `--team` → force team mode
+- `--team` → force team mode (requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`, error if missing)
 - `--no-team` → force subagent mode
-- Neither → auto-detect
+- Neither → auto-detect:
+  1. If `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` not set → subagent
+  2. Count tasks: total, independent (no blockedBy), independence ratio
+  3. If total >= 4 AND ratio >= 0.6 → team mode, otherwise → subagent
 
-### Auto-Detection
-
-If auto-detecting:
-
-1. Check: is `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` env var set to "1"?
-   - If not set → subagent mode (default)
-
-2. Count tasks and dependencies from TaskList (filtered by issueNumber):
-   - total_tasks = count of matching tasks
-   - independent_tasks = count where blockedBy is empty
-   - independence_ratio = independent_tasks / total_tasks
-
-3. Decision:
-   - total_tasks >= 4 AND independence_ratio >= 0.6 → team mode
-   - Otherwise → subagent mode
-
-### Flag Override
-
-- `--team` forces team mode
-  - Still requires CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
-  - If env var missing → error: "Enable team mode first. Add CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 to .claude/settings.json env"
-- `--no-team` forces subagent mode (always works)
-
-Report: "Mode: team (auto-detected: N tasks, M% independent)" or "Mode: subagent"
+Report: "Mode: team (N tasks, M% independent)" or "Mode: subagent"
 
 ## Step 6a: Launch Orchestrator (Subagent Mode)
-
-If subagent mode was selected, spawn the orchestrator agent to manage all task execution:
 
 ```
 Task(
@@ -113,95 +76,46 @@ Task(
 )
 ```
 
-### Done (Subagent Mode)
-
-The orchestrator now controls execution:
-
-1. Uses TaskList to find pending tasks
-2. Spawns implementer for each task (each in its own git worktree for isolation)
-3. Commits after each task (worktree changes merge back automatically)
-4. Updates GitHub issue status
-5. Runs simplify when complete
-6. Reports: "Run /code:finalizer [--pr] to finish"
-
-> **Worktree isolation:** Each implementer runs in a separate git worktree, preventing file conflicts when multiple tasks execute in parallel. If a merge conflict occurs when merging back, the task is marked BLOCKED with conflict details.
-
-You will see progress as tasks complete. Press `ctrl+t` to view task progress.
+The orchestrator spawns implementers in isolated worktrees, commits after each task, and reports "Run /code:finalizer [--pr] to finish." Press `ctrl+t` to view progress.
 
 ## Step 6b: Launch Agent Team (Team Mode)
 
-You are now the **team lead**. Do NOT spawn the orchestrator agent.
+You are the **team lead**. Do NOT spawn the orchestrator.
 
 ### Create the Team
 
-Create an agent team for this feature. Use natural language:
+Create an agent team called 'issue-<number>'. Spawn N teammates (min of independent_task_count, 5). Each teammate:
 
-"Create an agent team called 'issue-<number>' to implement all tasks for
-issue #<number> (<title>).
-
-Spawn <N> teammates (where N = min(independent_task_count, 5)).
-
-Each teammate should follow this workflow:
-
-1. Read the project's CLAUDE.md and rules
+1. Read CLAUDE.md and rules
 2. Use TaskList to find tasks where metadata.issueNumber = <number>
-3. Claim a pending task: check blockedBy are all completed, then
-   TaskUpdate(taskId, status: 'in_progress', owner: '<teammate-name>')
-4. Read ALL files before modifying them
-5. Implement exactly what the task description specifies — nothing more
-6. Run the verification command from metadata.verification
-7. If verification passes: TaskUpdate(taskId, status: 'completed')
-8. If verification fails: debug (max 3 attempts), then set status to blocked
-9. After completing a task, create a conventional commit
-10. Pick up the next available task (repeat from step 2)
-
-Rules:
-
-- Only claim tasks where ALL blockedBy tasks have status 'completed'
-- One task at a time per teammate
-- Never deviate from the task description
-- If blocked, move to the next available task"
+3. Claim a pending task (verify blockedBy all completed first): `TaskUpdate(taskId, status: 'in_progress', owner: '<name>')`
+4. Read ALL files before modifying
+5. Implement exactly what the task specifies
+6. Run verification from metadata.verification
+7. If pass → `TaskUpdate(taskId, status: 'completed')`, commit, pick next task
+8. If fail → debug (max 3 attempts), then set blocked
+9. Only claim tasks where ALL blockedBy are completed
+10. One task at a time, never deviate from description
 
 ### Monitor Progress (Lead Loop)
 
-As team lead, monitor until all tasks are done:
-
 ```
 LOOP every 15 seconds:
-  tasks = TaskList() filtered by metadata.issueNumber = <number>
+  tasks = TaskList() filtered by metadata.issueNumber
+  completed, blocked, pending, in_progress = count by status
 
-  completed = count where status = "completed"
-  blocked = count where status = "blocked"
-  pending = count where status = "pending"
-  in_progress = count where status = "in_progress"
+  # Update GitHub issue for newly completed tasks (⏳→🔄→✅)
+  # Report: "Progress: {completed}/{total} ({in_progress} active, {blocked} blocked)"
 
-  # Update GitHub issue for newly completed tasks
-  For each newly completed task since last check:
-    Update issue body status emoji (⏳→🔄→✅)
-
-  # Report progress
-  "Progress: {completed}/{total} tasks ({in_progress} active, {blocked} blocked)"
-
-  # Deadlock detection
-  if in_progress == 0 AND pending > 0 AND all pending have incomplete blockers:
-    Report deadlock to user with blocked task details
-    Break
-
-  # Completion detection
-  if pending == 0 AND in_progress == 0:
-    All tasks done → Break
-
+  # Deadlock: if in_progress == 0 AND pending > 0 with incomplete blockers → report, break
+  # Complete: if pending == 0 AND in_progress == 0 → break
 END LOOP
 ```
 
 ### After All Tasks Complete
 
-1. Message each teammate: "All tasks for issue #<number> are complete. Please exit your session now."
-2. Wait 10 seconds for teammates to exit gracefully:
-   ```bash
-   sleep 10
-   ```
-3. Clean up remaining tmux panes (safety net for teammates that didn't exit):
+1. Message teammates to exit
+2. Wait 10s, then clean up remaining tmux panes:
    ```bash
    if [ -n "$TMUX" ]; then
      LEAD_PANE=$(tmux display-message -p '#{pane_id}')
@@ -210,17 +124,10 @@ END LOOP
      done
    fi
    ```
-4. Run `/simplify` on recently changed files
-5. Clean up completed tasks:
-   ```
-   tasks = TaskList() filtered by metadata.issueNumber = <number>
-   for each task where status == "completed":
-     TaskUpdate(task.id, status: "deleted")
-   ```
-6. Report: "All {total} tasks complete. Run /code:finalizer [--pr] to finish."
+3. Run `/simplify` on recently changed files
+4. Delete completed tasks: `TaskUpdate(task.id, status: "deleted")`
+5. Report: "All {total} tasks complete. Run /code:finalizer [--pr] to finish."
 
 ## Resuming Work
 
-To resume interrupted work, simply run `/code:implement #<number>` again.
-
-Both modes reconstruct state from TaskList and continue from where they left off. No handover needed.
+Run `/code:implement #<number>` again. Both modes reconstruct state from TaskList.

@@ -6,46 +6,28 @@ description: Detect project stack, generate settings.json permissions and deploy
 
 # Project Setup
 
-Detect project stack and configure both Claude Code settings and deployment scripts.
+Detect project stack and configure Claude Code settings + deployment scripts.
 
 ## Phase 1: Detect Stack
 
 ```bash
-echo "═══════════════════════════════════════════════════"
-echo "🔍 Detecting project stack..."
-echo "═══════════════════════════════════════════════════"
-echo ""
-
-# Package manager
-ls bun.lock 2>/dev/null && echo "✅ Bun detected"
-ls package-lock.json 2>/dev/null && echo "✅ npm detected"
-ls pnpm-lock.yaml 2>/dev/null && echo "✅ pnpm detected"
-ls pyproject.toml 2>/dev/null && echo "🐍 Python detected"
-ls Cargo.toml 2>/dev/null && echo "🦀 Rust detected"
-ls go.mod 2>/dev/null && echo "🐹 Go detected"
-
-# Framework
-ls next.config.* 2>/dev/null && echo "✅ Next.js detected"
-ls vite.config.* 2>/dev/null && echo "✅ Vite detected"
-
-# Deployment targets
-ls firebase.json 2>/dev/null && echo "🔥 Firebase detected"
-ls Dockerfile 2>/dev/null && echo "🐳 Docker detected"
-
-# TypeScript
-ls tsconfig.json 2>/dev/null && echo "📘 TypeScript detected"
-
-# Existing settings
-echo ""
-echo "📋 Current settings.json:"
+ls bun.lock 2>/dev/null && echo "Bun detected"
+ls package-lock.json 2>/dev/null && echo "npm detected"
+ls pnpm-lock.yaml 2>/dev/null && echo "pnpm detected"
+ls pyproject.toml 2>/dev/null && echo "Python detected"
+ls Cargo.toml 2>/dev/null && echo "Rust detected"
+ls go.mod 2>/dev/null && echo "Go detected"
+ls next.config.* 2>/dev/null && echo "Next.js detected"
+ls vite.config.* 2>/dev/null && echo "Vite detected"
+ls firebase.json 2>/dev/null && echo "Firebase detected"
+ls Dockerfile 2>/dev/null && echo "Docker detected"
+ls tsconfig.json 2>/dev/null && echo "TypeScript detected"
 cat .claude/settings.json 2>/dev/null || echo "No settings.json found"
 ```
 
 ## Phase 2: Generate Settings
 
-Based on detected stack, generate recommended `.claude/settings.json` permissions.
-
-**Stack → Permissions mapping:**
+Based on detected stack, generate `.claude/settings.json`:
 
 | Stack       | Allow                                                     | Deny                         |
 | ----------- | --------------------------------------------------------- | ---------------------------- |
@@ -57,7 +39,7 @@ Based on detected stack, generate recommended `.claude/settings.json` permission
 | GCP         | `gcloud:*`                                                | `gcloud projects delete:*`   |
 | General     | `git:*`, `gh:*`, `tsc:*`                                  | `rm -rf:*`                   |
 
-Always include the required environment variables:
+Always include:
 
 ```json
 {
@@ -71,134 +53,26 @@ Always include the required environment variables:
 
 ## Phase 3: Deployment Scripts
 
-Use AskUserQuestion to ask:
+Use AskUserQuestion: **Generate deployment scripts?** [Yes / No]. If yes, ask deployment target (Firebase Hosting / GCP Cloud Run / Skip).
 
-1. **Generate deployment scripts?** [Yes / No]
-2. If yes: **Deployment target?**
-   - Firebase Hosting (if firebase.json detected)
-   - GCP Cloud Run
-   - Skip (manual deployment)
-
-If user wants deployment scripts, create `scripts/` directory with:
-
-- `scripts/dev.sh` — Local development
-- `scripts/deploy-staging.sh` — Staging deployment
-- `scripts/deploy-production.sh` — Production (requires "yes" confirmation)
+Create `scripts/` directory with `dev.sh`, `deploy-staging.sh`, `deploy-production.sh`.
 
 ### Firebase Hosting Scripts
 
-**scripts/dev.sh:**
-
-```bash
-#!/bin/bash
-set -e
-echo "🔥 Starting Firebase development server..."
-if [ ! -d "node_modules" ]; then bun install; fi
-bun run dev
-```
-
-**scripts/deploy-staging.sh:**
-
-```bash
-#!/bin/bash
-set -e
-echo "🚀 Deploying to Firebase Hosting (staging)..."
-bun run build
-firebase deploy --only hosting:staging
-echo "✅ Staging deployment complete"
-```
-
-**scripts/deploy-production.sh:**
-
-```bash
-#!/bin/bash
-set -e
-if [[ "$1" != "yes" ]]; then
-  echo "⚠️  Production deployment requires explicit confirmation"
-  echo "Usage: ./scripts/deploy-production.sh yes"
-  exit 1
-fi
-echo "🚀 Deploying to Firebase Hosting (production)..."
-bun run build
-firebase deploy --only hosting:production
-echo "✅ Production deployment complete"
-```
+**dev.sh:** `set -e`, install deps if needed, `bun run dev`
+**deploy-staging.sh:** `set -e`, `bun run build`, `firebase deploy --only hosting:staging`
+**deploy-production.sh:** `set -e`, require `$1 == "yes"`, `bun run build`, `firebase deploy --only hosting:production`
 
 ### GCP Cloud Run Scripts
 
-**scripts/dev.sh:**
+**dev.sh:** `set -e`, install deps if needed, `bun run dev`
+**deploy-staging.sh:** `set -e`, source `.env`, validate `GCP_PROJECT_STAGING`, deploy with `--cpu 1 --memory 512Mi --min-instances 0 --max-instances 3`
+**deploy-production.sh:** `set -e`, require `$1 == "yes"`, source `.env`, validate `GCP_PROJECT_PROD`, `bun test`, deploy with `--cpu 2 --memory 1Gi --min-instances 1 --max-instances 10 --cpu-boost`
 
-```bash
-#!/bin/bash
-set -e
-echo "🔧 Starting local development server..."
-if [ ! -d "node_modules" ]; then bun install; fi
-bun run dev
-```
+After generating: `chmod +x scripts/*.sh`
 
-**scripts/deploy-staging.sh:**
-
-```bash
-#!/bin/bash
-set -e
-source .env 2>/dev/null || true
-SERVICE_NAME="${SERVICE_NAME:-my-service}"
-GCP_REGION="${GCP_REGION:-europe-west1}"
-GCP_PROJECT="${GCP_PROJECT_STAGING:-}"
-if [ -z "$GCP_PROJECT" ]; then echo "❌ GCP_PROJECT_STAGING not set in .env"; exit 1; fi
-echo "🚀 Deploying to GCP Cloud Run (staging)..."
-gcloud run deploy "${SERVICE_NAME}-staging" --source . --region "$GCP_REGION" --project "$GCP_PROJECT" --allow-unauthenticated --cpu 1 --memory 512Mi --min-instances 0 --max-instances 3
-echo "✅ Staging deployment complete"
-```
-
-**scripts/deploy-production.sh:**
-
-```bash
-#!/bin/bash
-set -e
-if [[ "$1" != "yes" ]]; then
-  echo "⚠️  Production deployment requires explicit confirmation"
-  echo "Usage: ./scripts/deploy-production.sh yes"
-  exit 1
-fi
-source .env 2>/dev/null || true
-SERVICE_NAME="${SERVICE_NAME:-my-service}"
-GCP_REGION="${GCP_REGION:-europe-west1}"
-GCP_PROJECT="${GCP_PROJECT_PROD:-}"
-if [ -z "$GCP_PROJECT" ]; then echo "❌ GCP_PROJECT_PROD not set in .env"; exit 1; fi
-echo "🚀 Deploying to GCP Cloud Run (production)..."
-bun test
-gcloud run deploy "$SERVICE_NAME" --source . --region "$GCP_REGION" --project "$GCP_PROJECT" --min-instances 1 --max-instances 10 --cpu 2 --memory 1Gi --cpu-boost
-echo "✅ Production deployment complete"
-```
-
-After generating scripts:
-
-```bash
-chmod +x scripts/*.sh
-```
-
-## Phase 4: Update CLAUDE.md
+## Phase 4: Update CLAUDE.md & Report
 
 If deployment scripts were generated, append deployment docs to `.claude/CLAUDE.md`.
 
-## Output
-
-```
-═══════════════════════════════════════════════════
-✅ Project setup complete
-═══════════════════════════════════════════════════
-
-Settings:
-  📄 .claude/settings.json (permissions generated)
-
-Deployment:
-  📄 scripts/dev.sh
-  📄 scripts/deploy-staging.sh
-  📄 scripts/deploy-production.sh
-
-Next steps:
-  1. Review .claude/settings.json
-  2. Set environment variables in .env (if using Cloud Run)
-  3. Run ./scripts/dev.sh to start development
-```
+Output: settings path, deployment script paths, and next steps (review settings, set env vars, run dev.sh).

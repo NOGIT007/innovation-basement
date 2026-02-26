@@ -1,7 +1,5 @@
 # Coding Plugin
 
-🏗️ = Architecture updated after commit
-
 ## Architecture
 
 ```
@@ -37,10 +35,10 @@ View tasks with `ctrl+t` in Claude Code terminal.
 
 `/code:implement` supports two execution modes:
 
-| Mode                | Trigger             | Flow                                    | Token Cost |
-| ------------------- | ------------------- | --------------------------------------- | ---------- |
-| Subagent (default)  | Auto or `--no-team` | implement → orchestrator → implementers | Lower      |
-| Team (experimental) | Auto or `--team`    | implement = lead → teammates            | Higher     |
+| Mode                | Trigger             | Flow                                    |
+| ------------------- | ------------------- | --------------------------------------- |
+| Subagent (default)  | Auto or `--no-team` | implement → orchestrator → implementers |
+| Team (experimental) | Auto or `--team`    | implement = lead → teammates            |
 
 Team mode requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in settings.json env.
 Auto-detection uses team mode when 4+ tasks exist with 60%+ having no blockers.

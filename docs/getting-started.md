@@ -25,26 +25,7 @@ By the end of this guide, you'll have:
 
 ## Step 1: Install the Plugin
 
-### Option A: Marketplace (Recommended)
-
-Install from the Claude Code plugin marketplace. Verify with `/plugin` → Installed tab.
-
-### Option B: Manual
-
-```bash
-mkdir -p ~/.claude/plugins/marketplaces
-cd ~/.claude/plugins/marketplaces
-git clone https://github.com/NOGIT007/innovation-basement.git
-```
-
-Then in Claude Code:
-
-```
-/plugin marketplace add ~/.claude/plugins/marketplaces/innovation-basement
-/plugin install coding-plugin@innovation-basement
-```
-
-Restart Claude Code after installation.
+See [Installation](../README.md#installation) in the README for marketplace or manual install.
 
 ---
 
@@ -162,7 +143,7 @@ Merges to main, closes the issue, and deletes the feature branch.
 ## What's Next?
 
 - **[User Guide](user-guide.md)** — Deeper coverage of each workflow stage, tips, and troubleshooting
-- **[Agent Swarm](../README.md#agent-swarm)** — Parallel execution with multiple Claude sessions for complex features
+- **[Agent Swarm](agent-swarm.md)** — Parallel execution with multiple Claude sessions
 - **[Git Workflow Guide](git-workflow-guide.md)** — When to commit, PR, or merge
 
 ---

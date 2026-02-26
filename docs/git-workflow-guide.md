@@ -201,92 +201,35 @@ Done!
 | Team work            | ✅ Required             | Solo only       |
 | Rollback             | Easy (revert PR)        | Harder          |
 
-**Rule of thumb:**
-
-- Team project → Always `--pr`
-- Solo + confident → Direct merge OK
-- Production code → Always `--pr`
-
 ---
 
-## 🔁 Complete Workflow Example
+## Complete Workflow Example
 
 ```bash
-# 1. Plan the feature
-/plan "add user authentication"
-# Review the plan, adjust if needed
-
-# 2. Create issue and tasks
-/plan-issue
-# Output: Issue #42 created with 3 tasks
-
-# 3. Implement (orchestrator handles everything)
-/implement #42
-# Orchestrator:
-#   - Creates feature branch
-#   - Runs each task
-#   - Commits after each
-#   - Runs simplify
-#   - Reports completion
-
-# 4. Create PR for review
-/finalizer --pr
-# Output: PR #45 created
-
-# 5. After PR is approved and merged on GitHub
-# Issue #42 auto-closes (Closes #42 in PR body)
+/plan "add user authentication"          # Plan the feature
+/plan-issue                               # → Issue #42 with 3 tasks
+/implement #42                            # Orchestrator runs all tasks
+/finalizer --pr                           # → PR #45 created
+# After PR approved + merged → Issue #42 auto-closes
 ```
 
 ---
 
-## ⚠️ Common Mistakes
+## Common Mistakes
 
-### ❌ Don't: Commit during orchestrator run
-
-The orchestrator auto-commits. Manual commits will confuse the flow.
-
-### ❌ Don't: Use `/code:pr` when tasks exist
-
-Use `/code:finalizer --pr` instead - it verifies tasks and links the issue.
-
-### ❌ Don't: Forget to push before PR
-
-Both `/code:pr` and `/code:finalizer --pr` handle this automatically.
-
-### ❌ Don't: Direct merge on team projects
-
-Always use `--pr` for review. Your teammates will thank you.
+- **Don't commit during orchestrator run** — it auto-commits, manual commits confuse the flow
+- **Don't use `/code:pr` when tasks exist** — use `/code:finalizer --pr` (verifies tasks, links issue)
+- **Don't worry about pushing** — PR commands handle it automatically
+- **Don't direct merge on team projects** — always use `--pr` for review
 
 ---
 
-## 🧹 Cleanup
+## Cleanup
 
-After `/code:finalizer` (direct merge):
-
-- ✅ Feature branch deleted automatically
-- ✅ Issue closed automatically
-- ✅ Tasks remain in TaskList (visible via `ctrl+t`)
-
-After `/code:finalizer --pr` + merge on GitHub:
-
-- ✅ Issue auto-closes (via `Closes #42`)
-- ⚠️ Delete branch manually on GitHub or locally:
-  ```bash
-  git branch -d feature/42-add-auth
-  git push origin --delete feature/42-add-auth
-  ```
+- **Direct merge** (`/finalizer`): branch deleted + issue closed automatically
+- **PR** (`/finalizer --pr`): issue auto-closes on merge. Delete branch manually or on GitHub.
 
 ---
-
-## 📋 Summary
-
-| Scenario                    | Command                    |
-| --------------------------- | -------------------------- |
-| Manual work, need to commit | `/code:commit`             |
-| Quick PR, no task workflow  | `/code:pr`                 |
-| Finished tasks, want review | `/code:finalizer --pr` ⭐  |
-| Finished tasks, ship now    | `/code:finalizer`          |
-| Resume interrupted work     | `/code:implement #<issue>` |
 
 **The golden path:** `/plan` → `/plan-issue` → `/implement` → `/finalizer --pr`
 

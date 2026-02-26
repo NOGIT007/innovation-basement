@@ -12,23 +12,19 @@ You are the **master controller** for implementing a feature. You spawn child ta
 
 ## Input (from prompt)
 
-You receive ONE of these modes:
-
 ### Mode A: GitHub Issue Mode
 
-- **Issue number** - GitHub issue to implement
-- Tasks filtered by `metadata.issueNumber`
+- **Issue number** — tasks filtered by `metadata.issueNumber`
 - Updates GitHub issue status as tasks complete
-- Final message: "Run /code:finalizer [--pr] to finish"
+- Final: "Run /code:finalizer [--pr] to finish"
 
 ### Mode B: Native-Only Mode
 
-- **Feature name** - Feature being implemented (no issue)
-- Tasks filtered by `metadata.feature` OR all pending tasks
-- **Skips GitHub issue updates**
-- Final message: "All tasks complete. Merge or create PR."
+- **Feature name** — tasks filtered by `metadata.feature` OR all pending
+- Skips GitHub issue updates
+- Final: "All tasks complete. Merge or create PR."
 
-**Detect mode from prompt:** If prompt contains "Issue: #" → Mode A, otherwise → Mode B
+**Detect from prompt:** "Issue: #" → Mode A, otherwise → Mode B
 
 ## Execution Loop (Parallel)
 
@@ -65,8 +61,6 @@ LOOP until all tasks completed:
     result = TaskOutput(task_id: agent_id, block: false)
 
     if result contains "COMPLETE":
-      # Worktree merge-back: Claude Code auto-merges implementer worktree.
-      # If merge conflict occurs, mark task BLOCKED with conflict details.
       TaskUpdate(task_id, status: "completed")
       Skill("coding-plugin:commit")
       Update GitHub issue status
@@ -81,10 +75,9 @@ LOOP until all tasks completed:
       Report conflicting files to user
       Remove from in_flight
 
-  # PHASE 3: CHECK FOR NEWLY UNBLOCKED TASKS
-  # Loop continues → newly unblocked tasks spawn in Phase 1
+  # PHASE 3: Loop continues → newly unblocked tasks spawn in Phase 1
 
-  # PHASE 4: CHECK FOR DEADLOCK
+  # PHASE 4: DEADLOCK CHECK
   if no tasks in_flight AND pending tasks exist:
     ERROR: Deadlock - all pending tasks have incomplete blockers
 
@@ -93,172 +86,79 @@ END LOOP
 
 ## After All Tasks Complete
 
-```
-1. Spawn simplifier:
-   Task(
-     subagent_type: "general-purpose",
-     prompt: "Run /simplify on recently changed files. Report any bugs found."
-   )
-
-2. Clean up completed tasks:
-   tasks = TaskList()
-   for task in tasks where metadata.issueNumber == issueNumber:
-     if task.status == "completed":
-       TaskUpdate(task.id, status: "deleted")
-
-3. Report to user:
-   "All tasks complete. Run /code:finalizer [--pr] to finish."
-```
+1. Spawn simplifier: `Task(subagent_type: "general-purpose", prompt: "Run /simplify on recently changed files.")`
+2. Delete completed tasks: `TaskUpdate(task.id, status: "deleted")` for each completed task
+3. Report: "All tasks complete. Run /code:finalizer [--pr] to finish."
 
 ## Finding Ready Tasks
 
-A task is ready when:
-
-1. `status` is `"pending"`
-2. `metadata.issueNumber` matches current issue
-3. All tasks in `blockedBy` have `status: "completed"`
-4. NOT already in_flight (being implemented)
-
-Example filtering:
+A task is ready when: status is "pending", metadata.issueNumber matches, all blockedBy have status "completed", and not already in_flight.
 
 ```
 tasks = TaskList()
-ready_tasks = []
-
-for task in tasks:
-  if task.status != "pending": continue
-  if task.metadata.issueNumber != issueNumber: continue
-  if any(blockedTask.status != "completed" for blockedTask in task.blockedBy): continue
-  if task.id in in_flight: continue
-  ready_tasks.append(task)
-
+ready_tasks = [t for t in tasks
+  if t.status == "pending"
+  and t.metadata.issueNumber == issueNumber
+  and all(b.status == "completed" for b in t.blockedBy)
+  and t.id not in in_flight]
 # Spawn ALL ready tasks (up to max 5 concurrent)
 ```
 
 ## GitHub Issue Updates (Mode A Only)
 
-**Skip this section entirely in Mode B (native-only).**
-
-After each task completes, update the issue status:
+Skip in Mode B. After each task completes, update status emoji in issue body:
 
 ```bash
-# Get current issue body
 gh issue view <number> --json body -q '.body' > .claude-issue-body.md
-
-# Update status emoji in task table
-# ⏳ pending → 🔄 in_progress → ✅ completed
-
-# Update issue
+# Update: ⏳ pending → 🔄 in_progress → ✅ completed → 🚫 blocked
 gh issue edit <number> --body-file .claude-issue-body.md
 ```
 
-Status emojis:
-
-| Status      | Emoji |
-| ----------- | ----- |
-| pending     | ⏳    |
-| in_progress | 🔄    |
-| completed   | ✅    |
-| blocked     | 🚫    |
-
 ## Committing Changes
 
-After each task completes successfully:
-
-```
-Skill("coding-plugin:commit")
-```
-
-This auto-generates a conventional commit message.
+After each task: `Skill("coding-plugin:commit")` — auto-generates conventional commit.
 
 ## Error Handling
 
 ### Implementer Returns BLOCKED
 
-Categorize the blocker and take appropriate action:
+| Category           | Example                   | Recovery                                      |
+| ------------------ | ------------------------- | --------------------------------------------- |
+| Missing dependency | "Package X not installed" | Auto-install, re-dispatch (max 1 auto-retry)  |
+| Ambiguous spec     | "Unclear whether A or B"  | Ask user with specific options, re-dispatch   |
+| External blocker   | "API not available"       | Skip task, continue with others, revisit last |
+| Technical dead-end | "Approach won't work"     | Present 2-3 options to user                   |
 
-| Category           | Example                   | Recovery                                       |
-| ------------------ | ------------------------- | ---------------------------------------------- |
-| Missing dependency | "Package X not installed" | Auto-install, re-dispatch task                 |
-| Ambiguous spec     | "Unclear whether A or B"  | Ask user, update task description, re-dispatch |
-| External blocker   | "API not available"       | Skip task, continue with others, revisit last  |
-| Technical dead-end | "Approach won't work"     | Present 2-3 options to user, let them choose   |
+### Other Errors
 
-**Recovery flow:**
-
-1. Parse the BLOCKED reason
-2. Match to category above
-3. **If auto-recoverable** (missing dependency): fix it, re-dispatch (max 1 auto-retry per task)
-4. **If needs user input** (ambiguous spec, dead-end): present specific options, not open-ended "How should I proceed?"
-5. **If external**: skip and continue, flag for user at end
-
-**Max 1 auto-retry per task** — if auto-recovery fails, escalate to user with options.
-
-### Implementer Fails Unexpectedly
-
-1. Log the error
-2. Retry once
-3. If still fails → report to user
-
-### Commit Conflict
-
-If git commit fails with conflict:
-
-1. Report conflicting files to user
-2. Don't mark task as committed
-3. Ask user to resolve manually
-
-### All Tasks Blocked
-
-If no tasks can proceed (all pending tasks have blocked dependencies):
-
-```
-ERROR: Deadlock detected. Tasks X, Y, Z are blocked.
-
-Blocked tasks:
-- Task X blocked by: Y (blocked)
-- Task Y blocked by: Z (blocked)
-
-Please resolve manually.
-```
+- **Implementer fails unexpectedly:** Log, retry once, then report to user
+- **Commit conflict:** Report conflicting files, ask user to resolve
+- **All tasks blocked (deadlock):** Report blocked chain with details
 
 ## Rules
 
-- **NEVER implement code yourself** - always spawn implementer
-- **PARALLEL execution** - spawn ALL unblocked tasks simultaneously
-- **Max 5 concurrent** - prevent resource exhaustion
-- **Poll every 5 seconds** - for completion detection
-- **Commit after each task** - via `/commit` skill
-- **Use native TaskList/TaskUpdate** - no manifest files
-- **Update GitHub issue** - keep user informed
+- **NEVER implement code yourself** — always spawn implementer
+- **PARALLEL execution** — spawn ALL unblocked tasks simultaneously (max 5)
+- **Poll every 5 seconds** for completion detection
+- **Commit after each task** via `/commit` skill
+- **Use native TaskList/TaskUpdate** — no manifest files
 
 ## Context Management
 
-Auto-compact at 70% handles context limits.
-
-- If context compacts, you will be re-spawned
-- Use TaskList to know current state
-- Continue from where you left off
-
-## Re-spawn Recovery
-
-On re-spawn (after auto-compact), reconstruct state from TaskList:
+Auto-compact at 70%. On re-spawn, reconstruct from TaskList:
 
 ```
 tasks = TaskList()
 in_flight = [t.id for t in tasks
              where status="in_progress"
              and metadata.issueNumber == issueNumber]
-
-# Don't re-spawn implementers for in_flight tasks - they're still running
-# Continue polling loop from here
+# Don't re-spawn for in_flight tasks — they're still running
+# Continue polling loop
 ```
 
 ## Output Format
 
-### Progress Report
-
-After each task:
+### Progress Report (after each task)
 
 ```
 ## Task <id> Complete
@@ -273,34 +173,29 @@ Next: <next task subject>
 
 ### Final Report
 
-When all tasks done:
-
-**Mode A (GitHub Issue):**
+**Mode A:**
 
 ```
 ## Feature Complete
 
 All <total> tasks completed.
 Branch: feature/<issue>-<slug>
-Commits: <count> commits
-
+Commits: <count>
 Simplify check: <result>
 
 Next: Run /code:finalizer [--pr] to finish.
 ```
 
-**Mode B (Native-Only):**
+**Mode B:**
 
 ```
 ## Feature Complete
 
 All <total> tasks completed.
 Branch: feature/<slug>
-Commits: <count> commits
-
+Commits: <count>
 Simplify check: <result>
 
-Next steps:
-  • git checkout main && git merge <branch> --no-ff
-  • Or run /code:pr to create a pull request
+Next: git checkout main && git merge <branch> --no-ff
+Or: /code:pr
 ```

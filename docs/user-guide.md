@@ -10,29 +10,15 @@ This guide covers each stage of the development workflow. For first-time setup, 
 
 Before writing code, explore the idea in plan mode.
 
-### Using Plan Mode
-
 ```bash
 /plan add user authentication
 ```
 
-Or press `Shift+Tab` to toggle plan mode on any prompt. Plan mode is read-only — Claude explores your codebase without making changes.
+Or press `Shift+Tab` to toggle plan mode. Plan mode is read-only — Claude explores without making changes.
 
-### When to Use Plan Mode
+**When to use:** New features (explore architecture), bug investigation (trace before fixing), refactoring (understand dependencies).
 
-- **New features** — explore architecture, identify files to change
-- **Bug investigation** — trace the issue before fixing
-- **Refactoring** — understand dependencies before restructuring
-
-### Using Spec Files
-
-For complex features, write a spec file first and pass it as input:
-
-```bash
-/code:plan-issue @SPEC.md
-```
-
-The spec file gives Claude structured context — acceptance criteria, constraints, API shapes — which produces more precise task breakdowns.
+**Spec files:** For complex features, pass a spec file: `/code:plan-issue @SPEC.md`. Structured context (acceptance criteria, constraints, API shapes) produces more precise task breakdowns.
 
 ---
 
@@ -65,11 +51,7 @@ This researches your codebase, creates or updates a GitHub issue, and registers 
 
 ### Existing Issue Mode
 
-When you pass `#<number>`, plan-issue fetches the issue body and all comments, uses them as primary context (like a spec file), creates native tasks from the findings, and updates the issue in-place. This is ideal for bridging GitHub's `@claude` agent mode with `/code:implement`:
-
-1. `@claude` investigates an issue and posts findings as comments
-2. `/code:plan-issue #33` reads those findings, creates native tasks
-3. `/code:implement #33` executes the tasks
+When you pass `#<number>`, plan-issue fetches the issue body and comments, creates native tasks, and updates the issue in-place. Ideal for bridging `@claude` agent mode: `@claude` investigates → `/code:plan-issue #33` creates tasks → `/code:implement #33` executes.
 
 ### Viewing Tasks
 
@@ -165,57 +147,7 @@ Requires explicit "yes" confirmation. Staging must exist and tests must pass. De
 
 ## Agent Swarm
 
-Agent Swarm uses multiple independent Claude Code sessions instead of subagents. Best for complex features with many independent tasks.
-
-### When to Use It
-
-- **4+ tasks** with mostly independent work (60%+ independence)
-- Tasks that benefit from full Claude sessions (complex logic, multiple file changes)
-- When parallel execution speed justifies the higher token cost
-
-### Enabling
-
-Add to `.claude/settings.json`:
-
-```json
-{
-  "env": {
-    "CLAUDE_CODE_TASK_LIST_ID": "my-project-tasks",
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
-  }
-}
-```
-
-### Display Modes
-
-| Mode                     | Setup                               | Navigation                                |
-| ------------------------ | ----------------------------------- | ----------------------------------------- |
-| **In-process** (default) | Works in any terminal               | `Shift+Down` / `Shift+Up` to cycle agents |
-| **Split-pane**           | Requires tmux (`brew install tmux`) | Each agent gets its own pane              |
-
-Set via `.claude/settings.json`:
-
-```json
-{ "teammateMode": "tmux" }
-```
-
-### Keyboard Shortcuts
-
-| Shortcut     | Action                  |
-| ------------ | ----------------------- |
-| `Shift+Down` | Cycle to next agent     |
-| `Shift+Up`   | Cycle to previous agent |
-| `Ctrl+T`     | View shared task list   |
-| `Escape`     | Interrupt current agent |
-
-### Limitations
-
-- No session resumption — crashed teammates can't be resumed (lead re-dispatches)
-- One swarm per session
-- No nested swarms
-- Lead session is fixed
-
-For full setup including tmux configuration, see the [Agent Swarm section in the README](../README.md#agent-swarm).
+See [Agent Swarm Guide](agent-swarm.md) for setup and usage of parallel multi-session execution.
 
 ---
 

@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.13.3] - 2026-02-26
+
+### Fixed
+
+- **Implementer Bash permission denied in background agents** — the implementer agent needs
+  unrestricted `Bash` to run project-specific commands (`cargo test`, `bun test`, etc.) but the
+  entire permission chain restricted Bash to only `git:*` and `gh:*`. Two compounding issues:
+  (1) parent `allowed-tools` ceiling — subagents inherit the intersection of parent allowed-tools,
+  so the implementer's `Bash` was narrowed to git/gh by `implement.md` and `orchestrator.md`;
+  (2) auto-approval — background agents can't prompt interactively, and `settings.json` only
+  auto-approved `Bash(git:*)` and `Bash(gh:*)`. Added unrestricted `Bash` to `settings.json`
+  permissions, `implement.md`, and `orchestrator.md` allowed-tools. Safe because each command's
+  `allowed-tools` is still the ceiling — other commands keep their narrow patterns.
+
 ## [2.13.2] - 2026-02-23
 
 ### Fixed
@@ -253,7 +267,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Expanded orchestrator agent with improved task delegation and status tracking
 
-[2.12.3]: https://github.com/NOGIT007/innovation-basement/compare/v2.12.2...HEAD
+[2.13.3]: https://github.com/NOGIT007/innovation-basement/compare/v2.13.2...HEAD
+[2.13.2]: https://github.com/NOGIT007/innovation-basement/compare/v2.13.1...v2.13.2
+[2.13.1]: https://github.com/NOGIT007/innovation-basement/compare/v2.13.0...v2.13.1
+[2.13.0]: https://github.com/NOGIT007/innovation-basement/compare/v2.12.3...v2.13.0
+[2.12.3]: https://github.com/NOGIT007/innovation-basement/compare/v2.12.2...v2.12.3
 [2.12.2]: https://github.com/NOGIT007/innovation-basement/compare/v2.12.1...v2.12.2
 [2.12.1]: https://github.com/NOGIT007/innovation-basement/compare/v2.12.0...v2.12.1
 [2.12.0]: https://github.com/NOGIT007/innovation-basement/compare/v2.11.0...v2.12.0

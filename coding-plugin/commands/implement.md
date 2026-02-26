@@ -1,6 +1,6 @@
 ---
 context: fork
-allowed-tools: Bash(gh:*), Bash(git:*), Bash(tmux:*), Read, Write, Edit, Grep, Glob, Task, Skill, TaskList, TaskGet, TaskUpdate
+allowed-tools: Bash, Bash(gh:*), Bash(git:*), Bash(tmux:*), Read, Write, Edit, Grep, Glob, Task, Skill, TaskList, TaskGet, TaskUpdate
 description: Start implementation from a GitHub issue
 argument-hint: #<issue-number> [--team | --no-team]
 ---

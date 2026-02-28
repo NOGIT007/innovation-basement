@@ -37,6 +37,8 @@ A Claude Code plugin that turns your ideas into working software through a task-
 | `code-review`       | `claude-plugins-official` | Review pull requests with structured feedback                    |
 | `agent-sdk-dev`     | `claude-plugins-official` | Scaffold and verify Claude Agent SDK applications                |
 
+> **LSP Setup (Important):** After installing LSP plugins, add `"ENABLE_LSP_TOOL": "1"` to your project's `.claude/settings.json` under `env`. If LSP servers fail to start, clear the plugin cache with `/plugin cache clear` and restart Claude Code.
+
 ### Option A: Marketplace (Recommended)
 
 If installed from the Claude Code marketplace, you're done. Verify with `/plugin` → Installed tab.

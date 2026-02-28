@@ -109,7 +109,7 @@ What happens next:
 1. **Orchestrator** validates the issue and creates a feature branch
 2. **Implementer agents** spawn — one per task, each in its own git worktree
 3. Each agent implements, runs verification (tests), and **auto-commits**
-4. When all tasks pass, a **simplify pass** cleans up the code
+4. When all tasks pass, the official `/simplify` plugin cleans up the code
 5. Orchestrator reports completion
 
 Watch progress with `ctrl+t`. The whole process runs autonomously.

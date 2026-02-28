@@ -169,11 +169,10 @@ Refactors `CLAUDE.md` files and organizes auto-memory:
 ### Simplify
 
 ```bash
-/code:simplify              # Whole project
-/code:simplify src/utils.ts # Specific file
+/simplify                   # Run official Claude Code simplifier
 ```
 
-Analyzes code for simplification opportunities and potential bugs. Runs automatically at the end of `/code:implement`, but you can run it manually anytime.
+The official `/simplify` plugin analyzes code for simplification opportunities. It's CLAUDE.md-aware and runs automatically at the end of `/code:implement`, but you can run it manually anytime. Install the `code-simplifier` plugin from the `claude-plugins-official` marketplace.
 
 ### Keeping CLAUDE.md Lean
 

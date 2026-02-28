@@ -1,4 +1,4 @@
-# Coding Plugin v2.14.0 🔌
+# Coding Plugin v2.15.0 🔌
 
 **Build apps with AI, even if you can't code.**
 
@@ -35,6 +35,7 @@ A Claude Code plugin that turns your ideas into working software through a task-
 | `rust-analyzer-lsp` | `claude-plugins-official` | Go-to-definition, find-references, type lookups for Rust         |
 | `frontend-design`   | `claude-plugins-official` | Generate production-grade UI components with high design quality |
 | `code-review`       | `claude-plugins-official` | Review pull requests with structured feedback                    |
+| `code-simplifier`   | `claude-plugins-official` | CLAUDE.md-aware code simplification (powers `/simplify`)         |
 | `agent-sdk-dev`     | `claude-plugins-official` | Scaffold and verify Claude Agent SDK applications                |
 
 > **LSP Setup (Important):** After installing LSP plugins, add `"ENABLE_LSP_TOOL": "1"` to your project's `.claude/settings.json` under `env`. If LSP servers fail to start, clear the plugin cache with `/plugin cache clear` and restart Claude Code.
@@ -309,17 +310,6 @@ Create GitHub PR with auto-generated description.
 
 ```bash
 /code:pr
-```
-
----
-
-#### `/code:simplify`
-
-Analyze code for simplification opportunities and bugs.
-
-```bash
-/code:simplify
-/code:simplify src/utils.ts    # Specific file
 ```
 
 ---

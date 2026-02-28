@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.15.0] - 2026-02-28
+
+### Changed
+
+- **Replaced custom `/code:simplify` with official `/simplify` plugin** — the official `code-simplifier`
+  plugin from `claude-plugins-official` is CLAUDE.md-aware and Anthropic-maintained. Removed the custom
+  simplify command; orchestrator and implement already reference `/simplify`. Added `code-simplifier` to
+  recommended plugins in README.
+
+### Removed
+
+- **`coding-plugin/commands/simplify.md`** — custom simplify command (superseded by official plugin)
+
 ## [2.14.0] - 2026-02-26
 
 ### Changed
@@ -294,7 +307,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Expanded orchestrator agent with improved task delegation and status tracking
 
-[2.14.0]: https://github.com/NOGIT007/innovation-basement/compare/v2.13.3...HEAD
+[2.15.0]: https://github.com/NOGIT007/innovation-basement/compare/v2.14.0...HEAD
+[2.14.0]: https://github.com/NOGIT007/innovation-basement/compare/v2.13.3...v2.14.0
 [2.13.3]: https://github.com/NOGIT007/innovation-basement/compare/v2.13.2...v2.13.3
 [2.13.2]: https://github.com/NOGIT007/innovation-basement/compare/v2.13.1...v2.13.2
 [2.13.1]: https://github.com/NOGIT007/innovation-basement/compare/v2.13.0...v2.13.1
